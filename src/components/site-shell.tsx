@@ -4,15 +4,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/data/portfolio";
+import { QUEST_KEY, questForPath, safeQuests } from "@/data/quests";
 
 const navigation = [
   { href: "/", label: "Home", icon: "⌂", keywords: "start intro" },
   { href: "/world", label: "World", icon: "◇", keywords: "explore map" },
+  { href: "/room", label: "Room", icon: "⌘", keywords: "developer workstation" },
   { href: "/projects", label: "Projects", icon: "▣", keywords: "work case studies" },
   { href: "/about", label: "About", icon: "◈", keywords: "skills experience" },
+  { href: "/recruiter", label: "Resume", icon: "▤", keywords: "recruiter resume career print" },
   { href: "/play", label: "Play", icon: "✦", keywords: "game level" },
   { href: "/now", label: "Now", icon: "◷", keywords: "currently building" },
-  { href: "/contact", label: "Contact", icon: "↗", keywords: "email collaborate" }
+  { href: "/contact", label: "Contact", icon: "↗", keywords: "email collaborate" },
+  { href: "/skills", label: "Skills", icon: "✳", keywords: "technology universe inventory" },
+  { href: "/achievements", label: "Badges", icon: "★", keywords: "achievements quests" },
+  { href: "/assistant", label: "Guide", icon: "?", keywords: "assistant ask search" }
 ];
 
 type Theme = "day" | "night";
@@ -44,6 +50,15 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     setMenuOpen(false);
     setPaletteOpen(false);
     setQuery("");
+    const quest=questForPath(pathname);
+    if (!quest) return;
+    try {
+      const stored=safeQuests(JSON.parse(localStorage.getItem(QUEST_KEY)||"[]"));
+      if (!stored.includes(quest)) {
+        localStorage.setItem(QUEST_KEY,JSON.stringify([...stored,quest]));
+        window.dispatchEvent(new Event("portfolio-quest"));
+      }
+    } catch { /* Achievements are optional and stay on the visitor's device. */ }
   }, [pathname]);
 
   useEffect(() => {
@@ -115,7 +130,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <footer className="site-footer">
         <div className="footer-inner">
           <div><Link href="/" className="footer-brand">ARPIT<span>✦</span>YADAV</Link><p>Making the web a little more fun, one interface at a time.</p></div>
-          <div className="footer-nav"><Link href="/projects">Projects</Link><Link href="/about">About</Link><Link href="/contact">Contact</Link><a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+          <div className="footer-nav"><Link href="/projects">Projects</Link><Link href="/recruiter">Resume</Link><Link href="/room">Dev Room</Link><Link href="/skills">Skills</Link><Link href="/achievements">Badges</Link><Link href="/assistant">Guide</Link><Link href="/about">About</Link><Link href="/contact">Contact</Link><a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
           <div className="footer-bottom"><span>© {new Date().getFullYear()} Arpit Yadav</span><span>Designed with curiosity. No coins required. ✦</span><Link href="#top">Back to top ↑</Link></div>
         </div>
       </footer>

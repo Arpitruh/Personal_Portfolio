@@ -65,3 +65,15 @@
 - [x] Phase 12: transparent deterministic assistant backed by published portfolio data
 - [ ] Supply an owner-approved original resume to offer an actual downloadable resume file
 - [ ] Run real assistive-technology and Lighthouse/Web Vitals acceptance against staging
+
+## Phase 13 — Production readiness and audits
+- [x] Audit all ten documented GitHub repositories for public availability
+- [x] Add canonical URLs for all first-level pages
+- [x] Fix navigation reachability at intermediate laptop widths
+- [x] Apply global reduced-motion safeguards and consider offscreen rendering
+- [x] Add axe-core WCAG 2.1 A/AA automated browser audits
+- [x] Add repeatable Lighthouse mobile/desktop lab measurements with archived JSON
+- [x] Add scoped npm vulnerability scanning and lockfile bootstrap workflow
+- [ ] Validate the generated lockfile and convert CI installs to npm ci
+- [ ] Review axe/Lighthouse findings and fix significant deficiencies
+- [ ] Stage exact passing commit for manual responsive, keyboard, and screen-reader review

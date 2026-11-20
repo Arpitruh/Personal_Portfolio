@@ -11,10 +11,12 @@
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "check": "npm run typecheck && npm test && npm run build",
     "test:e2e": "playwright test",
-    "check:unit": "npm run typecheck && npm test && npm run build"
+    "check:unit": "npm run typecheck && npm test && npm run build",
+    "audit:lighthouse": "node scripts/lighthouse-audit.mjs",
+    "audit:security": "npm audit --omit=dev --audit-level=high"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": "22.x"
   },
   "dependencies": {
     "next": "^16.0.0",
@@ -26,6 +28,9 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "typescript": "^5.9.0",
-    "@playwright/test": "^1.56.1"
+    "@playwright/test": "^1.56.1",
+    "@axe-core/playwright": "^4.11.1",
+    "lighthouse": "^12.8.2",
+    "chrome-launcher": "^1.2.1"
   }
 }

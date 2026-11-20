@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ContactForm } from "@/components/contact-form";
 import { profile } from "@/data/portfolio";
 
-export const metadata: Metadata = { title: "Contact", description: "Get in touch with Arpit Yadav about engineering, projects and collaboration." };
+export const metadata: Metadata = { title: "Contact", description: "Get in touch with Arpit Yadav about engineering, projects and collaboration.", alternates: { canonical: "/contact" } };
 
 export default function ContactPage() {
   return <main id="main" className="page"><div className="container">

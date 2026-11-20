@@ -3,7 +3,7 @@ import Link from "next/link";
 import { experience, milestones, profile, skills } from "@/data/portfolio";
 import { PixelAvatar } from "@/components/pixel-landscape";
 
-export const metadata: Metadata = { title: "About", description: "Learn about Arpit Yadav's frontend engineering experience, skills and approach to building products." };
+export const metadata: Metadata = { title: "About", description: "Learn about Arpit Yadav's frontend engineering experience, skills and approach to building products.", alternates: { canonical: "/about" } };
 
 export default function AboutPage() {
   return <main id="main" className="page"><div className="container">

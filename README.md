@@ -124,3 +124,8 @@ The Projects page includes a device-local **Saved quests** list and a three-proj
 The development branch adds an interactive room (`/room`), a clean recruiter profile (`/recruiter`), skill-to-project explorer (`/skills`), local achievement board (`/achievements`), and a rule-based portfolio guide (`/assistant`). Case studies now group the *documented* technology stack into a conceptual architecture view without claiming private implementation knowledge.
 
 Recruiter mode is **print-to-PDF via the browser** rather than a fabricated downloadable PDF: replace it with a supplied, verified original when available. The assistant is a deterministic local content search, **not an external LLM or a live agent**. Badges and saved projects are device-local. See [the implementation plan](docs/PHASES_6_TO_12.md). No additional hosted service is required.
+
+## Phase 13 quality audits
+Run `npm run check`, `npm run test:e2e`, `npm run audit:security`, and `npm run audit:lighthouse` (the latter starts the built Next.js server on port 3100 and requires installed Playwright Chromium). CI saves Lighthouse JSON results and browser-test artifacts for review. Lighthouse scores are simulated lab measurements, not real-user CrUX/Web Vitals data. Axe-core catches a subset of WCAG issues; manual screen-reader, contrast, and keyboard review is still necessary. The staging deployment uses preview protection and is not promoted until reviewed.
+
+The npm lockfile is generated on the existing development branch by a tightly scoped GitHub workflow whenever the dependency manifest changes; CI subsequently uses the committed lockfile for reproducibility.

@@ -19,3 +19,12 @@ test("CMS records power experience, skills and personal life without invented ho
  assert.ok(socialProfiles.every(x=>x.visible&&new URL(x.url).protocol==="https:"));
  assert.equal(resume.file,"");
 });
+
+test("Phase 15 media must be an approved, local and accessible asset",async()=>{
+ const {safePersonalImage,visualIdentity}=await import("../src/data/personal.ts");
+ assert.equal(safePersonalImage("/uploads/images/my-portrait.webp"),"/uploads/images/my-portrait.webp");
+ for(const malicious of ["https://site.example/photo.jpg","/../secrets.png","/uploads/images/../../private.jpg","javascript:alert(1)","/uploads/resumes/cv.pdf"])assert.equal(safePersonalImage(malicious),"");
+ assert.equal(visualIdentity.portrait,null);
+ assert.equal(visualIdentity.illustration,null);
+ assert.deepEqual(visualIdentity.moments,[]);
+});

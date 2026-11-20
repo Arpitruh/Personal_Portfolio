@@ -1,11 +1,18 @@
 # Edit using https://app.pagescms.org and choose feat/portfolio-world-nextjs
-# Photos and illustrated characters are reserved for the next phase.
+# Phase 15: upload only approved public photos and illustrations; keep originals private.
 media:
   - name: images
     label: Future personal and project images
     input: public/uploads/images
     output: /uploads/images
     rename: safe
+    extensions: [jpg, jpeg, png, webp]
+  - name: personal-images
+    label: Approved portrait and personal images
+    input: public/uploads/images
+    output: /uploads/images
+    rename: safe
+    categories: [image]
     extensions: [jpg, jpeg, png, webp]
   - name: resumes
     label: Approved resume PDFs
@@ -158,3 +165,46 @@ content:
           extensions: [pdf]
       - {name: updated, label: Revision label or date, type: string}
       - {name: note, type: text}
+
+  - name: visuals
+    label: Portraits and personal photo gallery
+    type: file
+    path: content/visuals.json
+    fields:
+      - name: portrait
+        label: Real portrait (About and personal page)
+        type: object
+        fields:
+          - name: src
+            label: Approved photo
+            type: image
+            options: {media: personal-images}
+          - {name: alt, label: Description for screen readers, type: string}
+          - {name: caption, label: Optional caption, type: string}
+      - name: illustration
+        label: Illustrated self (home and personal page)
+        type: object
+        fields:
+          - name: src
+            label: Approved illustration
+            type: image
+            options: {media: personal-images}
+          - {name: alt, label: Description for screen readers, type: string}
+          - {name: caption, label: Optional caption, type: string}
+      - name: moments
+        label: Approved personal moments (public gallery)
+        type: object
+        list: true
+        fields:
+          - {name: title, label: Card heading, type: string, required: true}
+          - name: src
+            label: Photograph or illustration
+            type: image
+            options: {media: personal-images}
+          - {name: alt, label: Accurate photo description, type: string, required: true}
+          - {name: caption, label: Short personal note, type: text}
+          - name: category
+            type: select
+            options: {values: [Everyday, Places, Photography, Creative, Other]}
+          - {name: featured, label: Highlight on personal page, type: boolean}
+          - {name: visible, label: Approved for public display, type: boolean}

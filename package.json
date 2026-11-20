@@ -14,11 +14,11 @@
     "check:unit": "npm run typecheck && npm test && npm run build",
     "audit:lighthouse": "node scripts/lighthouse-audit.mjs",
     "audit:security": "npm audit --omit=dev --audit-level=high",
-    "content:validate": "node scripts/build-content.mjs",
-    "predev": "node scripts/build-content.mjs",
-    "prebuild": "node scripts/build-content.mjs",
-    "pretypecheck": "node scripts/build-content.mjs",
-    "pretest": "node scripts/build-content.mjs"
+    "content:validate": "node scripts/build-content.mjs && node scripts/validate-visuals.mjs",
+    "predev": "node scripts/build-content.mjs && node scripts/validate-visuals.mjs",
+    "prebuild": "node scripts/build-content.mjs && node scripts/validate-visuals.mjs",
+    "pretypecheck": "node scripts/build-content.mjs && node scripts/validate-visuals.mjs",
+    "pretest": "node scripts/build-content.mjs && node scripts/validate-visuals.mjs"
   },
   "engines": {
     "node": "22.x"

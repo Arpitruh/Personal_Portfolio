@@ -150,3 +150,14 @@ test("Phase 14 life route appears in navigation and sitemap",async ({page,reques
  await page.goto("/life");
  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href",/\/life$/);
 });
+
+test("Phase 15 uses accessible pixel fallback until approved media is uploaded",async ({page})=>{
+ await page.goto("/life");
+ await expect(page.locator(".personal-portrait-life .personal-portrait-placeholder")).toBeVisible();
+ await expect(page.locator(".personal-gallery-empty")).toBeVisible();
+ await expect(page.locator(".personal-gallery-card")).toHaveCount(0);
+ await page.goto("/about");
+ await expect(page.locator(".personal-portrait-about .personal-portrait-placeholder")).toBeVisible();
+ await page.goto("/");
+ await expect(page.locator(".hero-avatar")).toBeVisible();
+});

@@ -749,3 +749,10 @@ img,canvas,svg { max-width: 100%; }
    initial viewport. The real homepage is taller than one screen; reserve that
    space while the next navigation segment renders instead of shifting it. */
 .loading-page { min-height: calc(100svh + 150px); }
+
+/* The homepage hero contains three CTA buttons and large variable-font
+   typography. Reserve its final desktop size before fonts settle, preventing
+   the scene and subsequent sections from moving up after the first paint. */
+@media (min-width:951px) {
+  .hero-inner { min-height:820px; }
+}

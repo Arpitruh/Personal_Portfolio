@@ -1,4 +1,4 @@
-import { projects, type PortfolioProject } from "./portfolio";
+import { projects, type PortfolioProject } from "./portfolio.ts";
 
 export const SAVED_PROJECTS_KEY = "portfolio-saved-projects-v1";
 export const MAX_COMPARE = 3;

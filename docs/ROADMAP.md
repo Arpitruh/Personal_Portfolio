@@ -44,3 +44,13 @@
 - Don't fake metrics, employment claims, customer testimonials or live demo links.
 - Favor static content and zero paid dependencies until a feature needs more.
 - Merge only after CI and a manual browser review pass.
+
+## Phase 5 — Project discovery & showcase
+- [x] Add local-only project bookmarking without an account or backend
+- [x] Add project sorting and saved-project filtering
+- [x] Create a side-by-side comparison workbench for up to three projects
+- [x] Allow sharing a reproducible comparison via a query-string URL
+- [x] Validate and ignore unknown bookmarked/shared project slugs
+- [x] Add browser acceptance tests for the save, compare, reload and share flows
+- [ ] Confirm any additional public case-study artwork and measurable outcomes with the portfolio owner
+

@@ -85,3 +85,28 @@ test("canonical metadata and content discovery are valid", async ({ page }) => {
   await page.goto("/projects/cacheloom");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/projects\/cacheloom$/);
 });
+
+test("Phase 5 bookmarks survive reload and comparison URLs restore", async ({ page }) => {
+  await page.goto("/projects");
+  await page.getByRole("button", { name: "Save CacheLoom" }).click();
+  await expect(page.getByRole("button", { name: "Unsave CacheLoom" })).toHaveAttribute("aria-pressed","true");
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Unsave CacheLoom" })).toBeVisible();
+  await page.getByRole("button", { name: /Saved quests/ }).click();
+  await expect(page.locator(".discovery-card")).toHaveCount(1);
+  await page.getByRole("button", { name: /Saved quests/ }).click();
+  await page.getByRole("button", { name: "Compare CacheLoom" }).click();
+  await page.getByRole("button", { name: "Compare LeadLoop CRM" }).click();
+  await expect(page.getByRole("region", { name: "Project comparison" }).locator(".compare-column")).toHaveCount(2);
+  await expect(page).toHaveURL(/compare=cacheloom%2Cleadloop-crm/);
+  await page.reload();
+  await expect(page.locator(".compare-column")).toHaveCount(2);
+  await page.getByRole("button", { name: "Clear selection" }).click();
+  await expect(page.locator(".compare-column")).toHaveCount(0);
+});
+
+test("Phase 5 ignores unknown shared slugs", async ({ page }) => {
+  await page.goto("/projects?compare=cacheloom,invalid,leadloop-crm");
+  await expect(page.locator(".compare-column")).toHaveCount(2);
+  await expect(page).not.toHaveURL(/invalid/);
+});

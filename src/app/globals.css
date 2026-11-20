@@ -584,3 +584,42 @@ img,canvas,svg { max-width: 100%; }
 .world-secret-reveal a { color:#25233e; font-weight:800; text-decoration:underline; }
 @media (max-width:700px) { .level-selector {grid-template-columns:1fr; gap:7px; padding:9px;} .level-tab {padding:11px; gap:3px;} .level-tab strong {font-size:14px;} .level-tab small {font-size:11px;} .game-a11y-info {flex-direction:column; align-items:flex-start; padding:12px;} .game-accessible-projects {padding:16px;} .game-accessible-projects a {width:100%;} }
 @media (prefers-reduced-motion:reduce) { .level-tab {transition:none;} }
+
+/* Phase 5 — transparent, local-only project bookmarking and comparison. */
+.discovery-toolbar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:15px 0 6px; }
+.discovery-sort { display:flex; align-items:center; gap:9px; font-size:13px; font-weight:800; }
+.discovery-sort select { padding:10px 26px 10px 10px; border:1px solid var(--border); background:var(--paper); color:var(--ink); border-radius:5px; }
+.discovery-saved-toggle { border:1px solid var(--border); border-radius:5px; padding:11px 14px; background:var(--paper); color:var(--ink); font-weight:800; font-size:13px; }
+.discovery-saved-toggle.active { background:var(--gold); color:#25233e; }
+.discovery-hint { color:var(--ink-soft); font-size:12px; }
+.discovery-card { display:flex; flex-direction:column; min-width:0; }
+.discovery-card > .project-card { flex:1; }
+.discovery-card-actions { display:flex; align-items:center; gap:8px; border:2px solid var(--border); border-top:0; background:var(--paper); padding:11px; }
+.discovery-card-actions button { flex:1; min-height:40px; border:1px solid var(--border); background:var(--soft); color:var(--ink); border-radius:4px; font-weight:800; font-size:12px; }
+.discovery-card-actions button[aria-pressed="true"] { background:var(--gold); color:#25233e; border-color:#25233e; }
+.discovery-card-actions button:hover { border-color:var(--ink-soft); }
+.discovery-feedback:empty { display:none; }
+.discovery-feedback { margin:18px 0; color:var(--ink-soft); font-size:13px; }
+.compare-workbench { margin:38px 0 55px; border:2px solid var(--border); background:var(--paper); border-radius:8px; padding:26px; }
+.compare-heading { display:flex; justify-content:space-between; gap:18px; align-items:start; margin-bottom:24px; }
+.compare-heading h2 { margin:8px 0; font-size:clamp(25px,3vw,37px); }
+.compare-heading p { margin:0; color:var(--ink-soft); line-height:1.5; }
+.compare-commands { display:flex; flex-wrap:wrap; gap:8px; }
+.compare-commands button { border:1px solid var(--border); background:var(--soft); color:var(--ink); padding:11px; border-radius:5px; font-weight:800; font-size:12px; }
+.compare-commands button:hover { border-color:var(--ink); }
+.compare-scroll { overflow-x:auto; }
+.compare-columns { display:flex; gap:13px; } .compare-column { flex:1 0 230px; }
+.compare-column { min-width:230px; border:1px solid var(--border); background:var(--bg); border-radius:6px; padding:18px; display:flex; flex-direction:column; gap:15px; }
+.compare-title { display:flex; gap:10px; align-items:start; }
+.compare-title > span { font-size:30px; }
+.compare-title div { flex:1; }
+.compare-title h3 { margin:0 0 4px; font-size:18px; }
+.compare-title small { color:var(--ink-soft); }
+.compare-title button { border:1px solid var(--border); background:var(--paper); color:var(--ink); width:30px; height:30px; border-radius:4px; }
+.compare-row { border-top:1px solid var(--border); padding-top:14px; }
+.compare-row strong { font:9px var(--pixel); line-height:1.6; }
+.compare-row p,.compare-row li { font-size:13px; line-height:1.65; color:var(--ink-soft); }
+.compare-row p { margin:8px 0 0; }
+.compare-row ul { padding-left:20px; }
+.compare-column .btn { margin-top:auto; font-size:12px; }
+@media(max-width:700px) { .compare-workbench { padding:14px; } .compare-heading { flex-direction:column; } .compare-columns { display:flex; width:max-content; } .compare-column { width:min(80vw,320px); } .discovery-hint { width:100%; } }

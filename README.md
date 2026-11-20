@@ -116,3 +116,6 @@ If `NEXT_PUBLIC_SITE_URL` is unset, the deployment automatically uses Vercel's i
 ## Phase 4 browser acceptance
 
 Run `npm run build && npm run test:e2e` after `npm install` (Playwright installs Chromium using `npx playwright install chromium`). The browser tests start the built Next.js server, exercise desktop/mobile navigation, inspect production metadata and keyboard controls, and confirm that the gameplay exposes direct project links without requiring Canvas interaction. CI installs Linux browser dependencies and uploads failure traces/screenshots. This does **not** replace manual performance profiling or testing with real assistive technology.
+
+## Phase 5: save and compare projects
+The Projects page includes a device-local **Saved quests** list and a three-project comparison workbench. Save state uses browser local storage; no login or service receives it. Compare selections are encoded in the page URL (e.g. `/projects?compare=cacheloom,leadloop-crm`) so visitors can share a specific set of case studies. Unknown slugs are ignored; no arbitrary content is fetched from the query string. If clipboard access is blocked, the current browser URL remains available for manual copying.

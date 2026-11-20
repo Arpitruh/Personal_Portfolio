@@ -744,3 +744,8 @@ img,canvas,svg { max-width: 100%; }
 @media (min-width:1451px) {
   .nav-links {flex-wrap:nowrap;}
 }
+
+/* Prevent the streamed root loading fallback from placing the footer in the
+   initial viewport. The real homepage is taller than one screen; reserve that
+   space while the next navigation segment renders instead of shifting it. */
+.loading-page { min-height: calc(100svh + 150px); }

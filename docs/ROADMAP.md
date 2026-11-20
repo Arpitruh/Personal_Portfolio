@@ -88,3 +88,6 @@
 - [x] Correct fixed-background accent colors on inventory, timeline, milestones and About section in both themes
 
 - [x] Avoid 12-link header reflow at 1350px desktop: collapse navigation through 1450px and preserve header height through font loading
+
+- [x] Reserve viewport height for the streamed root loading shell so the footer does not jump out of view during hydration
+- [x] Add a desktop/mobile layout-shift regression guard (<0.1 during initial browser rendering)

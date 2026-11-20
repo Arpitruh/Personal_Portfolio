@@ -162,10 +162,17 @@ test("Phase 15 uses accessible pixel fallback until approved media is uploaded",
  await expect(page.locator(".hero-avatar")).toBeVisible();
 });
 
-test("character pose destinations retain normal UI before owner uploads the assets",async ({page})=>{
- for(const route of ["/","/projects","/skills","/life"]){
+test("character poses render when approved CMS files exist, with fallback when absent",async ({page})=>{
+ const {readFileSync}=await import("node:fs");
+ const config=JSON.parse(readFileSync("content/character-pack.json","utf8"));
+ for(const [route,pose] of [["/","standing"],["/projects","sitting"],["/skills","coding"],["/life","casual"]] as const){
    await page.goto(route);
-   await expect(page.locator(".character-pose")).toHaveCount(0);
+   const published=Boolean(config[pose]?.src&&config[pose]?.alt?.trim());
+   await expect(page.locator(".character-pose")).toHaveCount(published?1:0);
+   if(published){
+     await expect(page.locator(".character-pose img")).toBeVisible();
+     await expect(page.locator(".character-pose img")).toHaveAttribute("alt",config[pose].alt);
+   }
    await expect(page.locator("#main")).toHaveCount(1);
  }
 });

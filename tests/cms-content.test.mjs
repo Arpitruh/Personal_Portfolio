@@ -29,8 +29,16 @@ test("Phase 15 media must be an approved, local and accessible asset",async()=>{
  assert.deepEqual(visualIdentity.moments,[]);
 });
 
-test("character pack routes are empty until real files are uploaded",async()=>{
+test("character pack follows approved CMS uploads and retains empty-slot fallbacks",async()=>{
  const {characterPack}=await import("../src/data/personal.ts");
+ const configured=JSON.parse(await readFile("content/character-pack.json","utf8"));
  assert.deepEqual(Object.keys(characterPack),["standing","sitting","coding","casual"]);
- assert.ok(Object.values(characterPack).every(item=>item===null));
+ for(const pose of Object.keys(characterPack)){
+   const published=characterPack[pose];
+   const source=configured[pose];
+   if(source.src&&source.alt?.trim()){
+     assert.equal(published?.src,source.src);
+     assert.equal(published?.alt,source.alt.trim());
+   }else assert.equal(published,null);
+ }
 });

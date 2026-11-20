@@ -709,3 +709,13 @@ img,canvas,svg { max-width: 100%; }
 @supports (content-visibility:auto) {
   .section-projects,.section-experience,.section-about { content-visibility:auto; contain-intrinsic-size:auto 640px; }
 }
+
+/* Phase 13: higher-contrast accents and full-opacity achievement text. */
+:root { --readable-accent:#914019; }
+[data-theme="night"] { --readable-accent:#ffb57e; }
+.section h2 em,.page h1 em,.page h2 em,.hero h1 em,.hero h1 > span,
+.terminal-intro h2 em { color:var(--readable-accent); }
+.world-progress strong { color:var(--readable-accent); }
+.card-meta,.card-status { color:var(--ink); }
+.achievement { opacity:1; }
+.achievement:not(.achieved) { border-style:dashed; }

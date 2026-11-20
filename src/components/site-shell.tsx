@@ -108,7 +108,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       </div>
       <header className="site-header">
         <div className="nav-container">
-          <Link className="brand" href="/" aria-label="Arpit Yadav, homepage">
+          <Link className="brand" href="/" aria-label="A✦ ARPIT .DEV / WORLD 01 — Arpit Yadav homepage">
             <span className="brand-mark">A<span className="brand-pixel">✦</span></span>
             <span><strong>ARPIT</strong><small>.DEV / WORLD 01</small></span>
           </Link>
@@ -120,7 +120,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             ))}
           </nav>
           <div className="nav-actions">
-            <button ref={paletteTriggerRef} className="icon-button palette-shortcut" type="button" onClick={() => setPaletteOpen(true)} aria-expanded={paletteOpen} aria-controls="site-command-palette" aria-label="Open quick navigation" title="Search navigation (Ctrl/⌘ K)">⌕ <span>⌘K</span></button>
+            <button ref={paletteTriggerRef} className="icon-button palette-shortcut" type="button" onClick={() => setPaletteOpen(true)} aria-expanded={paletteOpen} aria-controls="site-command-palette" aria-label="⌕ ⌘K — Open quick navigation" title="Search navigation (Ctrl/⌘ K)">⌕ <span>⌘K</span></button>
             <button className="icon-button" type="button" onClick={() => setTheme((value) => value === "day" ? "night" : "day")} aria-label={"Switch to " + (theme === "day" ? "night" : "day") + " theme"} title="Toggle theme">{theme === "day" ? "☾" : "☀"}</button>
             <button className="icon-button menu-button" type="button" onClick={() => setMenuOpen((value) => !value)} aria-expanded={menuOpen} aria-label={menuOpen ? "Close menu" : "Open menu"}>{menuOpen ? "✕" : "☰"}</button>
           </div>

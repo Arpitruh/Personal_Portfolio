@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("homepage renders real links and a working command palette", async ({ page, isMobile }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /hi, i.m arpit/i })).toBeVisible();
-  const quick = page.getByRole("button", { name: "Open quick navigation" });
+  const quick = page.getByRole("button", { name: /Open quick navigation/ });
   await quick.click();
   const dialog = page.getByRole("dialog", { name: "Quick navigation" });
   await expect(dialog).toBeVisible();

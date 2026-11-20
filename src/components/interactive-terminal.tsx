@@ -88,7 +88,7 @@ export function InteractiveTerminal() {
     <form className="terminal-prompt" onSubmit={event => { event.preventDefault(); run(value); }}>
       <label htmlFor="terminal-command"><span>➜ ~</span><span className="sr-only">Enter a portfolio command</span></label>
       <input id="terminal-command" ref={ref} value={value} onChange={e => setValue(e.target.value)} onKeyDown={onKeyDown} placeholder="try: open cacheloom" maxLength={100} autoComplete="off" spellCheck={false} />
-      <button type="submit" aria-label="Run portfolio command">ENTER ↵</button>
+      <button type="submit" aria-label="ENTER ↵ — Run portfolio command">ENTER ↵</button>
     </form>
     <div className="terminal-presets"><span>TRY IT:</span>{presets.map(command => <button type="button" key={command} onClick={() => run(command)}>{command}</button>)}</div>
   </div>;

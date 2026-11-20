@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { profile, experience, skills, featuredProjects, milestones } from "@/data/portfolio";
 import { PrintResume } from "@/components/print-resume";
+import { resume } from "@/data/personal";
 export const metadata:Metadata={title:"Recruiter Profile",description:"Concise, print-ready frontend engineering experience, education and projects for Arpit Yadav.",alternates:{canonical:"/recruiter"}};
 export default function RecruiterPage(){
  return <main className="page recruiter-page" id="main"><div className="container recruiter-container">
-  <div className="recruiter-toolbar no-print"><div><span className="eyebrow">CAREER MODE · A DISTRACTION-FREE VIEW</span><h1>Recruiter <em>profile.</em></h1><p>Focused on verified work rather than animations or game scores.</p></div><div className="button-group"><PrintResume/><Link className="btn btn-outline" href="/projects">Explore projects ↗</Link></div></div>
+  <div className="recruiter-toolbar no-print"><div><span className="eyebrow">CAREER MODE · A DISTRACTION-FREE VIEW</span><h1>Recruiter <em>profile.</em></h1><p>Focused on verified work rather than animations or game scores.</p></div><div className="button-group">{resume.file && <a className="btn btn-primary" href={resume.file} download>Download {resume.label} ↓</a>}<PrintResume/><Link className="btn btn-outline" href="/projects">Explore projects ↗</Link></div></div>
   <article className="resume-sheet">
    <header className="resume-head"><div><p className="eyebrow">FRONTEND / SOFTWARE ENGINEERING</p><h2>{profile.name}</h2><p>{profile.role} · {profile.location}</p></div><a href={profile.github} target="_blank" rel="noopener noreferrer">github.com/Arpitruh ↗</a></header>
    <section className="resume-section"><h3>Professional summary</h3><p>{profile.summary} Professional experience includes production-facing dashboards, reporting tools, configuration experiences and user management.</p></section>
@@ -15,6 +16,6 @@ export default function RecruiterPage(){
    <section className="resume-section"><h3>Education</h3><p><strong>{milestones[0].title} · {milestones[0].label}</strong> — {milestones[0].description}</p></section>
    <footer className="resume-disclaimer">This summary is generated from published portfolio content, not an independently verified employment record. No personal email or downloadable third-party resume file is fabricated.</footer>
   </article>
-  <div className="resume-help no-print"><strong>Need a PDF?</strong> Select “Print / Save as PDF” and choose your browser’s PDF printer. A separately verified resume upload can replace this printable summary later.</div>
+  <div className="resume-help no-print"><strong>Need a PDF?</strong> Select “Print / Save as PDF” and choose your browser’s PDF printer. {resume.file ? "The current approved resume PDF is available above." : "A separately approved resume upload can replace this printable summary later."}</div>
  </div></main>;
 }

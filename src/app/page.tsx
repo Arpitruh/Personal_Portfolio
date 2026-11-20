@@ -4,6 +4,7 @@ import { WorldMap } from "@/components/world-map";
 import { ProjectCard } from "@/components/project-card";
 import { InteractiveTerminal } from "@/components/interactive-terminal";
 import { experience, featuredProjects, profile, skills } from "@/data/portfolio";
+import { life } from "@/data/personal";
 
 export default function HomePage() {
   return <main id="main">
@@ -52,6 +53,8 @@ export default function HomePage() {
       <div className="about-intro"><span className="eyebrow">04 / THE HUMAN BEHIND THE PIXELS</span><h2>More than<br /><em>just code.</em></h2><p>I&apos;m a frontend-focused engineer who cares about the small details: how a layout responds, how a state changes, and whether a product feels intuitive from the first click.</p><Link href="/about" className="btn btn-dark">More about me ↗</Link></div>
       <div className="about-stack"><div className="inventory-header"><span>PLAYER INVENTORY</span><span>✦ EQUIPPED</span></div>{skills.map((group, index) => <div className="inventory-row" key={group.group}><span className="inventory-number">0{index + 1}</span><div><strong>{group.group}</strong><p>{group.items.join(" · ")}</p></div><span className="inventory-star">✳</span></div>)}</div>
     </div></section>
+
+    <section className="section home-life-preview"><div className="container home-life-grid"><div><span className="eyebrow">SIDE QUEST / THE HUMAN BIT</span><h2>Beyond the <em>code.</em></h2><p>{life.introduction}</p><Link className="btn btn-outline" href="/life">Meet the human ↗</Link></div><div className="home-life-decoration" aria-hidden="true"><span>✦</span><strong>ALT + LIFE</strong><small>PLAYER 01</small></div></div></section>
 
     <section className="section section-experience"><div className="container"><div className="section-intro"><div><span className="eyebrow">05 / EXPERIENCE POINTS</span><h2>The journey <em>so far.</em></h2></div><Link className="section-more" href="/about#experience">VIEW JOURNEY ↗</Link></div><div className="experience-grid">{experience.map((item, index) => <article className="experience-card" key={item.company}><span className="experience-number">0{index + 1}</span><div><span className="eyebrow">{item.period}</span><h3>{item.role}</h3><strong>{item.company}</strong><p>{item.description}</p></div></article>)}</div></div></section>
 

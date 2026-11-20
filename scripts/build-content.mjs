@@ -29,7 +29,7 @@ async function main(){
    if(!Array.isArray(item.stack)||!item.stack.every(x=>typeof x==="string"&&x.trim()))bad(file,"stack must be a list");
    if(!Array.isArray(item.highlights)||!item.highlights.every(x=>typeof x==="string"&&x.trim()))bad(file,"highlights must be a list");
    if(item.image){
-     if(typeof item.image.src!=="string"||!/^\\/(?:projects|uploads\\/images)\\/[a-z0-9/_-]+\\.(png|jpg|jpeg|webp)$/.test(item.image.src))bad(file,"image must be a local uploaded asset");
+     if(typeof item.image.src!=="string"||!/^\/(?:projects|uploads\/images)\/[a-z0-9/_-]+\.(png|jpg|jpeg|webp)$/.test(item.image.src))bad(file,"image must be a local uploaded asset");
      for(const key of ["alt","caption"])checkText(item.image[key],"image."+key,file);
    }
    projects.push(item);

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/data/portfolio";
+import { socialProfiles } from "@/data/personal";
 import { QUEST_KEY, questForPath, safeQuests } from "@/data/quests";
 
 const navigation = [
@@ -12,6 +13,7 @@ const navigation = [
   { href: "/room", label: "Room", icon: "⌘", keywords: "developer workstation" },
   { href: "/projects", label: "Projects", icon: "▣", keywords: "work case studies" },
   { href: "/about", label: "About", icon: "◈", keywords: "skills experience" },
+  { href: "/life", label: "Life", icon: "♥", keywords: "beyond code hobbies interests photography personal" },
   { href: "/recruiter", label: "Resume", icon: "▤", keywords: "recruiter resume career print" },
   { href: "/play", label: "Play", icon: "✦", keywords: "game level" },
   { href: "/now", label: "Now", icon: "◷", keywords: "currently building" },
@@ -130,7 +132,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <footer className="site-footer">
         <div className="footer-inner">
           <div><Link href="/" className="footer-brand">ARPIT<span>✦</span>YADAV</Link><p>Making the web a little more fun, one interface at a time.</p></div>
-          <div className="footer-nav"><Link href="/projects">Projects</Link><Link href="/recruiter">Resume</Link><Link href="/room">Dev Room</Link><Link href="/skills">Skills</Link><Link href="/achievements">Badges</Link><Link href="/assistant">Guide</Link><Link href="/about">About</Link><Link href="/contact">Contact</Link><a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+          <div className="footer-nav"><Link href="/projects">Projects</Link><Link href="/recruiter">Resume</Link><Link href="/room">Dev Room</Link><Link href="/skills">Skills</Link><Link href="/achievements">Badges</Link><Link href="/assistant">Guide</Link><Link href="/about">About</Link><Link href="/life">Beyond Code</Link><Link href="/contact">Contact</Link>{socialProfiles.map(link=><a href={link.url} key={link.url} target="_blank" rel="noopener noreferrer">{link.name} ↗</a>)}</div>
           <div className="footer-bottom"><span>© {new Date().getFullYear()} Arpit Yadav</span><span>Designed with curiosity. No coins required. ✦</span><Link href="#top">Back to top ↑</Link></div>
         </div>
       </footer>

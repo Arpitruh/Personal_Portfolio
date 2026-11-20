@@ -13,7 +13,12 @@
     "test:e2e": "playwright test",
     "check:unit": "npm run typecheck && npm test && npm run build",
     "audit:lighthouse": "node scripts/lighthouse-audit.mjs",
-    "audit:security": "npm audit --omit=dev --audit-level=high"
+    "audit:security": "npm audit --omit=dev --audit-level=high",
+    "content:validate": "node scripts/build-content.mjs",
+    "predev": "node scripts/build-content.mjs",
+    "prebuild": "node scripts/build-content.mjs",
+    "pretypecheck": "node scripts/build-content.mjs",
+    "pretest": "node scripts/build-content.mjs"
   },
   "engines": {
     "node": "22.x"

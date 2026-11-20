@@ -756,3 +756,16 @@ img,canvas,svg { max-width: 100%; }
 @media (min-width:951px) {
   .hero-inner { min-height:820px; }
 }
+
+/* Beyond the Code: illustrative CSS shapes only; no personal photos until approved. */
+.life-intro-grid{display:grid;grid-template-columns:minmax(240px,.85fr) minmax(0,1.15fr);gap:clamp(25px,5vw,75px);align-items:center}
+.life-identity-art{position:relative;display:flex;min-height:330px;align-items:center;justify-content:center;flex-direction:column;gap:23px;border:3px solid #25233e;border-radius:12px;overflow:hidden;background:linear-gradient(145deg,#d2c8f5 0%,#d2c8f5 59%,#f9d5ad 59%);box-shadow:9px 10px 0 #25233e;color:#25233e}
+.life-sky{font:20px var(--pixel);letter-spacing:15px}.life-avatar-symbol{width:150px;height:150px;display:grid;place-items:center;background:#ffd970;border:7px solid #25233e;border-radius:32px;transform:rotate(-7deg);box-shadow:9px 9px 0 #25233e;font:30px var(--pixel)}.life-art-caption{font:10px var(--pixel);text-align:center;line-height:2}
+.life-story h2{font-size:clamp(30px,4vw,55px);margin:10px 0 20px}.life-story p,.home-life-preview p{font-size:16px;line-height:1.85;color:var(--ink-soft);max-width:620px}.life-story .btn{margin-top:15px}
+.life-hobby-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.life-hobby{position:relative;background:var(--paper);border:2px solid var(--border);border-radius:9px;padding:26px;min-width:0}
+.life-hobby>span{font-size:38px}.life-hobby h3{font-size:21px}.life-hobby p{color:var(--ink-soft);line-height:1.75}.life-hobby-number{font:10px var(--pixel);color:var(--readable-accent)}
+.life-empty{border:2px dashed var(--border);background:var(--soft);border-radius:9px;padding:40px;text-align:center}.life-empty span{font-size:36px}.life-empty h3{margin:14px 0}.life-empty p{color:var(--ink-soft);line-height:1.7}
+.life-social-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}.life-social-grid a{display:grid;gap:8px;padding:23px;border:2px solid var(--border);background:var(--paper);border-radius:8px}.life-social-grid small{color:var(--ink-soft)}.life-social-grid strong{font-size:22px}.life-social-grid a span{justify-self:end}
+.home-life-preview{background:var(--soft)}.home-life-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:40px;align-items:center}.home-life-preview h2{font-size:clamp(34px,4vw,60px);margin:13px 0}.home-life-preview .btn{margin-top:15px}.home-life-decoration{min-height:260px;background:#c5f2de;border:3px solid #25233e;box-shadow:9px 9px 0 #25233e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#25233e}.home-life-decoration>span{font-size:55px}.home-life-decoration strong{font:18px var(--pixel)}.home-life-decoration small{font:9px var(--pixel)}
+@media(max-width:750px){.life-intro-grid,.home-life-grid{grid-template-columns:1fr}.life-hobby-grid{grid-template-columns:1fr}.life-identity-art{min-height:265px}}

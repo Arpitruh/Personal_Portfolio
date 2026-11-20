@@ -205,3 +205,15 @@ test("dash touch control and guardian finish gate are explained to players",asyn
  await page.getByRole("button",{name:"Dash"}).click();
  await expect(page.getByRole("button",{name:"Pause game II"})).toBeEnabled();
 });
+
+test("arcade keyboard movement advances level progress and dash enters cooldown",async({page,isMobile})=>{
+ test.skip(isMobile,"Keyboard movement physics is validated with desktop Chromium; mobile uses the touch smoke test.");
+ await page.goto("/play");
+ await page.getByRole("button",{name:/Start game/}).click();
+ await page.locator(".game-screen canvas").click();
+ await page.keyboard.down("ArrowRight");
+ await expect.poll(async()=>Number(await page.getByRole("progressbar",{name:"Distance to level finish"}).getAttribute("aria-valuenow")),{timeout:7000}).toBeGreaterThan(5);
+ await page.keyboard.up("ArrowRight");
+ await page.keyboard.press("Shift");
+ await expect(page.locator(".game-hud")).toContainText("COOLDOWN");
+});

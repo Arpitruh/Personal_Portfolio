@@ -5,7 +5,9 @@ export function ProjectCard({ project, index = 0 }: { project: PortfolioProject;
   return <article className={"project-card accent-" + project.accent}>
     <div className="project-card-art">
       <span className="project-index">0{index + 1} / PROJECT</span>
-      <span className="project-art-emoji" role="img" aria-label={project.kicker}>{project.emoji}</span>
+      {project.image
+        ? <figure className="project-repo-image"><img src={project.image.src} alt={project.image.alt} loading="lazy" decoding="async" /><figcaption>AUTHENTIC PROJECT ASSET</figcaption></figure>
+        : <span className="project-art-emoji" role="img" aria-label={project.kicker}>{project.emoji}</span>}
       <span className="project-window"><i /><i /><i /></span>
     </div>
     <div className="project-card-body">

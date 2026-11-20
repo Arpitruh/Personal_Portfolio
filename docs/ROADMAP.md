@@ -34,7 +34,7 @@
 - [ ] Verify live desktop/mobile flows and Canvas touch gameplay against the preview
 - [ ] Audit contrast in both themes and with reduced-motion enabled
 - [x] Add a bounded content security policy and baseline browser security headers
-- [x] Commit the v3 npm lockfile and add Dependabot plus a high-severity production dependency audit
+- [x] Commit the v3 npm lockfile and add scheduled security auditing plus a high-severity production dependency gate
 - [x] Add automated checks for navigation, sitemap and canonical metadata
 - [x] Verify the 10 published public GitHub repository URLs (2026-11-20)
 - [ ] Independently verify any external live demo domains

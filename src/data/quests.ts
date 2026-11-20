@@ -15,6 +15,6 @@ const pathQuest:Record<string,QuestId>={"/room":"room","/recruiter":"recruiter",
 export function questForPath(path:string):QuestId|null {if(path.startsWith("/projects/"))return "case-study";return pathQuest[path]??null;}
 export function safeQuests(value:unknown):QuestId[] {
   if(!Array.isArray(value))return [];
-  const known=new Set(questDefinitions.map(q=>q.id));
+  const known=new Set<string>(questDefinitions.map(q=>q.id));
   return [...new Set(value.filter((x):x is QuestId=>typeof x==="string"&&known.has(x)))];
 }

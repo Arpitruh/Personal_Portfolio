@@ -86,3 +86,5 @@
 - [x] Eliminate the reveal animation that lowered rendered text opacity to 45% and violated WCAG contrast before scroll
 
 - [x] Correct fixed-background accent colors on inventory, timeline, milestones and About section in both themes
+
+- [x] Avoid 12-link header reflow at 1350px desktop: collapse navigation through 1450px and preserve header height through font loading

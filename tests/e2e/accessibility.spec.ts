@@ -44,7 +44,8 @@ test("all internal navigation links resolve to real pages",async ({page,request}
   }
 });
 
-test("capture lab layout shifts for the homepage",async ({page})=>{
+test("capture lab layout shifts for the homepage",async ({page,isMobile})=>{
+  if(!isMobile)await page.setViewportSize({width:1350,height:940});
   await page.addInitScript(()=>{
     (window as typeof window & {__layoutShifts?:unknown[]}).__layoutShifts=[];
     new PerformanceObserver(list=>{

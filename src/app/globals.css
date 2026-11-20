@@ -691,7 +691,7 @@ img,canvas,svg { max-width: 100%; }
 }
 
 /* Phase 13: compact navigation on laptop widths, safe skip/focus handling, motion preferences. */
-@media (min-width:951px) and (max-width:1250px) {
+@media (min-width:951px) and (max-width:1450px) {
   .nav-links {display:none;position:absolute;top:74px;left:0;right:0;padding:16px 22px 25px;background:var(--bg);border-bottom:1px solid var(--border);box-shadow:0 14px 18px #0002;flex-direction:column;align-items:stretch;flex-wrap:nowrap;}
   .nav-links.nav-links-open {display:flex;}
   .menu-button {display:inline-flex;}
@@ -734,3 +734,13 @@ img,canvas,svg { max-width: 100%; }
 .section-about .inventory-header span:last-child { color:#145c35; }
 .section-about .inventory-number,.section-about .inventory-star { color:#754016; }
 .timeline-entry strong,.milestone span,.philosophy-grid article > span,.experience-number { color:var(--readable-accent); }
+
+/* The twelve-link desktop header fits reliably only on wide screens.
+   Preserve header height across font loading at Lighthouse's 1350px viewport. */
+@media (min-width:951px) and (max-width:1450px) {
+  .nav-links { flex-wrap:nowrap; }
+  .nav-container { min-height:74px; }
+}
+@media (min-width:1451px) {
+  .nav-links {flex-wrap:nowrap;}
+}

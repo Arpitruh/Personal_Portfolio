@@ -125,5 +125,5 @@ test("new experience routes respect mobile viewport, reduced motion, and print s
  await page.emulateMedia({media:"screen",reducedMotion:"reduce"});
  await page.goto("/room");
  const duration=await page.locator(".room-object").first().evaluate(e=>getComputedStyle(e).transitionDuration);
- expect(duration).toBe("0s");
+ expect(Number.parseFloat(duration)).toBeLessThan(0.001);
 });

@@ -886,3 +886,6 @@ img,canvas,svg { max-width: 100%; }
  .game-overlay .button-group{gap:8px}
  .game-overlay .btn{padding:9px 12px;font-size:11px}
 }
+
+/* Readable status colors over the dark arcade HUD. */
+.game-hud .game-buff{color:#9df8d8}

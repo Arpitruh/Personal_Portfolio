@@ -12,6 +12,7 @@ media:
     input: public/uploads/resumes
     output: /uploads/resumes
     rename: safe
+    categories: [document]
     extensions: [pdf]
 content:
   - name: identity
@@ -151,6 +152,9 @@ content:
       - name: file
         label: Active PDF (public when published)
         type: file
-        options: {media: resumes, extensions: [pdf]}
+        options:
+          media: resumes
+          categories: [document]
+          extensions: [pdf]
       - {name: updated, label: Revision label or date, type: string}
       - {name: note, type: text}

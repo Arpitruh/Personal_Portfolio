@@ -150,3 +150,7 @@ The editor offers:
 **Privacy:** resumes uploaded to `public/uploads/resumes` become publicly downloadable when merged. Do not upload private addresses, phone numbers, ID documents or confidential employer details. Replacing a file does not erase previous Git history; avoid uploading any sensitive PDF, and delete old published file entries when you rotate the active document. The repository's public history may retain previous copies.
 
 **When using the repo locally:** `npm ci`, `npm run dev`, `npm run check`; project catalog is generated with `npm run content:validate` and automatically on builds/typechecks/tests. The generated JSON is not the CMS source of truth. Only edit `content/` files.
+
+### Resume editor setup
+
+The PDF picker in **Current resume** uses the named `resumes` media source (`public/uploads/resumes`) and only accepts PDF documents. The upload directory is tracked in Git with a `.gitkeep` file so the CMS can browse the source before the first upload. Select an existing PDF or upload an approved one; the saved path should be `/uploads/resumes/<filename>.pdf`. If the file selection screen fails in the CMS after refreshing, record the exact error or console message rather than uploading sensitive files through a workaround.

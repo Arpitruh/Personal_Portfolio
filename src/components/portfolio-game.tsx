@@ -3,13 +3,15 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { projects } from "@/data/portfolio";
-import { GAME_CLEAR_KEY, GAME_SAVE_KEY, gameLevels, validateGameSave, type GameCheckpointSave } from "@/data/game-levels";
+import { GAME_CLEAR_KEY, GAME_SAVE_KEY, GAME_RECORDS_KEY, GAME_SETTINGS_KEY, gameLevels, validateGameSave, validateLevelRecord, rankMission, difficultySettings, type GameDifficulty, type GamePowerup, type LevelRecord, type GameCheckpointSave } from "@/data/game-levels";
 
 type Mode = "ready" | "running" | "paused" | "won";
 type InputKey = "left" | "right" | "jump" | "down";
 type Player = { x: number; y: number; vx: number; vy: number; grounded: boolean; face: number; invulnerable: number };
 type Pickup = { x: number; y: number; collected: boolean };
 type Enemy = { x: number; baseX: number; dir: number; alive: boolean };
+type Power = {x:number;y:number;type:GamePowerup;collected:boolean};
+type Star = {x:number;y:number;collected:boolean};
 const WIDTH = 960, HEIGHT = 390, FLOOR = 316;
 const initialCoins = (level = gameLevels[0]): Pickup[] => level.coins.map(({ x, y }) => ({ x, y, collected: false }));
 const initialEnemies = (level = gameLevels[0]): Enemy[] => level.enemies.map(x => ({ x, baseX: x, dir: -1, alive: true }));
@@ -64,6 +66,19 @@ export function PortfolioGame() {
   const keysRef = useRef<Record<InputKey, boolean>>({ left: false, right: false, jump: false, down: false });
   const coinsRef = useRef<Pickup[]>(initialCoins());
   const enemiesRef = useRef<Enemy[]>(initialEnemies());
+  const powersRef = useRef<Power[]>(gameLevels[0].powerups?.map(p=>({...p,collected:false}))??[]);
+  const starsRef = useRef<Star[]>(gameLevels[0].secretStars?.map(p=>({...p,collected:false}))??[]);
+  const shieldRef = useRef(0);
+  const speedRef = useRef(0);
+  const elapsedRef = useRef(0);
+  const lastDamageRef = useRef(-1000);
+  const [difficulty,setDifficulty]=useState<GameDifficulty>("normal");
+  const difficultyRef=useRef<GameDifficulty>("normal");
+  const [shield,setShield]=useState(0);
+  const [speedBoost,setSpeedBoost]=useState(0);
+  const [stars,setStars]=useState(0);
+  const [elapsed,setElapsed]=useState(0);
+  const [records,setRecords]=useState<Record<string,LevelRecord>>({});
   const scoreRef = useRef(0);
   const livesRef = useRef(3);
   const camRef = useRef(0);
@@ -92,6 +107,16 @@ export function PortfolioGame() {
     } catch { /* Invalid local game data is safely ignored. */ }
     const previous = Number(localStorage.getItem("portfolio-best-score"));
     if (Number.isFinite(previous) && previous > 0) setBest(previous);
+    try {
+      const difficultySaved=localStorage.getItem(GAME_SETTINGS_KEY);
+      if(difficultySaved==="casual"||difficultySaved==="normal"||difficultySaved==="expert"){
+        difficultyRef.current=difficultySaved;setDifficulty(difficultySaved);
+      }
+      const rawRecords=JSON.parse(localStorage.getItem(GAME_RECORDS_KEY)||"{}");
+      const validated:Record<string,LevelRecord>={};
+      for(const level of gameLevels){const record=validateLevelRecord(rawRecords?.[level.id]);if(record)validated[level.id]=record;}
+      setRecords(validated);
+    }catch{/* Storage is optional and never needed to play. */}
   }, []);
 
   function updateMode(value: Mode) { modeRef.current = value; setMode(value); }
@@ -101,8 +126,11 @@ export function PortfolioGame() {
     setLevelIndex(index);
     checkpointRef.current = -1; setCheckpoint(-1);
     playerRef.current = initialPlayer(); coinsRef.current = initialCoins(levelRef.current); enemiesRef.current = initialEnemies(levelRef.current);
-    scoreRef.current = 0; livesRef.current = 3; camRef.current = 0; tickRef.current = 0;
-    setScore(0); setCoins(0); setLives(3); setPortal(null); setNotice("");
+    powersRef.current=levelRef.current.powerups?.map(p=>({...p,collected:false}))??[];
+    starsRef.current=levelRef.current.secretStars?.map(p=>({...p,collected:false}))??[];
+    shieldRef.current=0;speedRef.current=0;elapsedRef.current=0;lastDamageRef.current=-1000;
+    scoreRef.current = 0; livesRef.current = difficultySettings(difficultyRef.current).lives; camRef.current = 0; tickRef.current = 0;
+    setScore(0); setCoins(0); setLives(livesRef.current);setShield(0);setSpeedBoost(0);setElapsed(0);setStars(0);setPortal(null); setNotice("");
     keysRef.current = { left: false, right: false, jump: false, down: false };
     updateMode("ready");
   }
@@ -114,15 +142,19 @@ export function PortfolioGame() {
     playerRef.current = player;
     coinsRef.current = initialCoins(level);
     enemiesRef.current = initialEnemies(level);
+    powersRef.current=level.powerups?.map(p=>({...p,collected:false}))??[];
+    starsRef.current=level.secretStars?.map(p=>({...p,collected:false}))??[];
+    shieldRef.current=0;speedRef.current=0;elapsedRef.current=0;lastDamageRef.current=-1000;
     for (const i of save?.collected || []) coinsRef.current[i].collected = true;
     for (const i of save?.defeated || []) enemiesRef.current[i].alive = false;
     scoreRef.current = save?.score ?? 0;
-    livesRef.current = save?.lives ?? 3;
+    livesRef.current = save?.lives ?? difficultySettings(difficultyRef.current).lives;
     camRef.current = save ? Math.max(0, player.x - 270) : 0; tickRef.current = 0;
     checkpointRef.current = save?.checkpointIndex ?? -1; setCheckpoint(checkpointRef.current);
     keysRef.current = { left: false, right: false, jump: false, down: false };
     portalOpenRef.current = false; setPortal(null); setNotice(save ? "CHECKPOINT RESTORED" : "");
     setScore(scoreRef.current); setCoins(coinsRef.current.filter(x => x.collected).length); setLives(livesRef.current);
+    setStars(0);setShield(0);setSpeedBoost(0);setElapsed(0);
     updateMode("running");
   }
   function saveCheckpoint(index: number) {
@@ -139,6 +171,12 @@ export function PortfolioGame() {
       return next;
     });
     setNotice("CHECKPOINT SAVED · " + (index + 1) + "/" + level.checkpoints.length);
+  }
+  function changeDifficulty(value:GameDifficulty){
+    if(modeRef.current==="running"||modeRef.current==="paused")return;
+    difficultyRef.current=value;setDifficulty(value);
+    try{localStorage.setItem(GAME_SETTINGS_KEY,value);}catch{}
+    livesRef.current=difficultySettings(value).lives;setLives(livesRef.current);
   }
   function closePortal() {
     portalOpenRef.current = false; setPortal(null); keysRef.current.down = false; updateMode("running");
@@ -184,8 +222,12 @@ export function PortfolioGame() {
       const player = playerRef.current, keys = keysRef.current, coins = coinsRef.current;
       const level = levelRef.current;
       tickRef.current++;
+      elapsedRef.current++;
+      if(elapsedRef.current%60===0)setElapsed(Math.floor(elapsedRef.current/60));
       if (player.invulnerable) player.invulnerable--;
-      const target = (Number(keys.right) - Number(keys.left)) * 4.3;
+      if(shieldRef.current>0){shieldRef.current--;if(shieldRef.current%60===0)setShield(Math.ceil(shieldRef.current/60));}
+      if(speedRef.current>0){speedRef.current--;if(speedRef.current%60===0)setSpeedBoost(Math.ceil(speedRef.current/60));}
+      const target = (Number(keys.right) - Number(keys.left)) * (speedRef.current>0?6.1:4.3);
       player.vx += (target - player.vx) * 0.21;
       if (Math.abs(player.vx) < 0.07) player.vx = 0;
       if (player.vx !== 0) player.face = player.vx > 0 ? 1 : -1;
@@ -211,21 +253,40 @@ export function PortfolioGame() {
           sound(850, soundRef.current, 0.06);
         }
       }
+      for(const power of powersRef.current){
+        if(!power.collected && Math.abs(player.x+17-power.x)<28 && Math.abs(player.y+18-power.y)<33){
+          power.collected=true;
+          if(power.type==="shield"){shieldRef.current=60*12;setShield(12);setNotice("ENERGY SHIELD · 12 SECONDS");}
+          if(power.type==="dash"){speedRef.current=60*10;setSpeedBoost(10);setNotice("SPEED BOOST · 10 SECONDS");}
+          if(power.type==="heart"){livesRef.current=Math.min(5,livesRef.current+1);setLives(livesRef.current);setNotice("EXTRA LIFE FOUND");}
+          scoreRef.current+=150;setScore(scoreRef.current);sound(1050,soundRef.current);
+        }
+      }
+      for(const star of starsRef.current){
+        if(!star.collected && Math.abs(player.x+17-star.x)<27 && Math.abs(player.y+18-star.y)<33){
+          star.collected=true;setStars(starsRef.current.filter(x=>x.collected).length);
+          scoreRef.current+=350;setScore(scoreRef.current);setNotice("SECRET STAR DISCOVERED ✦");sound(1200,soundRef.current);
+        }
+      }
+      const damage=()=>{
+        if(player.invulnerable||shieldRef.current>0||tickRef.current-lastDamageRef.current<35)return;
+        lastDamageRef.current=tickRef.current;
+        livesRef.current--;setLives(livesRef.current);
+        player.invulnerable=difficultySettings(difficultyRef.current).damageCooldown;
+        player.x=Math.max(0,player.x-76);player.vy=-6;sound(130,soundRef.current,.2);
+        if(livesRef.current<=0){modeRef.current="ready";setMode("ready");setNotice("OUT OF LIVES · RESTART OR USE YOUR SAVED CHECKPOINT");}
+      };
+      for(const hazard of level.hazards??[]){
+        if(rectHit({x:player.x+5,y:player.y+28,w:24,h:8},{x:hazard.x,y:FLOOR-13,w:hazard.w,h:13}))damage();
+      }
       for (const enemy of enemiesRef.current) {
         if (!enemy.alive) continue;
-        enemy.x += enemy.dir * 0.75;
+        enemy.x += enemy.dir * 0.75 * difficultySettings(difficultyRef.current).enemySpeed;
         if (Math.abs(enemy.x - enemy.baseX) > 60) enemy.dir *= -1;
         if (rectHit({ x: player.x, y: player.y, w: 34, h: 36 }, { x: enemy.x, y: FLOOR - 25, w: 29, h: 25 })) {
           if (player.vy > 1 && previousBottom <= FLOOR - 8) {
             enemy.alive = false; player.vy = -8; scoreRef.current += 200; setScore(scoreRef.current); sound(220, soundRef.current);
-          } else if (!player.invulnerable) {
-            livesRef.current -= 1; setLives(livesRef.current); player.invulnerable = 90;
-            player.x = Math.max(0, player.x - 80); player.vy = -6; sound(130, soundRef.current, 0.2);
-            if (livesRef.current <= 0) {
-              modeRef.current = "ready"; setMode("ready");
-              setNotice("OUT OF LIVES · CHOOSE RESTART OR YOUR SAVED CHECKPOINT");
-            }
-          }
+          } else damage();
         }
       }
       if (keys.down && player.grounded) {
@@ -239,7 +300,14 @@ export function PortfolioGame() {
         if (player.x >= level.checkpoints[i] && i > checkpointRef.current) saveCheckpoint(i);
       }
       if (player.x >= level.width - 155) {
-        modeRef.current = "won"; setMode("won"); scoreRef.current += 1000; setScore(scoreRef.current);
+        modeRef.current = "won"; setMode("won");
+        const mission=rankMission(coins.filter(x=>x.collected).length,coins.length,starsRef.current.filter(x=>x.collected).length,livesRef.current);
+        const missionBonus=Object.values(mission).filter(Boolean).length*350;
+        const timeBonus=Math.max(0,2500-Math.floor(elapsedRef.current/60)*5);
+        scoreRef.current += Math.floor((1000+missionBonus+timeBonus)*difficultySettings(difficultyRef.current).bonus); setScore(scoreRef.current);
+        const levelRecord:LevelRecord={score:scoreRef.current,coins:coins.filter(x=>x.collected).length,stars:starsRef.current.filter(x=>x.collected).length,seconds:Math.floor(elapsedRef.current/60),difficulty:difficultyRef.current};
+        setRecords(current=>{const older=current[level.id];const next=(!older||older.score<levelRecord.score)?{...current,[level.id]:levelRecord}:current;
+          try{localStorage.setItem(GAME_RECORDS_KEY,JSON.stringify(next));}catch{}return next;});
         const stored = Number(localStorage.getItem("portfolio-best-score")) || 0;
         if (scoreRef.current > stored) { localStorage.setItem("portfolio-best-score", String(scoreRef.current)); setBest(scoreRef.current); }
         setCleared(current => {

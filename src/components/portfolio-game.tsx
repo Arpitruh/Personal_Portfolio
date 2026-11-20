@@ -71,6 +71,7 @@ export function PortfolioGame() {
   const dashQueueRef=useRef(false);
   const jumpQueueRef=useRef(0);
   const coyoteRef=useRef(0);
+  const jumpMinHoldRef=useRef(0);
   const bossWarningRef=useRef(false);
   const [progress,setProgress]=useState(0);
   const dashTicksRef=useRef(0);
@@ -144,7 +145,7 @@ export function PortfolioGame() {
     powersRef.current=levelRef.current.powerups?.map(p=>({...p,collected:false}))??[];
     starsRef.current=levelRef.current.secretStars?.map(p=>({...p,collected:false}))??[];
     shieldRef.current=0;speedRef.current=0;elapsedRef.current=0;lastDamageRef.current=-1000;
-    dashCooldownRef.current=0;dashTicksRef.current=0;dashQueueRef.current=false;jumpQueueRef.current=0;coyoteRef.current=0;bossWarningRef.current=false;setDashReady(true);setProgress(0);
+    dashCooldownRef.current=0;dashTicksRef.current=0;dashQueueRef.current=false;jumpQueueRef.current=0;coyoteRef.current=0;jumpMinHoldRef.current=0;bossWarningRef.current=false;setDashReady(true);setProgress(0);
     bossRef.current=makeBoss(levelRef.current);setBossHP(bossRef.current?.hp??0);comboRef.current=0;setCombo(0);
     scoreRef.current = 0; livesRef.current = difficultySettings(difficultyRef.current).lives; camRef.current = 0; tickRef.current = 0;
     setScore(0); setCoins(0); setLives(livesRef.current);setShield(0);setSpeedBoost(0);setElapsed(0);setStars(0);setPortal(null); setNotice("");
@@ -162,7 +163,7 @@ export function PortfolioGame() {
     powersRef.current=level.powerups?.map(p=>({...p,collected:false}))??[];
     starsRef.current=level.secretStars?.map(p=>({...p,collected:false}))??[];
     shieldRef.current=0;speedRef.current=0;elapsedRef.current=0;lastDamageRef.current=-1000;
-    dashCooldownRef.current=0;dashTicksRef.current=0;dashQueueRef.current=false;jumpQueueRef.current=0;coyoteRef.current=0;bossWarningRef.current=false;setDashReady(true);setProgress(0);
+    dashCooldownRef.current=0;dashTicksRef.current=0;dashQueueRef.current=false;jumpQueueRef.current=0;coyoteRef.current=0;jumpMinHoldRef.current=0;bossWarningRef.current=false;setDashReady(true);setProgress(0);
     bossRef.current=makeBoss(level);setBossHP(bossRef.current?.hp??0);comboRef.current=0;setCombo(0);
     for (const i of save?.collected || []) coinsRef.current[i].collected = true;
     for (const i of save?.defeated || []) enemiesRef.current[i].alive = false;
@@ -263,10 +264,11 @@ export function PortfolioGame() {
       if(player.grounded)coyoteRef.current=6;
       else if(coyoteRef.current>0)coyoteRef.current--;
       if(jumpQueueRef.current>0 && coyoteRef.current>0){
-        player.vy=-12.7;player.grounded=false;coyoteRef.current=0;jumpQueueRef.current=0;
+        player.vy=-12.7;player.grounded=false;coyoteRef.current=0;jumpQueueRef.current=0;jumpMinHoldRef.current=8;
         sound(460,soundRef.current);
       }else if(jumpQueueRef.current>0)jumpQueueRef.current--;
-      if (!keys.jump && player.vy < -5) player.vy = -5;
+      if(jumpMinHoldRef.current>0)jumpMinHoldRef.current--;
+      if (!keys.jump && !jumpMinHoldRef.current && player.vy < -5) player.vy = -5;
       player.x = Math.max(0, Math.min(level.width - 35, player.x + player.vx));
       player.vy = Math.min(12, player.vy + 0.58);
       const previousBottom = player.y + 36;
@@ -363,7 +365,10 @@ export function PortfolioGame() {
         setRecords(current=>{const older=current[level.id];const next=(!older||older.score<levelRecord.score)?{...current,[level.id]:levelRecord}:current;
           try{localStorage.setItem(GAME_RECORDS_KEY,JSON.stringify(next));}catch{}return next;});
         const stored = Number(localStorage.getItem("portfolio-best-score")) || 0;
-        if (scoreRef.current > stored) { localStorage.setItem("portfolio-best-score", String(scoreRef.current)); setBest(scoreRef.current); }
+        if (scoreRef.current > stored) {
+          try{localStorage.setItem("portfolio-best-score",String(scoreRef.current));}catch{}
+          setBest(scoreRef.current);
+        }
         setCleared(current => {
           const next = Array.from(new Set([...current, level.id]));
           try { localStorage.setItem(GAME_CLEAR_KEY, JSON.stringify(next)); } catch { /* Browsers can disable storage. */ }

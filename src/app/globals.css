@@ -854,3 +854,35 @@ img,canvas,svg { max-width: 100%; }
 .game-victory-stats>span{background:#fff7db;border:2px solid #25233e;color:#25233e;border-radius:5px;padding:9px 12px;font-size:12px;font-weight:800}
 @media(max-width:760px){.game-mission-layout{grid-template-columns:1fr}.game-mission-grid{grid-template-columns:1fr}.game-adventure-options{flex-direction:column;align-items:stretch}}
 @media(prefers-reduced-motion:reduce){.game-campaign-track span,.game-progress>div>span{transition:none}}
+
+/* Phase 16: five-world campaign fits as a scrollable map on narrower devices. */
+.level-selector{grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.level-tab{min-width:0;padding:12px}
+.level-tab strong{font-size:14px}
+.level-tab small{font-size:11px}
+.game-hud{gap:13px 18px}
+.game-hud .game-boss-health{color:#ff9ec4}
+.game-guide{border-top:1px solid #ffffff44;padding:15px 23px;background:#282640}
+.game-guide summary{cursor:pointer;color:#ffe09a;font:10px/1.8 var(--pixel)}
+.game-guide summary:focus-visible{outline:3px solid #ffe09a;outline-offset:4px}
+.game-guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 25px;padding:14px 0 3px}
+.game-guide-grid p{font-size:12px;line-height:1.7;color:#e7e0ff}
+.game-guide-grid strong{color:#ffe09a}
+.game-controls .control-button{flex-shrink:0}
+.game-controls .control-tip{flex:1}
+@media (max-width:1150px){.level-selector{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:710px){
+ .level-selector{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .game-guide-grid{grid-template-columns:1fr}
+ .game-controls{flex-wrap:wrap;gap:12px;padding:12px 14px}
+ .game-control-left,.game-control-right{gap:7px}
+ .game-control-right{margin-left:auto}
+ .game-control-left .control-button,.game-control-right .control-button{width:45px;height:48px}
+ .game-controls .control-tip{flex-basis:100%;order:3}
+ .game-hud{padding:13px 15px;font-size:9px}
+ .game-overlay{padding:10px;overflow-y:auto}
+ .game-overlay h2{font-size:clamp(18px,5vw,30px)}
+ .game-overlay p{font-size:12px;margin-bottom:12px}
+ .game-overlay .button-group{gap:8px}
+ .game-overlay .btn{padding:9px 12px;font-size:11px}
+}

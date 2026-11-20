@@ -173,3 +173,11 @@ The image pack is distributed separately for manual CMS upload; the GitHub repos
 
 ## Phase 16 · Arcade Adventure
 The optional portfolio platformer now has five themed worlds, level-specific spikes, shields, speed boosts, extra hearts, hidden stars, four side quests per world, difficulty settings, cumulative campaign progress and personal per-world high scores. Game progress remains in browser localStorage, with no leaderboard server or paid backend. The two original save keys remain compatible; the new record and difficulty keys are validated on read. Project pipes remain accessible as direct links for visitors who don't play.
+
+### Additional arcade features
+- **Dash:** Shift/X or the new touch button; short invulnerable burst followed by cooldown.
+- **Jump forgiveness:** a small jump buffer and coyote-time window for consistent controller/touch timing.
+- **Late-game guardian encounters:** three stomp hits unlock the Neon/Frost finish flag.
+- **Combo scoring:** consecutive enemy stomps reward escalating points; damage resets the chain.
+- **World guide:** accessible controls, pickups and scoring information on the game page.
+- **Level progress:** an actual distance-based HUD bar, updated as the character travels.

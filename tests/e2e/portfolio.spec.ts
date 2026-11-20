@@ -193,3 +193,15 @@ test("expanded arcade campaign supports difficulty, five worlds, quests and reco
  await page.getByRole("button",{name:"Pause game II"}).click();
  await expect(page.getByRole("heading",{name:"Adventure on hold"})).toBeVisible();
 });
+
+test("dash touch control and guardian finish gate are explained to players",async({page})=>{
+ await page.goto("/play");
+ await page.getByRole("group",{name:"Choose a game world"}).getByRole("button",{name:/Frostbyte Summit/}).click();
+ await expect(page.getByText(/No completed run yet/)).toBeVisible();
+ await page.locator("summary").filter({hasText:/HOW TO PLAY/}).click();
+ await expect(page.getByText(/guardians in Neon Nexus and Frostbyte Summit/)).toBeVisible();
+ await page.getByRole("button",{name:/Start game/}).click();
+ await expect(page.getByRole("button",{name:"Dash"})).toBeVisible();
+ await page.getByRole("button",{name:"Dash"}).click();
+ await expect(page.getByRole("button",{name:"Pause game II"})).toBeEnabled();
+});

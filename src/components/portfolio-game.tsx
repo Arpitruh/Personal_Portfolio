@@ -6,12 +6,15 @@ import { projects } from "@/data/portfolio";
 import { GAME_CLEAR_KEY, GAME_SAVE_KEY, GAME_RECORDS_KEY, GAME_SETTINGS_KEY, gameLevels, validateGameSave, validateLevelRecord, rankMission, difficultySettings, type GameDifficulty, type GamePowerup, type LevelRecord, type GameCheckpointSave } from "@/data/game-levels";
 
 type Mode = "ready" | "running" | "paused" | "won";
-type InputKey = "left" | "right" | "jump" | "down";
+type InputKey = "left" | "right" | "jump" | "down" | "dash";
 type Player = { x: number; y: number; vx: number; vy: number; grounded: boolean; face: number; invulnerable: number };
 type Pickup = { x: number; y: number; collected: boolean };
 type Enemy = { x: number; baseX: number; dir: number; alive: boolean };
 type Power = {x:number;y:number;type:GamePowerup;collected:boolean};
 type Star = {x:number;y:number;collected:boolean};
+type Boss={x:number;startX:number;dir:number;hp:number;maxHp:number;invincible:number};
+const makeBoss=(level:typeof gameLevels[number]):Boss|null=>level.difficulty&&level.difficulty>=4?{x:level.width-550,startX:level.width-550,dir:-1,hp:3,maxHp:3,invincible:0}:null;
+const emptyInput=():Record<InputKey,boolean>=>({left:false,right:false,jump:false,down:false,dash:false});
 const WIDTH = 960, HEIGHT = 390, FLOOR = 316;
 const initialCoins = (level = gameLevels[0]): Pickup[] => level.coins.map(({ x, y }) => ({ x, y, collected: false }));
 const initialEnemies = (level = gameLevels[0]): Enemy[] => level.enemies.map(x => ({ x, baseX: x, dir: -1, alive: true }));
@@ -63,7 +66,14 @@ export function PortfolioGame() {
   const portalCloseRef = useRef<HTMLButtonElement>(null);
   const modeRef = useRef<Mode>("ready");
   const playerRef = useRef<Player>(initialPlayer());
-  const keysRef = useRef<Record<InputKey, boolean>>({ left: false, right: false, jump: false, down: false });
+  const keysRef = useRef<Record<InputKey, boolean>>(emptyInput());
+  const dashCooldownRef=useRef(0);
+  const dashTicksRef=useRef(0);
+  const bossRef=useRef<Boss|null>(makeBoss(gameLevels[0]));
+  const [dashReady,setDashReady]=useState(true);
+  const [bossHP,setBossHP]=useState(0);
+  const [combo,setCombo]=useState(0);
+  const comboRef=useRef(0);
   const coinsRef = useRef<Pickup[]>(initialCoins());
   const enemiesRef = useRef<Enemy[]>(initialEnemies());
   const powersRef = useRef<Power[]>(gameLevels[0].powerups?.map(p=>({...p,collected:false}))??[]);
@@ -129,9 +139,13 @@ export function PortfolioGame() {
     powersRef.current=levelRef.current.powerups?.map(p=>({...p,collected:false}))??[];
     starsRef.current=levelRef.current.secretStars?.map(p=>({...p,collected:false}))??[];
     shieldRef.current=0;speedRef.current=0;elapsedRef.current=0;lastDamageRef.current=-1000;
+    dashCooldownRef.current=0;dashTicksRef.current=0;setDashReady(true);
+    bossRef.current=makeBoss(level);setBossHP(bossRef.current?.hp??0);comboRef.current=0;setCombo(0);
+    dashCooldownRef.current=0;dashTicksRef.current=0;setDashReady(true);
+    bossRef.current=makeBoss(levelRef.current);setBossHP(bossRef.current?.hp??0);comboRef.current=0;setCombo(0);
     scoreRef.current = 0; livesRef.current = difficultySettings(difficultyRef.current).lives; camRef.current = 0; tickRef.current = 0;
     setScore(0); setCoins(0); setLives(livesRef.current);setShield(0);setSpeedBoost(0);setElapsed(0);setStars(0);setPortal(null); setNotice("");
-    keysRef.current = { left: false, right: false, jump: false, down: false };
+    keysRef.current = emptyInput();
     updateMode("ready");
   }
   function resetGame(resume = false) {
@@ -151,7 +165,7 @@ export function PortfolioGame() {
     livesRef.current = save?.lives ?? difficultySettings(difficultyRef.current).lives;
     camRef.current = save ? Math.max(0, player.x - 270) : 0; tickRef.current = 0;
     checkpointRef.current = save?.checkpointIndex ?? -1; setCheckpoint(checkpointRef.current);
-    keysRef.current = { left: false, right: false, jump: false, down: false };
+    keysRef.current = emptyInput();
     portalOpenRef.current = false; setPortal(null); setNotice(save ? "CHECKPOINT RESTORED" : "");
     setScore(scoreRef.current); setCoins(coinsRef.current.filter(x => x.collected).length); setLives(livesRef.current);
     setStars(0);setShield(0);setSpeedBoost(0);setElapsed(0);
@@ -192,10 +206,10 @@ export function PortfolioGame() {
   useEffect(() => {
     const map: Record<string, InputKey> = {
       ArrowLeft: "left", a: "left", A: "left", ArrowRight: "right", d: "right", D: "right",
-      ArrowUp: "jump", w: "jump", W: "jump", " ": "jump", ArrowDown: "down", s: "down", S: "down"
+      ArrowUp: "jump", w: "jump", W: "jump", " ": "jump", ArrowDown: "down", s: "down", S: "down", Shift:"dash", x:"dash", X:"dash"
     };
     function keyDown(e: KeyboardEvent) {
-      if (e.key === "Escape" && modeRef.current === "running") { modeRef.current = "paused"; setMode("paused"); keysRef.current = { left: false, right: false, jump: false, down: false }; return; }
+      if (e.key === "Escape" && modeRef.current === "running") { modeRef.current = "paused"; setMode("paused"); keysRef.current = emptyInput(); return; }
       if (e.key === "Escape" && portalOpenRef.current) { portalOpenRef.current = false; setPortal(null); modeRef.current = "running"; setMode("running"); return; }
       if (!(e.key in map) || modeRef.current !== "running") return;
       const target = e.target as HTMLElement | null;
@@ -203,7 +217,7 @@ export function PortfolioGame() {
       e.preventDefault(); keysRef.current[map[e.key]] = true;
     }
     function keyUp(e: KeyboardEvent) { if (e.key in map) keysRef.current[map[e.key]] = false; }
-    function blur() { keysRef.current = { left: false, right: false, jump: false, down: false }; }
+    function blur() { keysRef.current = emptyInput(); }
     function visibility() { if (document.hidden && modeRef.current === "running") { blur(); modeRef.current = "paused"; setMode("paused"); } }
     window.addEventListener("keydown", keyDown); window.addEventListener("keyup", keyUp); window.addEventListener("blur", blur); document.addEventListener("visibilitychange", visibility);
     return () => { window.removeEventListener("keydown", keyDown); window.removeEventListener("keyup", keyUp); window.removeEventListener("blur", blur); document.removeEventListener("visibilitychange", visibility); };
@@ -225,10 +239,18 @@ export function PortfolioGame() {
       elapsedRef.current++;
       if(elapsedRef.current%60===0)setElapsed(Math.floor(elapsedRef.current/60));
       if (player.invulnerable) player.invulnerable--;
+      if(dashCooldownRef.current>0){dashCooldownRef.current--;if(dashCooldownRef.current===0)setDashReady(true);}
+      if(dashTicksRef.current>0)dashTicksRef.current--;
       if(shieldRef.current>0){shieldRef.current--;if(shieldRef.current%60===0)setShield(Math.ceil(shieldRef.current/60));}
       if(speedRef.current>0){speedRef.current--;if(speedRef.current%60===0)setSpeedBoost(Math.ceil(speedRef.current/60));}
+      if(keys.dash){
+        keys.dash=false;
+        if(!dashCooldownRef.current){dashCooldownRef.current=180;dashTicksRef.current=13;setDashReady(false);
+          player.vx=player.face*12;player.invulnerable=Math.max(player.invulnerable,10);sound(580,soundRef.current,.13);}
+      }
       const target = (Number(keys.right) - Number(keys.left)) * (speedRef.current>0?6.1:4.3);
-      player.vx += (target - player.vx) * 0.21;
+      if(dashTicksRef.current>0)player.vx=player.face*12;
+      else player.vx += (target - player.vx) * 0.21;
       if (Math.abs(player.vx) < 0.07) player.vx = 0;
       if (player.vx !== 0) player.face = player.vx > 0 ? 1 : -1;
       if (keys.jump && player.grounded) {
@@ -269,7 +291,8 @@ export function PortfolioGame() {
         }
       }
       const damage=()=>{
-        if(player.invulnerable||shieldRef.current>0||tickRef.current-lastDamageRef.current<35)return;
+        if(player.invulnerable||shieldRef.current>0||dashTicksRef.current>0||tickRef.current-lastDamageRef.current<35)return;
+        comboRef.current=0;setCombo(0);
         lastDamageRef.current=tickRef.current;
         livesRef.current--;setLives(livesRef.current);
         player.invulnerable=difficultySettings(difficultyRef.current).damageCooldown;
@@ -285,8 +308,25 @@ export function PortfolioGame() {
         if (Math.abs(enemy.x - enemy.baseX) > 60) enemy.dir *= -1;
         if (rectHit({ x: player.x, y: player.y, w: 34, h: 36 }, { x: enemy.x, y: FLOOR - 25, w: 29, h: 25 })) {
           if (player.vy > 1 && previousBottom <= FLOOR - 8) {
-            enemy.alive = false; player.vy = -8; scoreRef.current += 200; setScore(scoreRef.current); sound(220, soundRef.current);
+            enemy.alive = false; player.vy = -8;
+            comboRef.current=Math.min(9,comboRef.current+1);setCombo(comboRef.current);
+            scoreRef.current += 200*comboRef.current; setScore(scoreRef.current); sound(220, soundRef.current);
           } else damage();
+        }
+      }
+      const boss=bossRef.current;
+      if(boss&&boss.hp>0){
+        if(boss.invincible>0)boss.invincible--;
+        boss.x+=boss.dir*(1.1+(level.difficulty??1)*.1);
+        if(Math.abs(boss.x-boss.startX)>72)boss.dir*=-1;
+        if(rectHit({x:player.x,y:player.y,w:34,h:36},{x:boss.x,y:FLOOR-51,w:50,h:51})){
+          if(player.vy>1&&previousBottom<=FLOOR-35&&!boss.invincible){
+            boss.hp--;setBossHP(boss.hp);boss.invincible=50;player.vy=-10;
+            comboRef.current=Math.min(9,comboRef.current+1);setCombo(comboRef.current);
+            scoreRef.current+=300*comboRef.current;setScore(scoreRef.current);
+            if(boss.hp===0){scoreRef.current+=900;setScore(scoreRef.current);setNotice("GUARDIAN DEFEATED · FINISH UNLOCKED");}
+            sound(360,soundRef.current,.15);
+          } else if(!boss.invincible)damage();
         }
       }
       if (keys.down && player.grounded) {
@@ -299,7 +339,7 @@ export function PortfolioGame() {
       for (let i = 0; i < level.checkpoints.length; i++) {
         if (player.x >= level.checkpoints[i] && i > checkpointRef.current) saveCheckpoint(i);
       }
-      if (player.x >= level.width - 155) {
+      if (player.x >= level.width - 155 && (!bossRef.current||bossRef.current.hp<=0)) {
         modeRef.current = "won"; setMode("won");
         const mission=rankMission(coins.filter(x=>x.collected).length,coins.length,starsRef.current.filter(x=>x.collected).length,livesRef.current);
         const missionBonus=Object.values(mission).filter(Boolean).length*350;
@@ -389,11 +429,20 @@ export function PortfolioGame() {
         ctx.fillStyle = "#f9d5b1"; ctx.fillRect(enemy.x + 6, FLOOR - 16, 5, 6); ctx.fillRect(enemy.x + 18, FLOOR - 16, 5, 6);
         ctx.fillStyle = "#201b35"; ctx.fillRect(enemy.x + 8, FLOOR - 14, 2, 3); ctx.fillRect(enemy.x + 20, FLOOR - 14, 2, 3);
       }
+      const boss=bossRef.current;
+      if(boss&&boss.hp>0){
+        ctx.fillStyle="#231a48";ctx.fillRect(boss.x,FLOOR-51,50,51);
+        ctx.fillStyle=level.theme==="frost"?"#a8eefe":"#fa7cdf";ctx.fillRect(boss.x+5,FLOOR-47,40,34);
+        ctx.fillStyle="#231a48";ctx.fillRect(boss.x+10,FLOOR-37,9,9);ctx.fillRect(boss.x+30,FLOOR-37,9,9);
+        ctx.fillStyle="#fff";ctx.font="bold 12px monospace";ctx.fillText("GUARD",boss.x+1,FLOOR-64);
+        ctx.fillStyle="#f74d70";ctx.fillRect(boss.x,FLOOR-74,50*(boss.hp/boss.maxHp),5);
+      }
       ctx.fillStyle = "#f9f6ed"; ctx.fillRect(level.width - 130, FLOOR - 170, 6, 170);
       ctx.fillStyle = "#f16b68"; ctx.fillRect(level.width - 124, FLOOR - 165, 70, 39);
       ctx.fillStyle = "#fff"; ctx.font = "bold 13px monospace"; ctx.fillText("FINISH", level.width - 115, FLOOR - 143);
       const player = playerRef.current;
       if (player.invulnerable % 8 < 4) drawCharacter(ctx, player.x, player.y, player.face, player.vx ? tick : 0);
+      if(dashTicksRef.current>0){ctx.fillStyle="#d4ccfa";ctx.fillRect(player.x-player.face*28,player.y+18,19,7);}
       if(shieldRef.current>0){ctx.strokeStyle="#72f7ed";ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(player.x+17,player.y+18,26,30,0,0,Math.PI*2);ctx.stroke();}
       if(speedRef.current>0){ctx.fillStyle="#ffde72";ctx.fillRect(player.x-player.face*13,player.y+10,7,5);ctx.fillRect(player.x-player.face*23,player.y+19,11,5);}
       ctx.restore();
@@ -431,7 +480,7 @@ export function PortfolioGame() {
     <div className="game-a11y-info"><p>Five handcrafted worlds, hidden stars, timed records and project portals. Checkpoints save locally; all projects remain accessible without playing.</p>
       <button type="button" className="game-pause-button" disabled={mode === "ready" || mode === "won"} onClick={() => updateMode(mode === "running" ? "paused" : "running")}>{mode === "running" ? "Pause game II" : "Resume game ▶"}</button>
     </div>
-    <div className="game-hud"><span>★ SCORE <strong>{String(score).padStart(5, "0")}</strong></span><span>◉ COINS <strong>{coins}/{level.coins.length}</strong></span><span>⚑ SAVE <strong>{checkpoint < 0 ? "—" : checkpoint + 1 + "/" + level.checkpoints.length}</strong></span><span>♥ LIVES <strong>{lives}</strong></span><span>✦ STARS <strong>{stars}/{level.secretStars?.length??0}</strong></span><span>◷ TIME <strong>{totalSeconds}</strong></span>{shield>0&&<span className="game-buff">◇ SHIELD <strong>{shield}s</strong></span>}{speedBoost>0&&<span className="game-buff">» DASH <strong>{speedBoost}s</strong></span>}<button type="button" className="sound-toggle" onClick={() => { soundRef.current = !soundRef.current; setSoundOn(soundRef.current); }} aria-pressed={soundOn}>{soundOn ? "♫ SOUND ON" : "♪ SOUND OFF"}</button></div>
+    <div className="game-hud"><span>★ SCORE <strong>{String(score).padStart(5, "0")}</strong></span><span>◉ COINS <strong>{coins}/{level.coins.length}</strong></span><span>⚑ SAVE <strong>{checkpoint < 0 ? "—" : checkpoint + 1 + "/" + level.checkpoints.length}</strong></span><span>♥ LIVES <strong>{lives}</strong></span><span>✦ STARS <strong>{stars}/{level.secretStars?.length??0}</strong></span><span>◷ TIME <strong>{totalSeconds}</strong></span><span>» DASH <strong>{dashReady?"READY":"COOLDOWN"}</strong></span>{bossHP>0&&<span className="game-boss-health">♛ GUARDIAN <strong>{bossHP}/3</strong></span>}{combo>1&&<span>✕ COMBO <strong>{combo}</strong></span>}{shield>0&&<span className="game-buff">◇ SHIELD <strong>{shield}s</strong></span>}{speedBoost>0&&<span className="game-buff">» DASH <strong>{speedBoost}s</strong></span>}<button type="button" className="sound-toggle" onClick={() => { soundRef.current = !soundRef.current; setSoundOn(soundRef.current); }} aria-pressed={soundOn}>{soundOn ? "♫ SOUND ON" : "♪ SOUND OFF"}</button></div>
     <div className="game-progress" aria-label="Level objective progress"><span>START</span><div><span style={{width:Math.min(100,Math.max(0,(checkpoint+1)/Math.max(1,level.checkpoints.length+1)*100))+"%"}}/></div><span>FINISH</span></div>
     <div className="game-screen">
       <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} role="img" aria-label={"Pixel-art platform game, " + level.title + ". Move and jump using the controls beneath the canvas. The project links are also available without playing."} />
@@ -454,7 +503,7 @@ export function PortfolioGame() {
       </div>}
     </div>
     {notice && mode === "running" && <div className="game-save-notice" role="status">{notice}</div>}
-    <div className="game-controls"><div className="game-control-left">{(["left", "right"] as const).map((key) => <button key={key} type="button" className="control-button" aria-label={key === "left" ? "Move left" : "Move right"} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press(key, true); }} onPointerUp={() => press(key, false)} onPointerCancel={() => press(key, false)} onLostPointerCapture={() => press(key, false)}>{key === "left" ? "◀" : "▶"}</button>)}</div><span className="control-tip">MOVE: ← → / A D <span>·</span> JUMP: SPACE / W <span>·</span> PIPE: ↓ / S</span><div className="game-control-right"><button type="button" className="control-button" aria-label="Enter pipe" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("down", true); }} onPointerUp={() => press("down", false)} onPointerCancel={() => press("down", false)} onLostPointerCapture={() => press("down", false)}>↓</button><button type="button" className="control-button jump-button" aria-label="Jump" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("jump", true); }} onPointerUp={() => press("jump", false)} onPointerCancel={() => press("jump", false)} onLostPointerCapture={() => press("jump", false)}>A</button></div></div>
+    <div className="game-controls"><div className="game-control-left">{(["left", "right"] as const).map((key) => <button key={key} type="button" className="control-button" aria-label={key === "left" ? "Move left" : "Move right"} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press(key, true); }} onPointerUp={() => press(key, false)} onPointerCancel={() => press(key, false)} onLostPointerCapture={() => press(key, false)}>{key === "left" ? "◀" : "▶"}</button>)}</div><span className="control-tip">MOVE: ← → / A D <span>·</span> JUMP: SPACE / W <span>·</span> DASH: SHIFT / X <span>·</span> PIPE: ↓ / S</span><div className="game-control-right"><button type="button" className="control-button" aria-label="Enter pipe" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("down", true); }} onPointerUp={() => press("down", false)} onPointerCancel={() => press("down", false)} onLostPointerCapture={() => press("down", false)}>↓</button><button type="button" className="control-button" aria-label="Dash" onPointerDown={(e)=>{e.currentTarget.setPointerCapture(e.pointerId);press("dash",true);}} onPointerUp={()=>press("dash",false)} onPointerCancel={()=>press("dash",false)}>»</button><button type="button" className="control-button jump-button" aria-label="Jump" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("jump", true); }} onPointerUp={() => press("jump", false)} onPointerCancel={() => press("jump", false)} onLostPointerCapture={() => press("jump", false)}>A</button></div></div>
     <div className="game-mission-layout"><section className="game-missions" aria-label="World side quests"><h3>WORLD QUESTS</h3><div className="game-mission-grid"><span className={missions.collector?"complete":""}>◉ Collect 75% of coins {missions.collector?"✓":""}</span><span className={missions.explorer?"complete":""}>✦ Find a hidden star {missions.explorer?"✓":""}</span><span className={missions.survivor?"complete":""}>♥ Keep 2 lives {missions.survivor?"✓":""}</span><span className={missions.perfect?"complete":""}>★ Master the world (95% coins + 2 stars + 2 lives) {missions.perfect?"✓":""}</span></div></section><section className="game-records" aria-label="World record"><h3>YOUR BEST RUN</h3>{records[level.id]?<div><strong>{records[level.id].score.toLocaleString()} pts</strong><p>{records[level.id].coins} coins · {records[level.id].stars} stars · {Math.floor(records[level.id].seconds/60)}m {records[level.id].seconds%60}s · {records[level.id].difficulty}</p></div>:<p>No completed run yet. Every first clear is a new record.</p>}</section></div>
     <section className="game-accessible-projects" aria-label="All project entrances in this world"><h3>Skip the platformer. Explore these projects directly.</h3><div>{level.pipes.map(pipe => { const p = projects[pipe.projectIndex]; return <Link href={"/projects/" + p.slug} key={pipe.x}>{p.emoji} {p.title} ↗</Link>; })}</div></section>
     <div className="game-footnote"><span>BUILT FROM SCRATCH WITH CANVAS + REACT</span><Link href="/world">Prefer to explore the map? ↗</Link></div>

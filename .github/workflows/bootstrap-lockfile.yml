@@ -1,0 +1,36 @@
+name: Bootstrap npm lockfile on development branch
+on:
+  push:
+    branches: [feat/portfolio-world-nextjs]
+    paths:
+      - package.json
+      - .github/workflows/bootstrap-lockfile.yml
+permissions:
+  contents: write
+jobs:
+  generate:
+    if: github.repository == 'Arpitruh/Personal_Portfolio'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: feat/portfolio-world-nextjs
+          persist-credentials: true
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Resolve dependencies without running lifecycle scripts
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Commit reproducible lockfile on development branch only
+        run: |
+          set -euo pipefail
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo "Lockfile unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Lock the portfolio dependency tree for reproducible CI builds"
+          git push origin HEAD:feat/portfolio-world-nextjs

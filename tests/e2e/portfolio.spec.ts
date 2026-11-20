@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("homepage renders real links and a working command palette", async ({ page, isMobile }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /hi, i.m arpit/i })).toBeVisible();
-  const quick = page.getByRole("button", { name: "Open quick navigation" });
+  const quick = page.getByRole("button", { name: /Open quick navigation/ });
   await quick.click();
   const dialog = page.getByRole("dialog", { name: "Quick navigation" });
   await expect(dialog).toBeVisible();
@@ -126,4 +126,27 @@ test("new experience routes respect mobile viewport, reduced motion, and print s
  await page.goto("/room");
  const duration=await page.locator(".room-object").first().evaluate(e=>getComputedStyle(e).transitionDuration);
  expect(Number.parseFloat(duration)).toBeLessThan(0.001);
+});
+
+test("Phase 14 personal-life page and social links are accessible",async ({page})=>{
+ await page.goto("/life");
+ await expect(page.getByRole("heading",{name:/More than just code/i})).toBeVisible();
+ await expect(page.getByRole("heading",{name:/Things I enjoy/i})).toBeVisible();
+ await expect(page.locator(".life-social-grid a")).toHaveCount(1);
+ await expect(page.locator(".life-social-grid")).toContainText("GitHub");
+ await expect(page.getByText(/No filler hobbies or placeholder photographs/i)).toBeVisible();
+ await page.goto("/about");
+ await expect(page.getByRole("link",{name:/Beyond the Code/})).toBeVisible();
+});
+test("Phase 14 recruiter offers print until a verified PDF has been uploaded",async ({page})=>{
+ await page.goto("/recruiter");
+ await expect(page.getByRole("button",{name:/Print \/ Save as PDF/})).toBeVisible();
+ await expect(page.getByRole("link",{name:/Download latest resume/})).toHaveCount(0);
+});
+test("Phase 14 life route appears in navigation and sitemap",async ({page,request})=>{
+ await page.goto("/");
+ const sitemap=await (await request.get("/sitemap.xml")).text();
+ expect(sitemap).toContain("/life");
+ await page.goto("/life");
+ await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href",/\/life$/);
 });

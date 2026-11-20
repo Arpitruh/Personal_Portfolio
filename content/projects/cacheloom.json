@@ -1,0 +1,28 @@
+{
+  "slug": "cacheloom",
+  "title": "CacheLoom",
+  "kicker": "Developer infrastructure",
+  "summary": "A reusable caching and job-queue service with TTL keys, PostgreSQL persistence, API keys and a JavaScript SDK.",
+  "category": "Platform",
+  "status": "Building",
+  "year": "2026",
+  "emoji": "🧵",
+  "accent": "mint",
+  "stack": [
+    "Node.js",
+    "PostgreSQL",
+    "REST API",
+    "Docker"
+  ],
+  "github": "https://github.com/Arpitruh/CacheLoom",
+  "featured": true,
+  "challenge": "Independent projects often need a dependable caching layer without committing to a paid managed service.",
+  "approach": "Build and evolve a reusable cache service with clear operational boundaries and straightforward integration points.",
+  "highlights": [
+    "Key-value operations with TTL, NX/XX and counters",
+    "Persistent PostgreSQL-backed mode alongside in-memory mode",
+    "Project API keys, job queues and a JavaScript worker SDK",
+    "Readiness endpoints, recovery simulations and CI smoke tests"
+  ],
+  "next": "Currently at the experimental v1.0.0-rc.1 milestone; continue operational hardening before production use."
+}

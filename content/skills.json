@@ -1,0 +1,48 @@
+{
+  "groups": [
+    {
+      "group": "Frontend",
+      "items": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "JavaScript",
+        "Tailwind CSS",
+        "shadcn/ui",
+        "Accessibility"
+      ]
+    },
+    {
+      "group": "Data & state",
+      "items": [
+        "TanStack Query",
+        "React Hook Form",
+        "Zod",
+        "Context API",
+        "REST APIs"
+      ]
+    },
+    {
+      "group": "Backend & systems",
+      "items": [
+        "Node.js",
+        "Express",
+        "PostgreSQL",
+        "Prisma",
+        "Redis concepts",
+        "WebSockets"
+      ]
+    },
+    {
+      "group": "Workflow",
+      "items": [
+        "Git & GitHub",
+        "Vercel",
+        "Docker",
+        "CI/CD",
+        "WSL",
+        "Figma"
+      ]
+    }
+  ]
+}

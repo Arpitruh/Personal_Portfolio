@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import "@fontsource-variable/dm-sans/wght.css";
+import "@fontsource/press-start-2p/400.css";
 import "./globals.css";
 import { profile } from "@/data/portfolio";
 import { SiteShell } from "@/components/site-shell";

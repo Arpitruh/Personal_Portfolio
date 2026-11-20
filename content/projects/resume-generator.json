@@ -1,0 +1,26 @@
+{
+  "slug": "resume-generator",
+  "title": "Resume Generator",
+  "kicker": "Practical web tooling",
+  "summary": "A resume builder with structured forms, validation and PDF export.",
+  "category": "Frontend",
+  "status": "Shipped",
+  "year": "2025",
+  "emoji": "📄",
+  "accent": "mint",
+  "stack": [
+    "React",
+    "Chakra UI",
+    "React Hook Form",
+    "PDF"
+  ],
+  "github": "https://github.com/Arpitruh/Resume_gen",
+  "challenge": "Writing and formatting a resume should not demand a design tool.",
+  "approach": "Turn resume sections into guided forms and generate an exportable document from the entered data.",
+  "highlights": [
+    "Validated resume sections",
+    "Context-driven form state",
+    "PDF export"
+  ],
+  "next": "Refine templates and print consistency."
+}

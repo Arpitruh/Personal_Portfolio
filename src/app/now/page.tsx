@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { projects } from "@/data/portfolio";
-export const metadata: Metadata = { title: "Now", description: "What Arpit Yadav is currently building and exploring." };
+export const metadata: Metadata = { title: "Now", description: "What Arpit Yadav is currently building and exploring.", alternates: { canonical: "/now" } };
 
 export default function NowPage() {
   const current = projects.filter((project) => project.status === "Building");

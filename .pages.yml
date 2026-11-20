@@ -1,0 +1,156 @@
+# Edit using https://app.pagescms.org and choose feat/portfolio-world-nextjs
+# Photos and illustrated characters are reserved for the next phase.
+media:
+  - name: images
+    label: Future personal and project images
+    input: public/uploads/images
+    output: /uploads/images
+    rename: safe
+    extensions: [jpg, jpeg, png, webp]
+  - name: resumes
+    label: Approved resume PDFs
+    input: public/uploads/resumes
+    output: /uploads/resumes
+    rename: safe
+    extensions: [pdf]
+content:
+  - name: identity
+    label: Public profile
+    type: file
+    path: content/site.json
+    fields:
+      - {name: name, label: Name, type: string, required: true}
+      - {name: initials, label: Initials, type: string, required: true}
+      - {name: role, label: Current role, type: string, required: true}
+      - {name: headline, label: Headline, type: string, required: true}
+      - {name: location, label: Public location, type: string, required: true}
+      - {name: summary, label: Professional summary, type: text, required: true}
+      - {name: github, label: GitHub profile URL, type: string, required: true}
+  - name: experience
+    label: Experience
+    type: file
+    path: content/experience.json
+    fields:
+      - name: roles
+        label: Work history (newest first)
+        type: object
+        list: true
+        fields:
+          - {name: company, type: string, required: true}
+          - {name: role, type: string, required: true}
+          - {name: period, type: string, required: true}
+          - {name: description, type: text, required: true}
+          - {name: tags, label: Technologies, type: string, list: true}
+  - name: projects
+    label: Project case studies
+    type: collection
+    path: content/projects
+    filename: "{fields.slug}.json"
+    view:
+      fields: [title, category, status, year, featured]
+      primary: title
+    fields:
+      - {name: slug, label: URL slug (matches filename), type: string, required: true, pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"}
+      - {name: title, type: string, required: true}
+      - {name: kicker, type: string, required: true}
+      - {name: summary, type: text, required: true}
+      - name: category
+        type: select
+        required: true
+        options: {values: [Products, Platform, AI, Frontend]}
+      - name: status
+        type: select
+        required: true
+        options: {values: [Building, Shipped, Iterating]}
+      - {name: year, type: string, required: true}
+      - {name: featured, label: Feature on homepage, type: boolean}
+      - {name: emoji, type: string, required: true}
+      - name: accent
+        type: select
+        required: true
+        options: {values: [mint, peach, violet, blue, yellow]}
+      - {name: stack, label: Technology stack, type: string, list: true}
+      - {name: github, type: string, required: true}
+      - {name: live, label: Verified live HTTPS URL, type: string}
+      - {name: challenge, type: text, required: true}
+      - {name: approach, type: text, required: true}
+      - {name: highlights, type: string, list: true}
+      - {name: next, label: Next checkpoint, type: text, required: true}
+      - name: image
+        label: Optional project image (use next phase)
+        type: object
+        fields:
+          - name: src
+            label: Image
+            type: image
+            options: {media: images}
+          - {name: alt, label: Meaningful image description, type: text}
+          - {name: caption, type: string}
+  - name: skills
+    label: Skills and tools
+    type: file
+    path: content/skills.json
+    fields:
+      - name: groups
+        type: object
+        list: true
+        fields:
+          - {name: group, type: string, required: true}
+          - {name: items, type: string, list: true}
+  - name: milestones
+    label: Career milestones
+    type: file
+    path: content/milestones.json
+    fields:
+      - name: items
+        type: object
+        list: true
+        fields:
+          - {name: label, type: string}
+          - {name: title, type: string}
+          - {name: description, type: text}
+  - name: life
+    label: Beyond the Code
+    type: file
+    path: content/life.json
+    fields:
+      - {name: eyebrow, type: string}
+      - {name: title, type: string, required: true}
+      - {name: introduction, type: text, required: true}
+      - {name: note, label: Personal note, type: text}
+      - name: hobbies
+        label: Hobbies and interests (add only when ready to share)
+        type: object
+        list: true
+        fields:
+          - {name: title, type: string, required: true}
+          - {name: description, type: text, required: true}
+          - {name: emoji, type: string}
+  - name: socials
+    label: Social and creative links
+    type: file
+    path: content/socials.json
+    fields:
+      - name: links
+        label: Public profiles
+        type: object
+        list: true
+        fields:
+          - {name: name, type: string, required: true}
+          - {name: url, type: string, required: true}
+          - name: kind
+            type: select
+            options: {values: [Code, Professional, Photography, Social, Other]}
+          - {name: visible, type: boolean}
+  - name: resume
+    label: Current resume
+    type: file
+    path: content/resume.json
+    fields:
+      - {name: label, type: string, required: true}
+      - name: file
+        label: Active PDF (public when published)
+        type: file
+        options: {media: resumes, extensions: [pdf]}
+      - {name: updated, label: Revision label or date, type: string}
+      - {name: note, type: text}

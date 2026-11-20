@@ -1,0 +1,28 @@
+{
+  "slug": "auth-service",
+  "title": "Auth Service",
+  "kicker": "Identity as a service",
+  "summary": "A reusable authentication service with session management and application-oriented workflows.",
+  "category": "Platform",
+  "status": "Iterating",
+  "year": "2026",
+  "emoji": "🔐",
+  "accent": "violet",
+  "stack": [
+    "Express",
+    "TypeScript",
+    "Prisma",
+    "PostgreSQL"
+  ],
+  "github": "https://github.com/Arpitruh/Auth-Service",
+  "featured": true,
+  "challenge": "Rebuilding sign-in, sessions and account flows in every application creates needless complexity.",
+  "approach": "Centralize identity workflows and improve their reliability, observability and application management.",
+  "highlights": [
+    "Refresh-token rotation and reuse detection",
+    "Password reset and session management",
+    "Application isolation and optional operator dashboard",
+    "OIDC/PKCE foundation with documented configuration gates"
+  ],
+  "next": "Keep improving resilience and developer experience."
+}

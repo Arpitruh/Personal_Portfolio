@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/data/portfolio";
+import { socialProfiles } from "@/data/personal";
 import { QUEST_KEY, questForPath, safeQuests } from "@/data/quests";
 
 const navigation = [
@@ -12,6 +13,7 @@ const navigation = [
   { href: "/room", label: "Room", icon: "⌘", keywords: "developer workstation" },
   { href: "/projects", label: "Projects", icon: "▣", keywords: "work case studies" },
   { href: "/about", label: "About", icon: "◈", keywords: "skills experience" },
+  { href: "/life", label: "Life", icon: "♥", keywords: "beyond code hobbies interests photography personal" },
   { href: "/recruiter", label: "Resume", icon: "▤", keywords: "recruiter resume career print" },
   { href: "/play", label: "Play", icon: "✦", keywords: "game level" },
   { href: "/now", label: "Now", icon: "◷", keywords: "currently building" },
@@ -108,7 +110,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       </div>
       <header className="site-header">
         <div className="nav-container">
-          <Link className="brand" href="/" aria-label="Arpit Yadav, homepage">
+          <Link className="brand" href="/" aria-label="A✦ ARPIT .DEV / WORLD 01 — Arpit Yadav homepage">
             <span className="brand-mark">A<span className="brand-pixel">✦</span></span>
             <span><strong>ARPIT</strong><small>.DEV / WORLD 01</small></span>
           </Link>
@@ -120,7 +122,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             ))}
           </nav>
           <div className="nav-actions">
-            <button ref={paletteTriggerRef} className="icon-button palette-shortcut" type="button" onClick={() => setPaletteOpen(true)} aria-expanded={paletteOpen} aria-controls="site-command-palette" aria-label="Open quick navigation" title="Search navigation (Ctrl/⌘ K)">⌕ <span>⌘K</span></button>
+            <button ref={paletteTriggerRef} className="icon-button palette-shortcut" type="button" onClick={() => setPaletteOpen(true)} aria-expanded={paletteOpen} aria-controls="site-command-palette" aria-label="⌕ ⌘K — Open quick navigation" title="Search navigation (Ctrl/⌘ K)">⌕ <span>⌘K</span></button>
             <button className="icon-button" type="button" onClick={() => setTheme((value) => value === "day" ? "night" : "day")} aria-label={"Switch to " + (theme === "day" ? "night" : "day") + " theme"} title="Toggle theme">{theme === "day" ? "☾" : "☀"}</button>
             <button className="icon-button menu-button" type="button" onClick={() => setMenuOpen((value) => !value)} aria-expanded={menuOpen} aria-label={menuOpen ? "Close menu" : "Open menu"}>{menuOpen ? "✕" : "☰"}</button>
           </div>
@@ -130,7 +132,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <footer className="site-footer">
         <div className="footer-inner">
           <div><Link href="/" className="footer-brand">ARPIT<span>✦</span>YADAV</Link><p>Making the web a little more fun, one interface at a time.</p></div>
-          <div className="footer-nav"><Link href="/projects">Projects</Link><Link href="/recruiter">Resume</Link><Link href="/room">Dev Room</Link><Link href="/skills">Skills</Link><Link href="/achievements">Badges</Link><Link href="/assistant">Guide</Link><Link href="/about">About</Link><Link href="/contact">Contact</Link><a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a></div>
+          <div className="footer-nav"><Link href="/projects">Projects</Link><Link href="/recruiter">Resume</Link><Link href="/room">Dev Room</Link><Link href="/skills">Skills</Link><Link href="/achievements">Badges</Link><Link href="/assistant">Guide</Link><Link href="/about">About</Link><Link href="/life">Beyond Code</Link><Link href="/contact">Contact</Link>{socialProfiles.map(link=><a href={link.url} key={link.url} target="_blank" rel="noopener noreferrer">{link.name} ↗</a>)}</div>
           <div className="footer-bottom"><span>© {new Date().getFullYear()} Arpit Yadav</span><span>Designed with curiosity. No coins required. ✦</span><Link href="#top">Back to top ↑</Link></div>
         </div>
       </footer>

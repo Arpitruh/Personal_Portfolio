@@ -34,9 +34,10 @@
 - [ ] Verify live desktop/mobile flows and Canvas touch gameplay against the preview
 - [ ] Audit contrast in both themes and with reduced-motion enabled
 - [x] Add a bounded content security policy and baseline browser security headers
-- [ ] Commit a generated dependency lockfile and enable dependency scanning
+- [x] Commit the v3 npm lockfile and add scheduled security auditing plus a high-severity production dependency gate
 - [x] Add automated checks for navigation, sitemap and canonical metadata
-- [ ] Independently verify external links and deployment domains
+- [x] Verify the 10 published public GitHub repository URLs (2026-11-20)
+- [ ] Independently verify any external live demo domains
 - [ ] Add free email delivery only if a robust, abuse-resistant backend is needed
 
 ## Principles
@@ -65,3 +66,40 @@
 - [x] Phase 12: transparent deterministic assistant backed by published portfolio data
 - [ ] Supply an owner-approved original resume to offer an actual downloadable resume file
 - [ ] Run real assistive-technology and Lighthouse/Web Vitals acceptance against staging
+
+## Phase 13 — Production readiness and audits
+- [x] Audit all ten documented GitHub repositories for public availability
+- [x] Add canonical URLs for all first-level pages
+- [x] Fix navigation reachability at intermediate laptop widths
+- [x] Apply global reduced-motion safeguards and consider offscreen rendering
+- [x] Add axe-core WCAG 2.1 A/AA automated browser audits
+- [x] Add repeatable Lighthouse mobile/desktop lab measurements with archived JSON
+- [x] Add scoped npm vulnerability scanning and lockfile bootstrap workflow
+- [x] Validate the generated lockfile and convert CI installs to npm ci
+- [ ] Review axe/Lighthouse findings and fix remaining significant deficiencies (contrast and home CLS under active remediation)
+- [ ] Stage exact passing commit for manual responsive, keyboard, and screen-reader review
+
+- [x] Self-host the original DM Sans and Press Start 2P fonts from open-license Fontsource packages; remove third-party font requests and constrain font CSP to self
+
+- [x] Add diagnostic axe output for exact failed foreground/background combinations to speed up theme contrast remediation
+
+- [x] Eliminate the reveal animation that lowered rendered text opacity to 45% and violated WCAG contrast before scroll
+
+- [x] Correct fixed-background accent colors on inventory, timeline, milestones and About section in both themes
+
+- [x] Avoid 12-link header reflow at 1350px desktop: collapse navigation through 1450px and preserve header height through font loading
+
+- [x] Reserve viewport height for the streamed root loading shell so the footer does not jump out of view during hydration
+- [x] Add a desktop/mobile layout-shift regression guard (<0.1 during initial browser rendering)
+
+## Phase 14 — Content management and personal-life page
+- [x] Add GitHub-backed Pages CMS schema on the existing development branch
+- [x] Migrate existing projects, career history, skills and milestones to editable JSON
+- [x] Generate the project catalog before Next.js builds without a runtime CMS dependency
+- [x] Add editable social links, including optional Instagram/Unsplash when verified
+- [x] Add a Beyond the Code page and homepage/About links without inventing hobbies
+- [x] Prepare approved PDF upload and conditional resume download
+- [ ] Owner connects Pages CMS GitHub App and selects development branch
+- [ ] Owner supplies approved interests/social URLs and current resume PDF
+- [ ] Phase 15: design personal photo/illustration collection with owner-provided references
+- [ ] Manual CMS edit-and-preview acceptance after GitHub App connection

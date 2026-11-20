@@ -1,0 +1,27 @@
+{
+  "slug": "notification-service",
+  "title": "Notification Service",
+  "kicker": "Cross-app communication",
+  "summary": "A reusable notification API and worker with templates, background processing and audit records.",
+  "category": "Platform",
+  "status": "Building",
+  "year": "2026",
+  "emoji": "📨",
+  "accent": "blue",
+  "stack": [
+    "Express",
+    "TypeScript",
+    "BullMQ",
+    "PostgreSQL"
+  ],
+  "github": "https://github.com/Arpitruh/Notification-Service",
+  "challenge": "Separate applications need predictable delivery flows without reimplementing templates, retries and audit history.",
+  "approach": "Use an API and background worker with templated payloads, a queue and persistent records. The repository documents real email, mock SMS and several features still in development.",
+  "highlights": [
+    "Express API and BullMQ worker",
+    "Handlebars templates with variable validation",
+    "PostgreSQL audit and idempotency",
+    "Dashboard and app-scoped management work in progress"
+  ],
+  "next": "Complete delivery verification, opt-out controls and production hardening before treating it as a general-purpose messaging service."
+}

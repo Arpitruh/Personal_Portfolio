@@ -108,3 +108,7 @@ Built by Arpit Yadav · [GitHub](https://github.com/Arpitruh)
 - `public/projects/sisters-magical-spoon.webp`: `Arpitruh/Sisters_Magical_Spoon` → `public/images/brand/thali.webp` on its `main` branch.
 
 Both files are assets from the portfolio owner's repositories. Add other images only after confirming ownership and permission.
+
+### Staging and SEO behavior
+
+If `NEXT_PUBLIC_SITE_URL` is unset, the deployment automatically uses Vercel's injected `VERCEL_URL` (localhost only when running locally). Preview and staging builds emit `noindex` metadata and a robots disallow rule; the intended production deployment should set `NEXT_PUBLIC_SITE_URL` to its confirmed canonical domain.

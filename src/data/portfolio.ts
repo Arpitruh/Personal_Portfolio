@@ -33,7 +33,7 @@ export const profile = {
   github: "https://github.com/Arpitruh",
   // Public contact email is intentionally opt-in; never publish a personal inbox by accident.
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000"
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || (process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : "http://localhost:3000")
 };
 
 export const skills = [

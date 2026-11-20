@@ -68,6 +68,7 @@ export function PortfolioGame() {
   const playerRef = useRef<Player>(initialPlayer());
   const keysRef = useRef<Record<InputKey, boolean>>(emptyInput());
   const dashCooldownRef=useRef(0);
+  const dashQueueRef=useRef(false);
   const jumpQueueRef=useRef(0);
   const coyoteRef=useRef(0);
   const bossWarningRef=useRef(false);
@@ -143,7 +144,7 @@ export function PortfolioGame() {
     powersRef.current=levelRef.current.powerups?.map(p=>({...p,collected:false}))??[];
     starsRef.current=levelRef.current.secretStars?.map(p=>({...p,collected:false}))??[];
     shieldRef.current=0;speedRef.current=0;elapsedRef.current=0;lastDamageRef.current=-1000;
-    dashCooldownRef.current=0;dashTicksRef.current=0;jumpQueueRef.current=0;coyoteRef.current=0;bossWarningRef.current=false;setDashReady(true);setProgress(0);
+    dashCooldownRef.current=0;dashTicksRef.current=0;dashQueueRef.current=false;jumpQueueRef.current=0;coyoteRef.current=0;bossWarningRef.current=false;setDashReady(true);setProgress(0);
     bossRef.current=makeBoss(levelRef.current);setBossHP(bossRef.current?.hp??0);comboRef.current=0;setCombo(0);
     scoreRef.current = 0; livesRef.current = difficultySettings(difficultyRef.current).lives; camRef.current = 0; tickRef.current = 0;
     setScore(0); setCoins(0); setLives(livesRef.current);setShield(0);setSpeedBoost(0);setElapsed(0);setStars(0);setPortal(null); setNotice("");
@@ -161,7 +162,7 @@ export function PortfolioGame() {
     powersRef.current=level.powerups?.map(p=>({...p,collected:false}))??[];
     starsRef.current=level.secretStars?.map(p=>({...p,collected:false}))??[];
     shieldRef.current=0;speedRef.current=0;elapsedRef.current=0;lastDamageRef.current=-1000;
-    dashCooldownRef.current=0;dashTicksRef.current=0;jumpQueueRef.current=0;coyoteRef.current=0;bossWarningRef.current=false;setDashReady(true);setProgress(0);
+    dashCooldownRef.current=0;dashTicksRef.current=0;dashQueueRef.current=false;jumpQueueRef.current=0;coyoteRef.current=0;bossWarningRef.current=false;setDashReady(true);setProgress(0);
     bossRef.current=makeBoss(level);setBossHP(bossRef.current?.hp??0);comboRef.current=0;setCombo(0);
     for (const i of save?.collected || []) coinsRef.current[i].collected = true;
     for (const i of save?.defeated || []) enemiesRef.current[i].alive = false;
@@ -248,8 +249,8 @@ export function PortfolioGame() {
       if(dashTicksRef.current>0)dashTicksRef.current--;
       if(shieldRef.current>0){shieldRef.current--;if(shieldRef.current%60===0)setShield(Math.ceil(shieldRef.current/60));}
       if(speedRef.current>0){speedRef.current--;if(speedRef.current%60===0)setSpeedBoost(Math.ceil(speedRef.current/60));}
-      if(keys.dash){
-        keys.dash=false;
+      if(keys.dash||dashQueueRef.current){
+        keys.dash=false;dashQueueRef.current=false;
         if(!dashCooldownRef.current){dashCooldownRef.current=180;dashTicksRef.current=13;setDashReady(false);
           player.vx=player.face*12;player.invulnerable=Math.max(player.invulnerable,10);sound(580,soundRef.current,.13);}
       }
@@ -480,7 +481,7 @@ export function PortfolioGame() {
     keysRef.current[key]=down;
     // Short touch taps between animation frames still register as actions.
     if(key==="jump"&&down)jumpQueueRef.current=7;
-    if(key==="dash"&&down)keysRef.current.dash=true;
+    if(key==="dash"&&down){dashQueueRef.current=true;keysRef.current.dash=true;}
   }
   const level = gameLevels[levelIndex];
   const selectedProject = portal === null ? null : projects[portal];

@@ -19,7 +19,9 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: "22"
-      - run: npm install --no-fund
+      - run: npm ci --no-audit --no-fund
+      - name: Audit production dependency vulnerabilities
+        run: npm run audit:security
       - run: npm run check
         env:
           NEXT_TELEMETRY_DISABLED: "1"

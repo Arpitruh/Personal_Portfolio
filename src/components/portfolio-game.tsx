@@ -68,6 +68,10 @@ export function PortfolioGame() {
   const playerRef = useRef<Player>(initialPlayer());
   const keysRef = useRef<Record<InputKey, boolean>>(emptyInput());
   const dashCooldownRef=useRef(0);
+  const jumpQueueRef=useRef(0);
+  const coyoteRef=useRef(0);
+  const bossWarningRef=useRef(false);
+  const [progress,setProgress]=useState(0);
   const dashTicksRef=useRef(0);
   const bossRef=useRef<Boss|null>(makeBoss(gameLevels[0]));
   const [dashReady,setDashReady]=useState(true);
@@ -139,7 +143,7 @@ export function PortfolioGame() {
     powersRef.current=levelRef.current.powerups?.map(p=>({...p,collected:false}))??[];
     starsRef.current=levelRef.current.secretStars?.map(p=>({...p,collected:false}))??[];
     shieldRef.current=0;speedRef.current=0;elapsedRef.current=0;lastDamageRef.current=-1000;
-    dashCooldownRef.current=0;dashTicksRef.current=0;setDashReady(true);
+    dashCooldownRef.current=0;dashTicksRef.current=0;jumpQueueRef.current=0;coyoteRef.current=0;bossWarningRef.current=false;setDashReady(true);setProgress(0);
     bossRef.current=makeBoss(levelRef.current);setBossHP(bossRef.current?.hp??0);comboRef.current=0;setCombo(0);
     scoreRef.current = 0; livesRef.current = difficultySettings(difficultyRef.current).lives; camRef.current = 0; tickRef.current = 0;
     setScore(0); setCoins(0); setLives(livesRef.current);setShield(0);setSpeedBoost(0);setElapsed(0);setStars(0);setPortal(null); setNotice("");
@@ -157,7 +161,7 @@ export function PortfolioGame() {
     powersRef.current=level.powerups?.map(p=>({...p,collected:false}))??[];
     starsRef.current=level.secretStars?.map(p=>({...p,collected:false}))??[];
     shieldRef.current=0;speedRef.current=0;elapsedRef.current=0;lastDamageRef.current=-1000;
-    dashCooldownRef.current=0;dashTicksRef.current=0;setDashReady(true);
+    dashCooldownRef.current=0;dashTicksRef.current=0;jumpQueueRef.current=0;coyoteRef.current=0;bossWarningRef.current=false;setDashReady(true);setProgress(0);
     bossRef.current=makeBoss(level);setBossHP(bossRef.current?.hp??0);comboRef.current=0;setCombo(0);
     for (const i of save?.collected || []) coinsRef.current[i].collected = true;
     for (const i of save?.defeated || []) enemiesRef.current[i].alive = false;
@@ -238,6 +242,7 @@ export function PortfolioGame() {
       tickRef.current++;
       elapsedRef.current++;
       if(elapsedRef.current%60===0)setElapsed(Math.floor(elapsedRef.current/60));
+      if(tickRef.current%24===0)setProgress(Math.min(100,Math.round(player.x/(level.width-155)*100)));
       if (player.invulnerable) player.invulnerable--;
       if(dashCooldownRef.current>0){dashCooldownRef.current--;if(dashCooldownRef.current===0)setDashReady(true);}
       if(dashTicksRef.current>0)dashTicksRef.current--;
@@ -253,9 +258,13 @@ export function PortfolioGame() {
       else player.vx += (target - player.vx) * 0.21;
       if (Math.abs(player.vx) < 0.07) player.vx = 0;
       if (player.vx !== 0) player.face = player.vx > 0 ? 1 : -1;
-      if (keys.jump && player.grounded) {
-        player.vy = -12.7; player.grounded = false; sound(460, soundRef.current);
-      }
+      if(keys.jump)jumpQueueRef.current=7;
+      if(player.grounded)coyoteRef.current=6;
+      else if(coyoteRef.current>0)coyoteRef.current--;
+      if(jumpQueueRef.current>0 && coyoteRef.current>0){
+        player.vy=-12.7;player.grounded=false;coyoteRef.current=0;jumpQueueRef.current=0;
+        sound(460,soundRef.current);
+      }else if(jumpQueueRef.current>0)jumpQueueRef.current--;
       if (!keys.jump && player.vy < -5) player.vy = -5;
       player.x = Math.max(0, Math.min(level.width - 35, player.x + player.vx));
       player.vy = Math.min(12, player.vy + 0.58);
@@ -338,6 +347,10 @@ export function PortfolioGame() {
       }
       for (let i = 0; i < level.checkpoints.length; i++) {
         if (player.x >= level.checkpoints[i] && i > checkpointRef.current) saveCheckpoint(i);
+      }
+      if(bossRef.current&&bossRef.current.hp>0&&player.x>=level.width-260){
+        player.x=level.width-260;player.vx=0;
+        if(!bossWarningRef.current){setNotice("GUARDIAN BLOCKS THE FINISH · STOMP IT 3 TIMES");bossWarningRef.current=true;}
       }
       if (player.x >= level.width - 155 && (!bossRef.current||bossRef.current.hp<=0)) {
         modeRef.current = "won"; setMode("won");
@@ -463,7 +476,12 @@ export function PortfolioGame() {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  function press(key: InputKey, down: boolean) { keysRef.current[key] = down; }
+  function press(key: InputKey, down: boolean) {
+    keysRef.current[key]=down;
+    // Short touch taps between animation frames still register as actions.
+    if(key==="jump"&&down)jumpQueueRef.current=7;
+    if(key==="dash"&&down)keysRef.current.dash=true;
+  }
   const level = gameLevels[levelIndex];
   const selectedProject = portal === null ? null : projects[portal];
   const missions=rankMission(coins,level.coins.length,stars,lives);
@@ -481,7 +499,7 @@ export function PortfolioGame() {
       <button type="button" className="game-pause-button" disabled={mode === "ready" || mode === "won"} onClick={() => updateMode(mode === "running" ? "paused" : "running")}>{mode === "running" ? "Pause game II" : "Resume game ▶"}</button>
     </div>
     <div className="game-hud"><span>★ SCORE <strong>{String(score).padStart(5, "0")}</strong></span><span>◉ COINS <strong>{coins}/{level.coins.length}</strong></span><span>⚑ SAVE <strong>{checkpoint < 0 ? "—" : checkpoint + 1 + "/" + level.checkpoints.length}</strong></span><span>♥ LIVES <strong>{lives}</strong></span><span>✦ STARS <strong>{stars}/{level.secretStars?.length??0}</strong></span><span>◷ TIME <strong>{totalSeconds}</strong></span><span>» DASH <strong>{dashReady?"READY":"COOLDOWN"}</strong></span>{bossHP>0&&<span className="game-boss-health">♛ GUARDIAN <strong>{bossHP}/3</strong></span>}{combo>1&&<span>✕ COMBO <strong>{combo}</strong></span>}{shield>0&&<span className="game-buff">◇ SHIELD <strong>{shield}s</strong></span>}{speedBoost>0&&<span className="game-buff">» DASH <strong>{speedBoost}s</strong></span>}<button type="button" className="sound-toggle" onClick={() => { soundRef.current = !soundRef.current; setSoundOn(soundRef.current); }} aria-pressed={soundOn}>{soundOn ? "♫ SOUND ON" : "♪ SOUND OFF"}</button></div>
-    <div className="game-progress" aria-label="Level objective progress"><span>START</span><div><span style={{width:Math.min(100,Math.max(0,(checkpoint+1)/Math.max(1,level.checkpoints.length+1)*100))+"%"}}/></div><span>FINISH</span></div>
+    <div className="game-progress" role="progressbar" aria-label="Distance to level finish" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}><span>START</span><div><span style={{width:progress+"%"}}/></div><span>{progress}%</span><span>FINISH</span></div>
     <div className="game-screen">
       <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} role="img" aria-label={"Pixel-art platform game, " + level.title + ". Move and jump using the controls beneath the canvas. The project links are also available without playing."} />
       {(mode === "ready" || (mode === "paused" && !selectedProject) || mode === "won") && <div className="game-overlay">
@@ -506,6 +524,7 @@ export function PortfolioGame() {
     <div className="game-controls"><div className="game-control-left">{(["left", "right"] as const).map((key) => <button key={key} type="button" className="control-button" aria-label={key === "left" ? "Move left" : "Move right"} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press(key, true); }} onPointerUp={() => press(key, false)} onPointerCancel={() => press(key, false)} onLostPointerCapture={() => press(key, false)}>{key === "left" ? "◀" : "▶"}</button>)}</div><span className="control-tip">MOVE: ← → / A D <span>·</span> JUMP: SPACE / W <span>·</span> DASH: SHIFT / X <span>·</span> PIPE: ↓ / S</span><div className="game-control-right"><button type="button" className="control-button" aria-label="Enter pipe" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("down", true); }} onPointerUp={() => press("down", false)} onPointerCancel={() => press("down", false)} onLostPointerCapture={() => press("down", false)}>↓</button><button type="button" className="control-button" aria-label="Dash" onPointerDown={(e)=>{e.currentTarget.setPointerCapture(e.pointerId);press("dash",true);}} onPointerUp={()=>press("dash",false)} onPointerCancel={()=>press("dash",false)}>»</button><button type="button" className="control-button jump-button" aria-label="Jump" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("jump", true); }} onPointerUp={() => press("jump", false)} onPointerCancel={() => press("jump", false)} onLostPointerCapture={() => press("jump", false)}>A</button></div></div>
     <div className="game-mission-layout"><section className="game-missions" aria-label="World side quests"><h3>WORLD QUESTS</h3><div className="game-mission-grid"><span className={missions.collector?"complete":""}>◉ Collect 75% of coins {missions.collector?"✓":""}</span><span className={missions.explorer?"complete":""}>✦ Find a hidden star {missions.explorer?"✓":""}</span><span className={missions.survivor?"complete":""}>♥ Keep 2 lives {missions.survivor?"✓":""}</span><span className={missions.perfect?"complete":""}>★ Master the world (95% coins + 2 stars + 2 lives) {missions.perfect?"✓":""}</span></div></section><section className="game-records" aria-label="World record"><h3>YOUR BEST RUN</h3>{records[level.id]?<div><strong>{records[level.id].score.toLocaleString()} pts</strong><p>{records[level.id].coins} coins · {records[level.id].stars} stars · {Math.floor(records[level.id].seconds/60)}m {records[level.id].seconds%60}s · {records[level.id].difficulty}</p></div>:<p>No completed run yet. Every first clear is a new record.</p>}</section></div>
     <section className="game-accessible-projects" aria-label="All project entrances in this world"><h3>Skip the platformer. Explore these projects directly.</h3><div>{level.pipes.map(pipe => { const p = projects[pipe.projectIndex]; return <Link href={"/projects/" + p.slug} key={pipe.x}>{p.emoji} {p.title} ↗</Link>; })}</div></section>
+    <details className="game-guide"><summary>HOW TO PLAY · CONTROLS &amp; PICKUPS</summary><div className="game-guide-grid"><p><strong>Move:</strong> Arrow keys or A/D. <strong>Jump:</strong> Space, W or ↑. <strong>Dash:</strong> Shift or X, with a short cooldown. <strong>Portals:</strong> Down or S near a green pipe.</p><p><strong>Blue diamond:</strong> Temporary shield. <strong>Orange chevrons:</strong> Speed boost. <strong>Pink heart:</strong> Extra life. <strong>Gold star:</strong> Hidden bonus. Watch for red spikes and moving critters.</p><p><strong>Enemies:</strong> Jump onto a critter to defeat it and chain a combo. The guardians in Neon Nexus and Frostbyte Summit take three stomps before the exit opens.</p><p><strong>Progress:</strong> Checkpoint flags save your run. Four side quests and a faster clear increase your final score. Choose a difficulty before starting; your records stay on this device.</p></div></details>
     <div className="game-footnote"><span>BUILT FROM SCRATCH WITH CANVAS + REACT</span><Link href="/world">Prefer to explore the map? ↗</Link></div>
   </div>;
 }

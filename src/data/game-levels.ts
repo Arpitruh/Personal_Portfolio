@@ -87,7 +87,7 @@ export function validateGameSave(value: unknown, level: GameLevel): GameCheckpoi
   const save = value as Partial<GameCheckpointSave>;
   if (save.levelId !== level.id || !Number.isInteger(save.checkpointIndex) || (save.checkpointIndex ?? -1) < 0 || (save.checkpointIndex ?? -1) >= level.checkpoints.length) return null;
   if (!Number.isInteger(save.score) || (save.score ?? -1) < 0 || (save.score ?? Infinity) > 10000000) return null;
-  if (!Number.isInteger(save.lives) || (save.lives ?? 0) < 1 || (save.lives ?? Infinity) > 3) return null;
+  if (!Number.isInteger(save.lives) || (save.lives ?? 0) < 1 || (save.lives ?? Infinity) > 5) return null;
   if (!Array.isArray(save.collected) || !Array.isArray(save.defeated)) return null;
   if (!save.collected.every((n) => Number.isInteger(n) && n >= 0 && n < level.coins.length)) return null;
   if (!save.defeated.every((n) => Number.isInteger(n) && n >= 0 && n < level.enemies.length)) return null;

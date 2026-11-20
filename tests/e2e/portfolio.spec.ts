@@ -176,3 +176,20 @@ test("character poses render when approved CMS files exist, with fallback when a
    await expect(page.locator("#main")).toHaveCount(1);
  }
 });
+
+test("expanded arcade campaign supports difficulty, five worlds, quests and records",async({page})=>{
+ await page.goto("/play");
+ const chooser=page.getByRole("group",{name:"Choose a game world"});
+ await expect(chooser.getByRole("button")).toHaveCount(5);
+ await chooser.getByRole("button",{name:/Neon Nexus/}).click();
+ await expect(page.getByText(/No completed run yet/)).toBeVisible();
+ await expect(page.getByRole("region",{name:"All project entrances in this world"}).locator("a")).toHaveCount(4);
+ const select=page.getByLabel("DIFFICULTY");
+ await select.selectOption("expert");
+ await expect(select).toHaveValue("expert");
+ await page.getByRole("button",{name:/Start game/}).click();
+ await expect(select).toBeDisabled();
+ await expect(page.getByRole("button",{name:"Pause game II"})).toBeEnabled();
+ await page.getByRole("button",{name:"Pause game II"}).click();
+ await expect(page.getByRole("heading",{name:"Adventure on hold"})).toBeVisible();
+});

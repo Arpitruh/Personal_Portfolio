@@ -5,6 +5,12 @@
       "url": "https://github.com/Arpitruh",
       "kind": "Code",
       "visible": true
+    },
+    {
+      "name": "Linkedin",
+      "url": "https://www.linkedin.com/in/arpityadav2002/",
+      "kind": "Professional",
+      "visible": false
     }
   ]
 }

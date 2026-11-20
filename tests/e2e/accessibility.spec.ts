@@ -43,3 +43,29 @@ test("all internal navigation links resolve to real pages",async ({page,request}
     expect(result.ok(),"Broken internal link: "+path).toBeTruthy();
   }
 });
+
+test("capture lab layout shifts for the homepage",async ({page})=>{
+  await page.addInitScript(()=>{
+    (window as typeof window & {__layoutShifts?:unknown[]}).__layoutShifts=[];
+    new PerformanceObserver(list=>{
+      for(const entry of list.getEntries()){
+        const shift=entry as PerformanceEntry & {value:number;hadRecentInput:boolean;sources?:{node?:Element;previousRect?:DOMRectReadOnly;currentRect?:DOMRectReadOnly}[]};
+        if(shift.hadRecentInput)continue;
+        (window as typeof window & {__layoutShifts?:unknown[]}).__layoutShifts?.push({
+          score:shift.value,
+          sources:shift.sources?.map(s=>({
+            tag:s.node?.tagName,
+            selector:s.node?.className?.toString().slice(0,140),
+            text:s.node?.textContent?.trim().slice(0,65),
+            prev:s.previousRect && {x:s.previousRect.x,y:s.previousRect.y,w:s.previousRect.width,h:s.previousRect.height},
+            next:s.currentRect && {x:s.currentRect.x,y:s.currentRect.y,w:s.currentRect.width,h:s.currentRect.height}
+          }))
+        });
+      }
+    }).observe({type:"layout-shift",buffered:true});
+  });
+  await page.goto("/");
+  await page.waitForTimeout(2200);
+  const shifts=await page.evaluate(()=>(window as typeof window & {__layoutShifts?:unknown[]}).__layoutShifts??[]);
+  console.log("HOME_LAYOUT_SHIFTS "+JSON.stringify(shifts));
+});

@@ -154,3 +154,14 @@ The editor offers:
 ### Resume editor setup
 
 The PDF picker in **Current resume** uses the named `resumes` media source (`public/uploads/resumes`) and only accepts PDF documents. The upload directory is tracked in Git with a `.gitkeep` file so the CMS can browse the source before the first upload. Select an existing PDF or upload an approved one; the saved path should be `/uploads/resumes/<filename>.pdf`. If the file selection screen fails in the CMS after refreshing, record the exact error or console message rather than uploading sensitive files through a workaround.
+
+## Phase 15 — Personal Visual Identity
+In Pages CMS (development branch), use **Portraits and personal photo gallery** to manage the optional real portrait, matching 2D illustration and a curated photo diary. All media is served from `public/uploads/images`, not a paid image host.
+
+- **Real portrait:** add a publicly shareable image and accurate alt text; appears on About, and as a companion to the illustration in Beyond the Code.
+- **Illustrated self:** upload a reviewed, theme-matched character illustration with alt text; appears in the homepage scene and on Beyond the Code.
+- **Moments:** add an image, title, description, category and toggle **Approved for public display**. Hidden or incomplete entries will not be published.
+- **No assets uploaded yet:** existing pixel-avatar fallback remains, and an honest empty-gallery state is shown. No stock photos, face swaps or invented personal details.
+- **Privacy:** do not upload home addresses, ID documents, geotagged private images, bystanders without consent, or sensitive photos. Uploaded assets and commit history are public once merged. Compress originals for web and remove EXIF metadata before upload.
+
+New pictures require owner review and publishing through the regular staging → PR → production flow. The visual components and CMS entries are not dependent on an external API.

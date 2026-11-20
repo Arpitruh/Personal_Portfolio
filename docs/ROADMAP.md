@@ -103,3 +103,13 @@
 - [ ] Owner supplies approved interests/social URLs and current resume PDF
 - [ ] Phase 15: design personal photo/illustration collection with owner-provided references
 - [ ] Manual CMS edit-and-preview acceptance after GitHub App connection
+
+## Phase 15 — Personal visuals
+- [x] Add CMS fields for an approved real photo, illustrated character and personal gallery
+- [x] Integrate shared portrait display on homepage, About and Beyond the Code
+- [x] Add gallery with alt text, captions, curated visibility and responsive layouts
+- [x] Preserve pixel avatar and empty state when no approved images exist
+- [x] Validate image paths and disallow unapproved remote media in published content
+- [ ] Upload owner-selected real portrait and illustration files
+- [ ] Review original images and EXIF/privacy before publishing
+- [ ] Verify visual consistency of generated illustrated character against final references

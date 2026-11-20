@@ -727,3 +727,10 @@ img,canvas,svg { max-width: 100%; }
 .project-card .project-index { display:inline-block; padding:7px 9px; border-radius:4px; background:#fffdf5; color:#25233e; z-index:3; }
 .skill-panel .skill-panel-heading { background:var(--paper); color:var(--ink); }
 .skill-panel .chip { background:var(--soft); color:var(--ink); }
+
+/* Phase 13 WCAG refinement: these fixed light surfaces need dark foregrounds,
+   even while the outer page is in night mode. */
+.section-about .about-intro h2 em { color:#754016; }
+.section-about .inventory-header span:last-child { color:#145c35; }
+.section-about .inventory-number,.section-about .inventory-star { color:#754016; }
+.timeline-entry strong,.milestone span,.philosophy-grid article > span,.experience-number { color:var(--readable-accent); }

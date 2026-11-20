@@ -705,10 +705,8 @@ img,canvas,svg { max-width: 100%; }
   html { scroll-behavior:auto; }
   *,*::before,*::after { scroll-behavior:auto!important;animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important; }
 }
-/* Bottom-of-page sections are skipped by the rendering engine until needed, but retain approximate layout space. */
-@supports (content-visibility:auto) {
-  .section-projects,.section-experience,.section-about { content-visibility:auto; contain-intrinsic-size:auto 640px; }
-}
+/* Avoid content-visibility auto on content-rich sections: it can misreport
+   backgrounds to accessibility scans and trigger layout shifts when revealed. */
 
 /* Phase 13: higher-contrast accents and full-opacity achievement text. */
 :root { --readable-accent:#914019; }
@@ -719,3 +717,8 @@ img,canvas,svg { max-width: 100%; }
 .card-meta,.card-status { color:var(--ink); }
 .achievement { opacity:1; }
 .achievement:not(.achieved) { border-style:dashed; }
+
+/* Verified high-contrast text on pastel project art and developer panels. */
+.world-info-number,.skill-panel-heading span { color:var(--readable-accent); }
+.project-index { color:#25233e; }
+.project-card-body p,.card-meta,.card-status,.skill-panel-heading h3,.skill-panel .chip { color:var(--ink); }

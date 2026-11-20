@@ -37,6 +37,8 @@ try{
   if(!result?.lhr)throw new Error("Lighthouse returned no report for "+config.name);
   const lhr=result.lhr;
   const scores=Object.fromEntries(Object.entries(lhr.categories).map(([name,cat])=>[name,Math.round((cat.score??0)*100)]));
+  const shifts=(lhr.audits["layout-shift-elements"]?.details?.items??lhr.audits["cls-culprits-insight"]?.details?.items??[]).slice(0,4).map(item=>({node:item.node?.selector??item.node?.snippet??null,score:item.score??item.totalShift??null}));
+  console.log("LAYOUT_SHIFT_CULPRITS "+config.name+": "+JSON.stringify(shifts));
   reports.push({page:config.name,url:config.path,scores,metrics:{
     lcp:lhr.audits["largest-contentful-paint"]?.numericValue??null,
     cls:lhr.audits["cumulative-layout-shift"]?.numericValue??null,

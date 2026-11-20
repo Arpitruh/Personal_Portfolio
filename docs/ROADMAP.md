@@ -76,5 +76,5 @@
 - [x] Add repeatable Lighthouse mobile/desktop lab measurements with archived JSON
 - [x] Add scoped npm vulnerability scanning and lockfile bootstrap workflow
 - [x] Validate the generated lockfile and convert CI installs to npm ci
-- [ ] Review axe/Lighthouse findings and fix significant deficiencies
+- [ ] Review axe/Lighthouse findings and fix remaining significant deficiencies (contrast and home CLS under active remediation)
 - [ ] Stage exact passing commit for manual responsive, keyboard, and screen-reader review

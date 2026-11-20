@@ -15,7 +15,7 @@ test("primary navigation is keyboard reachable at laptop viewport",async ({page}
   await page.goto("/");
   await page.getByRole("button",{name:"Open menu"}).click();
   const nav=page.getByRole("navigation",{name:"Main navigation"});
-  await expect(nav.getByRole("link",{name:"Recruiter"})).toBeVisible();
+  await expect(nav.getByRole("link",{name:"Resume"})).toBeVisible();
   const sizes=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,view:document.documentElement.clientWidth}));
   expect(sizes.scroll).toBeLessThanOrEqual(sizes.view+2);
 });

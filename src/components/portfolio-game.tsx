@@ -221,6 +221,8 @@ export function PortfolioGame() {
       const target = e.target as HTMLElement | null;
       if (target && (["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(target.tagName) || target.isContentEditable)) return;
       e.preventDefault(); keysRef.current[map[e.key]] = true;
+      if(map[e.key]==="dash")dashQueueRef.current=true;
+      if(map[e.key]==="jump")jumpQueueRef.current=7;
     }
     function keyUp(e: KeyboardEvent) { if (e.key in map) keysRef.current[map[e.key]] = false; }
     function blur() { keysRef.current = emptyInput(); }

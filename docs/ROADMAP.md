@@ -22,10 +22,11 @@
 - [ ] Add LinkedIn or other profiles after confirming the correct URLs
 
 ## Phase 3 — Advanced interaction
-- [ ] Expand the platformer into distinct themed levels with checkpoints and save slots
-- [ ] Add a level selector and richer motion/audio only with user-initiated playback
-- [ ] Make portfolio world secrets discoverable without blocking standard navigation
-- [ ] Extend keyboard support, focus restoration and screen-reader game alternatives
+- [x] Expand the platformer into three themed levels with checkpoint saves per world
+- [x] Add a level selector and distinct level scenery, keeping sound user-enabled and default-muted
+- [x] Make portfolio world secrets discoverable without blocking standard navigation
+- [x] Improve keyboard support, focus trapping/restoration, and direct links to all game portals
+- [ ] Complete hands-on mobile and screen-reader acceptance tests as part of Phase 4
 
 ## Phase 4 — Production optimization
 - [ ] Run Lighthouse and Web Vitals on a deployed preview

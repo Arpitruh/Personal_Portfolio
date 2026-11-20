@@ -50,6 +50,8 @@ export function WorldMap() {
       </div>
     </div>
     <div className="world-info"><div className="world-info-number">{active.number}<span>/ 06</span></div><div><span className="eyebrow">NOW EXPLORING</span><h2>{active.label}</h2><p>{active.text}</p></div><Link className="btn btn-primary" href={active.href}>Enter this level ↗</Link></div>
+    <div className="world-secret-hint" role="status"><strong>EXPLORER BADGE:</strong> {visited.length}/{stops.length} landmarks discovered. {visited.length === stops.length ? "You've explored every stop!" : "Visit all six stops to reveal a bonus developer shortcut."}</div>
+    {visited.length === stops.length && <div className="world-secret-reveal"><strong>★ Secret unlocked: The Builder's Console</strong><p>It's not behind a puzzle or paywall. You've earned a shortcut to the interactive developer console on the homepage.</p><Link href="/#developer-console">Open the console ↗</Link></div>}
     <div className="world-dots" aria-label="World stop selector">{stops.map((stop) => <button type="button" key={stop.id} className={selected === stop.id ? "active" : ""} onClick={() => selectStop(stop.id)} aria-label={"Select " + stop.label} aria-pressed={selected === stop.id} />)}</div>
   </div>;
 }

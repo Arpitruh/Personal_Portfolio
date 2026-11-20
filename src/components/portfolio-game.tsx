@@ -3,25 +3,16 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { projects } from "@/data/portfolio";
+import { GAME_CLEAR_KEY, GAME_SAVE_KEY, gameLevels, validateGameSave, type GameCheckpointSave } from "@/data/game-levels";
 
 type Mode = "ready" | "running" | "paused" | "won";
 type InputKey = "left" | "right" | "jump" | "down";
 type Player = { x: number; y: number; vx: number; vy: number; grounded: boolean; face: number; invulnerable: number };
 type Pickup = { x: number; y: number; collected: boolean };
 type Enemy = { x: number; baseX: number; dir: number; alive: boolean };
-const WIDTH = 960, HEIGHT = 390, FLOOR = 316, LEVEL_WIDTH = 4300;
-const PIPE_PROJECTS = projects.slice(0, 4);
-const PIPES = [950, 1680, 2490, 3230].map((x, index) => ({ x, index }));
-const PLATFORMS = [
-  { x: 340, y: 230, w: 110, h: 22 }, { x: 620, y: 192, w: 140, h: 22 },
-  { x: 1240, y: 215, w: 130, h: 22 }, { x: 1990, y: 195, w: 150, h: 22 },
-  { x: 2790, y: 225, w: 150, h: 22 }, { x: 3600, y: 205, w: 130, h: 22 }
-];
-const initialCoins = (): Pickup[] => [
-  240, 365, 410, 640, 690, 740, 1100, 1260, 1320, 1440, 1870, 2020,
-  2090, 2260, 2650, 2810, 2880, 3030, 3450, 3600, 3670, 3890
-].map((x, i) => ({ x, y: i % 3 === 0 ? 180 : i % 3 === 1 ? 160 : 245, collected: false }));
-const initialEnemies = (): Enemy[] => [560, 1160, 1530, 2230, 2970, 3500].map((x) => ({ x, baseX: x, dir: -1, alive: true }));
+const WIDTH = 960, HEIGHT = 390, FLOOR = 316;
+const initialCoins = (level = gameLevels[0]): Pickup[] => level.coins.map(({ x, y }) => ({ x, y, collected: false }));
+const initialEnemies = (level = gameLevels[0]): Enemy[] => level.enemies.map(x => ({ x, baseX: x, dir: -1, alive: true }));
 const initialPlayer = (): Player => ({ x: 60, y: FLOOR - 36, vx: 0, vy: 0, grounded: true, face: 1, invulnerable: 0 });
 
 function rectHit(a: {x:number;y:number;w:number;h:number}, b: {x:number;y:number;w:number;h:number}) {
@@ -59,6 +50,15 @@ function sound(frequency: number, enabled: boolean, duration = 0.09) {
 
 export function PortfolioGame() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [levelIndex, setLevelIndex] = useState(0);
+  const levelRef = useRef(gameLevels[0]);
+  const checkpointRef = useRef(-1);
+  const [checkpoint, setCheckpoint] = useState(-1);
+  const [saves, setSaves] = useState<Record<string, GameCheckpointSave>>({});
+  const [cleared, setCleared] = useState<string[]>([]);
+  const [notice, setNotice] = useState("");
+  const portalReturnFocusRef = useRef<HTMLElement | null>(null);
+  const portalCloseRef = useRef<HTMLButtonElement>(null);
   const modeRef = useRef<Mode>("ready");
   const playerRef = useRef<Player>(initialPlayer());
   const keysRef = useRef<Record<InputKey, boolean>>({ left: false, right: false, jump: false, down: false });
@@ -79,38 +79,96 @@ export function PortfolioGame() {
   const [best, setBest] = useState(0);
 
   useEffect(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem(GAME_SAVE_KEY) || "{}") as Record<string, unknown>;
+      const safe: Record<string, GameCheckpointSave> = {};
+      for (const level of gameLevels) {
+        const candidate = validateGameSave(raw?.[level.id], level);
+        if (candidate) safe[level.id] = candidate;
+      }
+      setSaves(safe);
+      const won = JSON.parse(localStorage.getItem(GAME_CLEAR_KEY) || "[]");
+      if (Array.isArray(won)) setCleared(won.filter((x): x is string => typeof x === "string" && gameLevels.some(l => l.id === x)));
+    } catch { /* Invalid local game data is safely ignored. */ }
     const previous = Number(localStorage.getItem("portfolio-best-score"));
     if (Number.isFinite(previous) && previous > 0) setBest(previous);
   }, []);
 
   function updateMode(value: Mode) { modeRef.current = value; setMode(value); }
-  function resetGame() {
-    playerRef.current = initialPlayer(); coinsRef.current = initialCoins(); enemiesRef.current = initialEnemies();
+  function chooseLevel(index: number) {
+    if (index < 0 || index >= gameLevels.length || modeRef.current === "running") return;
+    levelRef.current = gameLevels[index];
+    setLevelIndex(index);
+    checkpointRef.current = -1; setCheckpoint(-1);
+    playerRef.current = initialPlayer(); coinsRef.current = initialCoins(levelRef.current); enemiesRef.current = initialEnemies(levelRef.current);
     scoreRef.current = 0; livesRef.current = 3; camRef.current = 0; tickRef.current = 0;
+    setScore(0); setCoins(0); setLives(3); setPortal(null); setNotice("");
     keysRef.current = { left: false, right: false, jump: false, down: false };
-    portalOpenRef.current = false; setPortal(null); setScore(0); setCoins(0); setLives(3);
+    updateMode("ready");
+  }
+  function resetGame(resume = false) {
+    const level = levelRef.current;
+    const save = resume ? saves[level.id] : null;
+    const player = initialPlayer();
+    if (save) player.x = level.checkpoints[save.checkpointIndex] + 20;
+    playerRef.current = player;
+    coinsRef.current = initialCoins(level);
+    enemiesRef.current = initialEnemies(level);
+    for (const i of save?.collected || []) coinsRef.current[i].collected = true;
+    for (const i of save?.defeated || []) enemiesRef.current[i].alive = false;
+    scoreRef.current = save?.score ?? 0;
+    livesRef.current = save?.lives ?? 3;
+    camRef.current = save ? Math.max(0, player.x - 270) : 0; tickRef.current = 0;
+    checkpointRef.current = save?.checkpointIndex ?? -1; setCheckpoint(checkpointRef.current);
+    keysRef.current = { left: false, right: false, jump: false, down: false };
+    portalOpenRef.current = false; setPortal(null); setNotice(save ? "CHECKPOINT RESTORED" : "");
+    setScore(scoreRef.current); setCoins(coinsRef.current.filter(x => x.collected).length); setLives(livesRef.current);
     updateMode("running");
+  }
+  function saveCheckpoint(index: number) {
+    const level = levelRef.current;
+    checkpointRef.current = index; setCheckpoint(index);
+    const nextSave: GameCheckpointSave = {
+      levelId: level.id, checkpointIndex: index, score: scoreRef.current, lives: livesRef.current,
+      collected: coinsRef.current.flatMap((coin, i) => coin.collected ? [i] : []),
+      defeated: enemiesRef.current.flatMap((enemy, i) => !enemy.alive ? [i] : [])
+    };
+    setSaves(current => {
+      const next = { ...current, [level.id]: nextSave };
+      try { localStorage.setItem(GAME_SAVE_KEY, JSON.stringify(next)); } catch { /* Persistence is optional. */ }
+      return next;
+    });
+    setNotice("CHECKPOINT SAVED · " + (index + 1) + "/" + level.checkpoints.length);
   }
   function closePortal() {
     portalOpenRef.current = false; setPortal(null); keysRef.current.down = false; updateMode("running");
   }
+  useEffect(() => {
+    if (portal !== null) portalCloseRef.current?.focus();
+    else if (portalReturnFocusRef.current && mode === "running") {
+      portalReturnFocusRef.current.focus();
+      portalReturnFocusRef.current = null;
+    }
+  }, [portal, mode]);
+
   useEffect(() => {
     const map: Record<string, InputKey> = {
       ArrowLeft: "left", a: "left", A: "left", ArrowRight: "right", d: "right", D: "right",
       ArrowUp: "jump", w: "jump", W: "jump", " ": "jump", ArrowDown: "down", s: "down", S: "down"
     };
     function keyDown(e: KeyboardEvent) {
-      if (e.key === "Escape" && modeRef.current === "running") { modeRef.current = "paused"; setMode("paused"); return; }
+      if (e.key === "Escape" && modeRef.current === "running") { modeRef.current = "paused"; setMode("paused"); keysRef.current = { left: false, right: false, jump: false, down: false }; return; }
       if (e.key === "Escape" && portalOpenRef.current) { portalOpenRef.current = false; setPortal(null); modeRef.current = "running"; setMode("running"); return; }
       if (!(e.key in map) || modeRef.current !== "running") return;
       const target = e.target as HTMLElement | null;
-      if (target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
+      if (target && (["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(target.tagName) || target.isContentEditable)) return;
       e.preventDefault(); keysRef.current[map[e.key]] = true;
     }
     function keyUp(e: KeyboardEvent) { if (e.key in map) keysRef.current[map[e.key]] = false; }
     function blur() { keysRef.current = { left: false, right: false, jump: false, down: false }; }
-    window.addEventListener("keydown", keyDown); window.addEventListener("keyup", keyUp); window.addEventListener("blur", blur);
-    return () => { window.removeEventListener("keydown", keyDown); window.removeEventListener("keyup", keyUp); window.removeEventListener("blur", blur); };
+    function visibility() { if (document.hidden && modeRef.current === "running") { blur(); modeRef.current = "paused"; setMode("paused"); } }
+    window.addEventListener("keydown", keyDown); window.addEventListener("keyup", keyUp); window.addEventListener("blur", blur); document.addEventListener("visibilitychange", visibility);
+    return () => { window.removeEventListener("keydown", keyDown); window.removeEventListener("keyup", keyUp); window.removeEventListener("blur", blur); document.removeEventListener("visibilitychange", visibility); };
   }, []);
 
   useEffect(() => {
@@ -123,6 +181,7 @@ export function PortfolioGame() {
     const step = () => {
       if (modeRef.current !== "running") return;
       const player = playerRef.current, keys = keysRef.current, coins = coinsRef.current;
+      const level = levelRef.current;
       tickRef.current++;
       if (player.invulnerable) player.invulnerable--;
       const target = (Number(keys.right) - Number(keys.left)) * 4.3;
@@ -133,13 +192,13 @@ export function PortfolioGame() {
         player.vy = -12.7; player.grounded = false; sound(460, soundRef.current);
       }
       if (!keys.jump && player.vy < -5) player.vy = -5;
-      player.x = Math.max(0, Math.min(LEVEL_WIDTH - 35, player.x + player.vx));
+      player.x = Math.max(0, Math.min(level.width - 35, player.x + player.vx));
       player.vy = Math.min(12, player.vy + 0.58);
       const previousBottom = player.y + 36;
       player.y += player.vy;
       player.grounded = false;
       if (player.y + 36 >= FLOOR) { player.y = FLOOR - 36; player.vy = 0; player.grounded = true; }
-      for (const platform of PLATFORMS) {
+      for (const platform of level.platforms) {
         if (player.vy >= 0 && previousBottom <= platform.y + 7 && rectHit({ x: player.x, y: player.y, w: 34, h: 36 }, platform)) {
           player.y = platform.y - 36; player.vy = 0; player.grounded = true;
         }
@@ -162,39 +221,53 @@ export function PortfolioGame() {
             livesRef.current -= 1; setLives(livesRef.current); player.invulnerable = 90;
             player.x = Math.max(0, player.x - 80); player.vy = -6; sound(130, soundRef.current, 0.2);
             if (livesRef.current <= 0) {
-              playerRef.current = initialPlayer(); livesRef.current = 3; setLives(3); scoreRef.current = 0; setScore(0);
-              coinsRef.current = initialCoins(); setCoins(0); enemiesRef.current = initialEnemies();
+              modeRef.current = "ready"; setMode("ready");
+              setNotice("OUT OF LIVES · CHOOSE RESTART OR YOUR SAVED CHECKPOINT");
             }
           }
         }
       }
       if (keys.down && player.grounded) {
-        const pipe = PIPES.find((item) => Math.abs(item.x - player.x) < 58);
+        const pipe = level.pipes.find((item) => Math.abs(item.x - player.x) < 58);
         if (pipe) {
-          keys.down = false; portalOpenRef.current = true; setPortal(pipe.index);
+          keys.down = false; portalReturnFocusRef.current = document.activeElement as HTMLElement | null; portalOpenRef.current = true; setPortal(pipe.projectIndex);
           modeRef.current = "paused"; setMode("paused"); sound(300, soundRef.current, 0.12);
         }
       }
-      if (player.x >= LEVEL_WIDTH - 155) {
+      for (let i = 0; i < level.checkpoints.length; i++) {
+        if (player.x >= level.checkpoints[i] && i > checkpointRef.current) saveCheckpoint(i);
+      }
+      if (player.x >= level.width - 155) {
         modeRef.current = "won"; setMode("won"); scoreRef.current += 1000; setScore(scoreRef.current);
         const stored = Number(localStorage.getItem("portfolio-best-score")) || 0;
         if (scoreRef.current > stored) { localStorage.setItem("portfolio-best-score", String(scoreRef.current)); setBest(scoreRef.current); }
+        setCleared(current => {
+          const next = Array.from(new Set([...current, level.id]));
+          try { localStorage.setItem(GAME_CLEAR_KEY, JSON.stringify(next)); } catch { /* Browsers can disable storage. */ }
+          return next;
+        });
+        setSaves(current => {
+          const next = { ...current }; delete next[level.id];
+          try { localStorage.setItem(GAME_SAVE_KEY, JSON.stringify(next)); } catch { /* Optional save. */ }
+          return next;
+        });
         sound(950, soundRef.current, 0.25);
       }
-      camRef.current = Math.max(0, Math.min(LEVEL_WIDTH - WIDTH, player.x - 270));
+      camRef.current = Math.max(0, Math.min(level.width - WIDTH, player.x - 270));
     };
     const draw = () => {
-      const cam = camRef.current, tick = tickRef.current;
+      const cam = camRef.current, tick = tickRef.current, level = levelRef.current;
       ctx.imageSmoothingEnabled = false;
-      ctx.fillStyle = "#7acfff"; ctx.fillRect(0, 0, WIDTH, HEIGHT);
-      ctx.fillStyle = "#fff0a8"; ctx.beginPath(); ctx.arc(770, 68, 34, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = level.theme === "midnight" ? "#23264d" : level.theme === "sunset" ? "#ffc09d" : "#7acfff"; ctx.fillRect(0, 0, WIDTH, HEIGHT);
+      ctx.fillStyle = level.theme === "midnight" ? "#f5efff" : "#fff0a8"; ctx.beginPath(); ctx.arc(770, 68, level.theme === "midnight" ? 23 : 34, 0, Math.PI * 2); ctx.fill();
+      if (level.theme === "midnight") for (let i = 0; i < 55; i++) { ctx.fillStyle = i % 3 ? "#b9b4df" : "#f5dfab"; ctx.fillRect((i * 181 + 34 - cam * .08) % WIDTH, 15 + (i * 37) % 185, 2 + i % 2, 2); }
       for (let i = 0; i < 11; i++) {
         const x = i * 490 + 50 - (cam * .3) % 490, y = 46 + (i % 3) * 24;
         ctx.fillStyle = "#fff"; ctx.fillRect(x, y + 15, 115, 25); ctx.fillRect(x + 24, y, 65, 25);
       }
       for (let i = 0; i < 13; i++) {
         const x = i * 390 + 30 - (cam * .55) % 390;
-        ctx.fillStyle = i % 2 ? "#4bbd77" : "#57c77e";
+        ctx.fillStyle = level.theme === "midnight" ? (i % 2 ? "#44446e" : "#52507d") : level.theme === "sunset" ? (i % 2 ? "#e8a073" : "#eaba8d") : (i % 2 ? "#4bbd77" : "#57c77e");
         ctx.beginPath(); ctx.ellipse(x + 150, 330, 170, 110 + i % 3 * 15, 0, Math.PI, Math.PI * 2); ctx.fill();
       }
       ctx.save(); ctx.translate(-cam, 0);
@@ -203,16 +276,21 @@ export function PortfolioGame() {
         ctx.strokeStyle = "#7e4027"; ctx.strokeRect(i, FLOOR + 7, 32, 30); ctx.strokeRect(i + 16, FLOOR + 37, 32, 32);
       }
       ctx.fillStyle = "#42b968"; ctx.fillRect(cam, FLOOR, WIDTH + 10, 10);
-      for (const platform of PLATFORMS) {
+      for (const platform of level.platforms) {
         ctx.fillStyle = "#ce8647"; ctx.fillRect(platform.x, platform.y, platform.w, platform.h);
         ctx.fillStyle = "#f3b16d"; ctx.fillRect(platform.x, platform.y, platform.w, 6);
         ctx.fillStyle = "#7f412b"; for (let x = platform.x + 30; x < platform.x + platform.w; x += 32) ctx.fillRect(x, platform.y + 7, 3, platform.h - 7);
       }
-      for (const pipe of PIPES) {
+      for (const pipe of level.pipes) {
         ctx.fillStyle = "#268d4d"; ctx.fillRect(pipe.x, FLOOR - 48, 60, 48);
         ctx.fillStyle = "#39ba64"; ctx.fillRect(pipe.x - 6, FLOOR - 53, 72, 16);
         ctx.fillStyle = "#7cec9c"; ctx.fillRect(pipe.x + 5, FLOOR - 50, 8, 44);
         ctx.fillStyle = "#fff"; ctx.font = "bold 12px monospace"; ctx.fillText("↓", pipe.x + 25, FLOOR - 62);
+      }
+      for (const x of level.checkpoints) {
+        ctx.fillStyle = "#ece8f6"; ctx.fillRect(x, FLOOR - 94, 5, 94);
+        ctx.fillStyle = "#ffbd59"; ctx.fillRect(x + 5, FLOOR - 92, 52, 26);
+        ctx.fillStyle = "#39334c"; ctx.font = "bold 12px monospace"; ctx.fillText("SAVE", x + 10, FLOOR - 74);
       }
       for (const coin of coinsRef.current) if (!coin.collected) drawCoin(ctx, coin.x, coin.y, tick);
       for (const enemy of enemiesRef.current) if (enemy.alive) {
@@ -220,9 +298,9 @@ export function PortfolioGame() {
         ctx.fillStyle = "#f9d5b1"; ctx.fillRect(enemy.x + 6, FLOOR - 16, 5, 6); ctx.fillRect(enemy.x + 18, FLOOR - 16, 5, 6);
         ctx.fillStyle = "#201b35"; ctx.fillRect(enemy.x + 8, FLOOR - 14, 2, 3); ctx.fillRect(enemy.x + 20, FLOOR - 14, 2, 3);
       }
-      ctx.fillStyle = "#f9f6ed"; ctx.fillRect(LEVEL_WIDTH - 130, FLOOR - 170, 6, 170);
-      ctx.fillStyle = "#f16b68"; ctx.fillRect(LEVEL_WIDTH - 124, FLOOR - 165, 70, 39);
-      ctx.fillStyle = "#fff"; ctx.font = "bold 13px monospace"; ctx.fillText("FINISH", LEVEL_WIDTH - 115, FLOOR - 143);
+      ctx.fillStyle = "#f9f6ed"; ctx.fillRect(level.width - 130, FLOOR - 170, 6, 170);
+      ctx.fillStyle = "#f16b68"; ctx.fillRect(level.width - 124, FLOOR - 165, 70, 39);
+      ctx.fillStyle = "#fff"; ctx.font = "bold 13px monospace"; ctx.fillText("FINISH", level.width - 115, FLOOR - 143);
       const player = playerRef.current;
       if (player.invulnerable % 8 < 4) drawCharacter(ctx, player.x, player.y, player.face, player.vx ? tick : 0);
       ctx.restore();
@@ -241,26 +319,41 @@ export function PortfolioGame() {
   }, []);
 
   function press(key: InputKey, down: boolean) { keysRef.current[key] = down; }
-  const selectedProject = portal === null ? null : PIPE_PROJECTS[portal];
+  const level = gameLevels[levelIndex];
+  const selectedProject = portal === null ? null : projects[portal];
 
   return <div className="game-shell">
-    <div className="game-hud"><span>★ SCORE <strong>{String(score).padStart(5, "0")}</strong></span><span>◉ COINS <strong>{coins}/22</strong></span><span>♥ LIVES <strong>{lives}</strong></span><button type="button" className="sound-toggle" onClick={() => { soundRef.current = !soundRef.current; setSoundOn(soundRef.current); }} aria-pressed={soundOn}>{soundOn ? "♫ SOUND ON" : "♪ SOUND OFF"}</button></div>
+    <div className="level-selector" role="group" aria-label="Choose a game world">
+      {gameLevels.map((item, index) => <button key={item.id} type="button" disabled={mode === "running"} aria-pressed={levelIndex === index} className={levelIndex === index ? "level-tab active" : "level-tab"} onClick={() => chooseLevel(index)}>
+        <span>WORLD {index + 1}-{index + 1} {cleared.includes(item.id) ? "✓" : ""}</span><strong>{item.title}</strong><small>{item.subtitle}</small>
+      </button>)}
+    </div>
+    <div className="game-a11y-info"><p>Not playing? All project portals are directly accessible below the game. Your progress saves locally at checkpoint flags; each world is optional.</p>
+      <button type="button" className="game-pause-button" disabled={mode === "ready" || mode === "won"} onClick={() => updateMode(mode === "running" ? "paused" : "running")}>{mode === "running" ? "Pause game II" : "Resume game ▶"}</button>
+    </div>
+    <div className="game-hud"><span>★ SCORE <strong>{String(score).padStart(5, "0")}</strong></span><span>◉ COINS <strong>{coins}/{level.coins.length}</strong></span><span>⚑ SAVE <strong>{checkpoint < 0 ? "—" : checkpoint + 1 + "/" + level.checkpoints.length}</strong></span><span>♥ LIVES <strong>{lives}</strong></span><button type="button" className="sound-toggle" onClick={() => { soundRef.current = !soundRef.current; setSoundOn(soundRef.current); }} aria-pressed={soundOn}>{soundOn ? "♫ SOUND ON" : "♪ SOUND OFF"}</button></div>
     <div className="game-screen">
-      <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} role="img" aria-label="Pixel-art side scrolling platform game. Use the accessible controls below to move, jump and explore project pipes." />
+      <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} role="img" aria-label={"Pixel-art platform game, " + level.title + ". Move and jump using the controls beneath the canvas. The project links are also available without playing."} />
       {(mode === "ready" || (mode === "paused" && !selectedProject) || mode === "won") && <div className="game-overlay">
-        <span className="eyebrow">{mode === "won" ? "LEVEL COMPLETE" : mode === "paused" ? "GAME PAUSED" : "WORLD 1-1 · ARPIT'S ADVENTURE"}</span>
-        <h2>{mode === "won" ? "You made it! 🏁" : mode === "paused" ? "Adventure on hold" : "Ready, player one?"}</h2>
+        <span className="eyebrow">{mode === "won" ? "LEVEL COMPLETE" : mode === "paused" ? "GAME PAUSED" : "WORLD " + (levelIndex + 1) + "-" + (levelIndex + 1) + " · " + level.title.toUpperCase()}</span>
+        <h2>{mode === "won" ? "You made it! 🏁" : mode === "paused" ? "Adventure on hold" : lives === 0 ? "Game over · try again" : "Ready, player one?"}</h2>
         <p>{mode === "won" ? "The real treasure was the projects you discovered along the way." : "Collect coins, dodge critters and press ↓ beside a pipe to open a project."}</p>
-        <div className="button-group"><button className="btn btn-primary" type="button" onClick={() => mode === "ready" || mode === "won" ? resetGame() : updateMode("running")}>{mode === "won" ? "Play again ↻" : mode === "paused" ? "Resume ▶" : "Start game ▶"}</button>{mode === "won" && <Link className="btn btn-outline" href="/projects">Explore projects ↗</Link>}</div>
+        <div className="button-group"><button className="btn btn-primary" type="button" onClick={() => mode === "ready" || mode === "won" ? resetGame() : updateMode("running")}>{mode === "won" ? "Play again ↻" : mode === "paused" ? "Resume ▶" : "Start game ▶"}</button>
+          {mode === "ready" && saves[level.id] && <button className="btn btn-outline" type="button" onClick={() => resetGame(true)}>Continue from checkpoint ⚑</button>}
+          {mode === "won" && levelIndex < gameLevels.length - 1 && <button type="button" className="btn btn-outline" onClick={() => chooseLevel(levelIndex + 1)}>Next world →</button>}
+          {mode === "won" && <Link className="btn btn-outline" href="/projects">Explore projects ↗</Link>}
+        </div>
         {best > 0 && <small>YOUR BEST SCORE: {best.toLocaleString()}</small>}
       </div>}
-      {selectedProject && <div className="game-overlay pipe-overlay" role="dialog" aria-modal="true" aria-label={selectedProject.title + " project"}>
-        <span className="eyebrow">SECRET PROJECT ROOM · 0{portal! + 1}</span>
+      {selectedProject && <div className="game-overlay pipe-overlay" role="dialog" aria-modal="true" aria-label={selectedProject.title + " project"} onKeyDown={e => { if (e.key === "Tab") { const focusable = Array.from(e.currentTarget.querySelectorAll<HTMLElement>("a,button")); const index = focusable.indexOf(document.activeElement as HTMLElement); if ((e.shiftKey && index === 0) || (!e.shiftKey && index === focusable.length - 1)) { e.preventDefault(); (e.shiftKey ? focusable[focusable.length - 1] : focusable[0])?.focus(); } } }}>
+        <span className="eyebrow">SECRET PROJECT ROOM · {String(portal! + 1).padStart(2,"0")}</span>
         <div className="pipe-emoji">{selectedProject.emoji}</div><h2>{selectedProject.title}</h2><p>{selectedProject.summary}</p>
-        <div className="button-group"><Link className="btn btn-primary" href={"/projects/" + selectedProject.slug}>View case study ↗</Link><button className="btn btn-outline" type="button" onClick={closePortal}>Back to game ←</button></div>
+        <div className="button-group"><Link className="btn btn-primary" href={"/projects/" + selectedProject.slug}>View case study ↗</Link><button ref={portalCloseRef} className="btn btn-outline" type="button" onClick={closePortal}>Back to game ←</button></div>
       </div>}
     </div>
+    {notice && mode === "running" && <div className="game-save-notice" role="status">{notice}</div>}
     <div className="game-controls"><div className="game-control-left">{(["left", "right"] as const).map((key) => <button key={key} type="button" className="control-button" aria-label={key === "left" ? "Move left" : "Move right"} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press(key, true); }} onPointerUp={() => press(key, false)} onPointerCancel={() => press(key, false)}>{key === "left" ? "◀" : "▶"}</button>)}</div><span className="control-tip">MOVE: ← → / A D <span>·</span> JUMP: SPACE / W <span>·</span> PIPE: ↓ / S</span><div className="game-control-right"><button type="button" className="control-button" aria-label="Enter pipe" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("down", true); }} onPointerUp={() => press("down", false)} onPointerCancel={() => press("down", false)}>↓</button><button type="button" className="control-button jump-button" aria-label="Jump" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("jump", true); }} onPointerUp={() => press("jump", false)} onPointerCancel={() => press("jump", false)}>A</button></div></div>
+    <section className="game-accessible-projects" aria-label="All project entrances in this world"><h3>Skip the platformer. Explore these projects directly.</h3><div>{level.pipes.map(pipe => { const p = projects[pipe.projectIndex]; return <Link href={"/projects/" + p.slug} key={pipe.x}>{p.emoji} {p.title} ↗</Link>; })}</div></section>
     <div className="game-footnote"><span>BUILT FROM SCRATCH WITH CANVAS + REACT</span><Link href="/world">Prefer to explore the map? ↗</Link></div>
   </div>;
 }

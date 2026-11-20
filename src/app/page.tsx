@@ -32,7 +32,7 @@ export default function HomePage() {
       <div className="project-grid">{featuredProjects.map((project, index) => <ProjectCard key={project.slug} project={project} index={index} />)}</div>
     </div></section>
 
-    <section className="section section-terminal"><div className="container terminal-section-grid">
+    <section className="section section-terminal" id="developer-console"><div className="container terminal-section-grid">
       <div className="terminal-intro"><span className="eyebrow">03 / SECRET DEVELOPER MODE</span><h2>Feel more at home<br /><em>in a terminal?</em></h2><p>Try a tiny command explorer made just for this portfolio. No account, no external service and definitely no shell access.</p><div className="terminal-command-chips"><span><b>$</b> help</span><span><b>$</b> projects</span><span><b>$</b> open cacheloom</span></div></div>
       <InteractiveTerminal />
     </div></section>

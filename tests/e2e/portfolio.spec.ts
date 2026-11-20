@@ -159,5 +159,5 @@ test("Phase 15 uses accessible pixel fallback until approved media is uploaded",
  await page.goto("/about");
  await expect(page.locator(".personal-portrait-about .personal-portrait-placeholder")).toBeVisible();
  await page.goto("/");
- await expect(page.locator(".personal-portrait-home")).toBeVisible();
+ await expect(page.locator(".hero-avatar")).toBeVisible();
 });

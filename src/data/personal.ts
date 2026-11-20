@@ -34,6 +34,7 @@ export function safePersonalImage(value:unknown):string {
 }
 export interface VisualAsset { src:string; alt:string; caption?:string }
 export interface GalleryMoment extends VisualAsset { title:string; category:string; featured:boolean }
+type DraftMoment = {src:string;alt:string;caption?:string;title:string;category:string;featured:boolean;visible:boolean};
 function validAsset(src:unknown,alt:unknown,caption:unknown): VisualAsset|null {
   const path=safePersonalImage(src);
   if(!path||typeof alt!=="string"||!alt.trim())return null;
@@ -46,7 +47,7 @@ export const visualIdentity:{
 } = {
   portrait:validAsset(visualSource.portrait.src,visualSource.portrait.alt,visualSource.portrait.caption),
   illustration:validAsset(visualSource.illustration.src,visualSource.illustration.alt,visualSource.illustration.caption),
-  moments:visualSource.moments.flatMap(entry=>{
+  moments:(visualSource.moments as DraftMoment[]).flatMap(entry=>{
     if(!entry.visible) return [];
     const asset=validAsset(entry.src,entry.alt,entry.caption);
     if(!asset||typeof entry.title!=="string"||!entry.title.trim())return [];

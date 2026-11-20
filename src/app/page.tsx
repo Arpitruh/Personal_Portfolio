@@ -4,7 +4,7 @@ import { WorldMap } from "@/components/world-map";
 import { ProjectCard } from "@/components/project-card";
 import { InteractiveTerminal } from "@/components/interactive-terminal";
 import { experience, featuredProjects, profile, skills } from "@/data/portfolio";
-import { life } from "@/data/personal";
+import { life, visualIdentity } from "@/data/personal";
 import { PersonalPortrait } from "@/components/personal-portrait";
 
 export default function HomePage() {
@@ -19,7 +19,7 @@ export default function HomePage() {
           <div className="button-group hero-buttons"><Link className="btn btn-primary" href="/projects">Explore my work <span aria-hidden="true">↗</span></Link><Link className="btn btn-outline" href="/room">⌘ Explore my room</Link><Link className="btn btn-outline" href="/recruiter">Recruiter mode ↗</Link></div>
           <div className="hero-social"><span>BASED IN {profile.location.toUpperCase()}</span><span className="hero-social-line" /><a href={profile.github} target="_blank" rel="noopener noreferrer">GITHUB ↗</a></div>
         </div>
-        <div className="hero-scene"><div className="hero-scene-card"><span className="scene-corner scene-corner-left">LEVEL 01</span><span className="scene-corner scene-corner-right">1 PLAYER</span><PixelLandscape /><div className="hero-avatar"><PersonalPortrait variant="home"/></div><div className="speech-bubble">HELLO WORLD! <span>♥</span></div><div className="scene-caption">✦ PRESS START TO EXPLORE MY WORLD</div></div><div className="scene-stamp">100% HUMAN<br />MADE IDEAS</div></div>
+        <div className="hero-scene"><div className="hero-scene-card"><span className="scene-corner scene-corner-left">LEVEL 01</span><span className="scene-corner scene-corner-right">1 PLAYER</span><PixelLandscape /><div className="hero-avatar">{visualIdentity.illustration ? <PersonalPortrait variant="home"/> : <PixelAvatar large/>}</div><div className="speech-bubble">HELLO WORLD! <span>♥</span></div><div className="scene-caption">✦ PRESS START TO EXPLORE MY WORLD</div></div><div className="scene-stamp">100% HUMAN<br />MADE IDEAS</div></div>
       </div>
       <div className="ticker" aria-hidden="true"><div>DESIGN • DEVELOP • DEBUG • REPEAT ✦ REACT • NEXT.JS • TYPESCRIPT ✦ BUILDING THINGS THAT MATTER ✦ DESIGN • DEVELOP • DEBUG • REPEAT ✦</div></div>
     </section>

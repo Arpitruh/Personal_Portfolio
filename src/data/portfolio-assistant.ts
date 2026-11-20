@@ -25,6 +25,9 @@ export function answerPortfolioQuestion(value: string): PortfolioAnswer {
     const relevant=skills.flatMap(g=>g.items).filter(s=>tokens.some(t=>s.toLowerCase().includes(t)||t.includes(s.toLowerCase())));
     return {text: relevant.length?"Relevant tools in the portfolio: "+relevant.join(", ")+".":"Current areas: "+skills.map(g=>g.group+": "+g.items.join(", ")).join("\n"),links:link("Explore skill connections","/skills")};
   }
+  if (/what.*(built|build)|show.*projects|project overview|portfolio overview/.test(lower)) {
+    return {text:"The portfolio includes "+projects.length+" repository-backed projects. Featured work includes "+projects.filter(p=>p.featured).map(p=>p.title+" ("+p.status+")").join(", ")+". Every case study has a source link and a documented status.",links:link("Browse project catalog","/projects")};
+  }
   const ranked=projects.map(p=>{
     const fields=[p.title,p.slug,p.kicker,p.summary,p.category,p.challenge,p.approach,...p.stack,...p.highlights].join(" ").toLowerCase();
     let score=0;

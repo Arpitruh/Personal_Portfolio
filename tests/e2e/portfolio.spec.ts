@@ -110,3 +110,20 @@ test("Phase 5 ignores unknown shared slugs", async ({ page }) => {
   await expect(page.locator(".compare-column")).toHaveCount(2);
   await expect(page).not.toHaveURL(/invalid/);
 });
+
+test("new experience routes respect mobile viewport, reduced motion, and print styles",async ({page})=>{
+ for(const route of ["/room","/recruiter","/skills","/achievements","/assistant"]){
+  await page.goto(route);
+  const widths=await page.evaluate(()=>({view:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));
+  expect(widths.scroll,route+" must not overflow the viewport").toBeLessThanOrEqual(widths.view+2);
+ }
+ await page.emulateMedia({media:"print"});
+ await page.goto("/recruiter");
+ await expect(page.locator(".resume-sheet")).toBeVisible();
+ const headerDisplay=await page.locator(".site-header").evaluate(e=>getComputedStyle(e).display);
+ expect(headerDisplay).toBe("none");
+ await page.emulateMedia({media:"screen",reducedMotion:"reduce"});
+ await page.goto("/room");
+ const duration=await page.locator(".room-object").first().evaluate(e=>getComputedStyle(e).transitionDuration);
+ expect(duration).toBe("0s");
+});

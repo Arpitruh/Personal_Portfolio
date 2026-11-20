@@ -11,6 +11,7 @@ test("guide answers from the published portfolio, not an external service",()=>{
  assert.ok(answer.links.some(x=>x.href==="/projects/cacheloom"));
  assert.ok(answerPortfolioQuestion("What is his experience?").links.some(x=>x.href==="/about#experience"));
  assert.ok(answerPortfolioQuestion("how do i hire Arpit").links.some(x=>x.href==="/contact"));
+ assert.ok(answerPortfolioQuestion("What has Arpit built?").text.includes("repository-backed projects"));
  assert.ok(answerPortfolioQuestion("unknown random subject").text.includes("cannot verify"));
 });
 test("skills and architecture only use documented project data",()=>{

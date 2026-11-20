@@ -327,7 +327,16 @@ export function PortfolioGame() {
     const draw = () => {
       const cam = camRef.current, tick = tickRef.current, level = levelRef.current;
       ctx.imageSmoothingEnabled = false;
-      ctx.fillStyle = level.theme === "midnight" ? "#23264d" : level.theme === "sunset" ? "#ffc09d" : "#7acfff"; ctx.fillRect(0, 0, WIDTH, HEIGHT);
+      const skies:Record<string,string>={meadow:"#7acfff",sunset:"#ffc09d",midnight:"#23264d",neon:"#312452",frost:"#a2dcf5"};
+      ctx.fillStyle=skies[level.theme];ctx.fillRect(0,0,WIDTH,HEIGHT);
+      if(level.theme==="neon"||level.theme==="frost"){
+        for(let i=0;i<15;i++){
+          const x=i*125-(cam*.18)%125;
+          ctx.fillStyle=level.theme==="neon"?(i%2?"#493d8c":"#564595"):(i%2?"#c5eafa":"#dcf6ff");
+          ctx.fillRect(x,140+i%4*17,94,180);
+          if(level.theme==="neon"){ctx.fillStyle="#e6b3fa";for(let y=165+i%4*17;y<270;y+=21)ctx.fillRect(x+18,y,8,8);}
+        }
+      }
       ctx.fillStyle = level.theme === "midnight" ? "#f5efff" : "#fff0a8"; ctx.beginPath(); ctx.arc(770, 68, level.theme === "midnight" ? 23 : 34, 0, Math.PI * 2); ctx.fill();
       if (level.theme === "midnight") for (let i = 0; i < 55; i++) { ctx.fillStyle = i % 3 ? "#b9b4df" : "#f5dfab"; ctx.fillRect((i * 181 + 34 - cam * .08) % WIDTH, 15 + (i * 37) % 185, 2 + i % 2, 2); }
       for (let i = 0; i < 11; i++) {
@@ -350,6 +359,11 @@ export function PortfolioGame() {
         ctx.fillStyle = "#f3b16d"; ctx.fillRect(platform.x, platform.y, platform.w, 6);
         ctx.fillStyle = "#7f412b"; for (let x = platform.x + 30; x < platform.x + platform.w; x += 32) ctx.fillRect(x, platform.y + 7, 3, platform.h - 7);
       }
+      for (const hazard of level.hazards??[]){
+        ctx.fillStyle="#662b48";ctx.fillRect(hazard.x,FLOOR-7,hazard.w,9);
+        ctx.fillStyle=level.theme==="frost"?"#e8faff":"#ff6f77";
+        for(let x=hazard.x;x<hazard.x+hazard.w-9;x+=14){ctx.beginPath();ctx.moveTo(x,FLOOR-7);ctx.lineTo(x+7,FLOOR-24);ctx.lineTo(x+14,FLOOR-7);ctx.fill();}
+      }
       for (const pipe of level.pipes) {
         ctx.fillStyle = "#268d4d"; ctx.fillRect(pipe.x, FLOOR - 48, 60, 48);
         ctx.fillStyle = "#39ba64"; ctx.fillRect(pipe.x - 6, FLOOR - 53, 72, 16);
@@ -362,6 +376,14 @@ export function PortfolioGame() {
         ctx.fillStyle = "#39334c"; ctx.font = "bold 12px monospace"; ctx.fillText("SAVE", x + 10, FLOOR - 74);
       }
       for (const coin of coinsRef.current) if (!coin.collected) drawCoin(ctx, coin.x, coin.y, tick);
+      for(const power of powersRef.current)if(!power.collected){
+        ctx.fillStyle=power.type==="shield"?"#6adbe0":power.type==="dash"?"#fcb76e":"#ff729a";
+        ctx.fillRect(power.x-14,power.y-14,28,28);ctx.strokeStyle="#292344";ctx.lineWidth=3;ctx.strokeRect(power.x-14,power.y-14,28,28);
+        ctx.fillStyle="#25213e";ctx.font="bold 19px monospace";ctx.fillText(power.type==="shield"?"◇":power.type==="dash"?"»":"♥",power.x-10,power.y+7);
+      }
+      for(const star of starsRef.current)if(!star.collected){
+        ctx.fillStyle="#fff5a6";ctx.font="bold 28px monospace";ctx.fillText("✦",star.x-12,star.y+7+Math.sin(tick/12)*3);
+      }
       for (const enemy of enemiesRef.current) if (enemy.alive) {
         ctx.fillStyle = "#875533"; ctx.fillRect(enemy.x + 2, FLOOR - 21, 25, 20);
         ctx.fillStyle = "#f9d5b1"; ctx.fillRect(enemy.x + 6, FLOOR - 16, 5, 6); ctx.fillRect(enemy.x + 18, FLOOR - 16, 5, 6);
@@ -372,6 +394,8 @@ export function PortfolioGame() {
       ctx.fillStyle = "#fff"; ctx.font = "bold 13px monospace"; ctx.fillText("FINISH", level.width - 115, FLOOR - 143);
       const player = playerRef.current;
       if (player.invulnerable % 8 < 4) drawCharacter(ctx, player.x, player.y, player.face, player.vx ? tick : 0);
+      if(shieldRef.current>0){ctx.strokeStyle="#72f7ed";ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(player.x+17,player.y+18,26,30,0,0,Math.PI*2);ctx.stroke();}
+      if(speedRef.current>0){ctx.fillStyle="#ffde72";ctx.fillRect(player.x-player.face*13,player.y+10,7,5);ctx.fillRect(player.x-player.face*23,player.y+19,11,5);}
       ctx.restore();
       if (modeRef.current !== "running") {
         ctx.fillStyle = "rgba(21,21,45,.19)"; ctx.fillRect(0, 0, WIDTH, HEIGHT);
@@ -393,29 +417,35 @@ export function PortfolioGame() {
   function press(key: InputKey, down: boolean) { keysRef.current[key] = down; }
   const level = gameLevels[levelIndex];
   const selectedProject = portal === null ? null : projects[portal];
+  const missions=rankMission(coins,level.coins.length,stars,lives);
+  const collectedMissions=[missions.collector,missions.explorer,missions.survivor,missions.perfect].filter(Boolean).length;
+  const totalSeconds=String(Math.floor(elapsed/60)).padStart(2,"0")+":"+String(elapsed%60).padStart(2,"0");
 
   return <div className="game-shell">
     <div className="level-selector" role="group" aria-label="Choose a game world">
       {gameLevels.map((item, index) => <button key={item.id} type="button" disabled={mode === "running"} aria-pressed={levelIndex === index} className={levelIndex === index ? "level-tab active" : "level-tab"} onClick={() => chooseLevel(index)}>
-        <span>WORLD {index + 1}-{index + 1} {cleared.includes(item.id) ? "✓" : ""}</span><strong>{item.title}</strong><small>{item.subtitle}</small>
+        <span>WORLD {index + 1} / {gameLevels.length} {cleared.includes(item.id) ? "✓" : ""}</span><strong>{item.title}</strong><small>{item.subtitle}</small>
       </button>)}
     </div>
-    <div className="game-a11y-info"><p>Not playing? All project portals are directly accessible below the game. Your progress saves locally at checkpoint flags; each world is optional.</p>
+    <div className="game-adventure-options"><div className="game-difficulty-picker"><label htmlFor="game-difficulty">DIFFICULTY</label><select id="game-difficulty" value={difficulty} disabled={mode==="running"||mode==="paused"} onChange={e=>changeDifficulty(e.target.value as GameDifficulty)}><option value="casual">Explorer · 5 lives</option><option value="normal">Adventure · 3 lives</option><option value="expert">Hardcore · 2 lives</option></select></div><div className="game-campaign-status" aria-label="Campaign progress"><strong>{cleared.length} / {gameLevels.length} WORLDS CLEARED</strong><div className="game-campaign-track"><span style={{width:Math.min(100,cleared.length/gameLevels.length*100)+"%"}}/></div></div></div>
+    <div className="game-a11y-info"><p>Five handcrafted worlds, hidden stars, timed records and project portals. Checkpoints save locally; all projects remain accessible without playing.</p>
       <button type="button" className="game-pause-button" disabled={mode === "ready" || mode === "won"} onClick={() => updateMode(mode === "running" ? "paused" : "running")}>{mode === "running" ? "Pause game II" : "Resume game ▶"}</button>
     </div>
-    <div className="game-hud"><span>★ SCORE <strong>{String(score).padStart(5, "0")}</strong></span><span>◉ COINS <strong>{coins}/{level.coins.length}</strong></span><span>⚑ SAVE <strong>{checkpoint < 0 ? "—" : checkpoint + 1 + "/" + level.checkpoints.length}</strong></span><span>♥ LIVES <strong>{lives}</strong></span><button type="button" className="sound-toggle" onClick={() => { soundRef.current = !soundRef.current; setSoundOn(soundRef.current); }} aria-pressed={soundOn}>{soundOn ? "♫ SOUND ON" : "♪ SOUND OFF"}</button></div>
+    <div className="game-hud"><span>★ SCORE <strong>{String(score).padStart(5, "0")}</strong></span><span>◉ COINS <strong>{coins}/{level.coins.length}</strong></span><span>⚑ SAVE <strong>{checkpoint < 0 ? "—" : checkpoint + 1 + "/" + level.checkpoints.length}</strong></span><span>♥ LIVES <strong>{lives}</strong></span><span>✦ STARS <strong>{stars}/{level.secretStars?.length??0}</strong></span><span>◷ TIME <strong>{totalSeconds}</strong></span>{shield>0&&<span className="game-buff">◇ SHIELD <strong>{shield}s</strong></span>}{speedBoost>0&&<span className="game-buff">» DASH <strong>{speedBoost}s</strong></span>}<button type="button" className="sound-toggle" onClick={() => { soundRef.current = !soundRef.current; setSoundOn(soundRef.current); }} aria-pressed={soundOn}>{soundOn ? "♫ SOUND ON" : "♪ SOUND OFF"}</button></div>
+    <div className="game-progress" aria-label="Level objective progress"><span>START</span><div><span style={{width:Math.min(100,Math.max(0,(checkpoint+1)/Math.max(1,level.checkpoints.length+1)*100))+"%"}}/></div><span>FINISH</span></div>
     <div className="game-screen">
       <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} role="img" aria-label={"Pixel-art platform game, " + level.title + ". Move and jump using the controls beneath the canvas. The project links are also available without playing."} />
       {(mode === "ready" || (mode === "paused" && !selectedProject) || mode === "won") && <div className="game-overlay">
         <span className="eyebrow">{mode === "won" ? "LEVEL COMPLETE" : mode === "paused" ? "GAME PAUSED" : "WORLD " + (levelIndex + 1) + "-" + (levelIndex + 1) + " · " + level.title.toUpperCase()}</span>
         <h2>{mode === "won" ? "You made it! 🏁" : mode === "paused" ? "Adventure on hold" : lives === 0 ? "Game over · try again" : "Ready, player one?"}</h2>
-        <p>{mode === "won" ? "The real treasure was the projects you discovered along the way." : "Collect coins, dodge critters and press ↓ beside a pipe to open a project."}</p>
+        <p>{mode === "won" ? "World cleared! Collect stars, coins and mission rewards to raise your record." : "Gather coins and stars, avoid spikes, pick up abilities, stomp enemies and press ↓ near pipes to explore projects."}</p>
+        {mode==="won"&&<div className="game-victory-stats"><span>★ {score.toLocaleString()} POINTS</span><span>✦ {stars} SECRETS</span><span>◷ {totalSeconds}</span><span>◆ {collectedMissions}/4 MISSIONS</span></div>}
         <div className="button-group"><button className="btn btn-primary" type="button" onClick={() => mode === "ready" || mode === "won" ? resetGame() : updateMode("running")}>{mode === "won" ? "Play again ↻" : mode === "paused" ? "Resume ▶" : "Start game ▶"}</button>
           {mode === "ready" && saves[level.id] && <button className="btn btn-outline" type="button" onClick={() => resetGame(true)}>Continue from checkpoint ⚑</button>}
           {mode === "won" && levelIndex < gameLevels.length - 1 && <button type="button" className="btn btn-outline" onClick={() => chooseLevel(levelIndex + 1)}>Next world →</button>}
           {mode === "won" && <Link className="btn btn-outline" href="/projects">Explore projects ↗</Link>}
         </div>
-        {best > 0 && <small>YOUR BEST SCORE: {best.toLocaleString()}</small>}
+        {best > 0 && <small>YOUR ALL-TIME BEST SCORE: {best.toLocaleString()}</small>}
       </div>}
       {selectedProject && <div className="game-overlay pipe-overlay" role="dialog" aria-modal="true" aria-label={selectedProject.title + " project"} onKeyDown={e => { if (e.key === "Tab") { const focusable = Array.from(e.currentTarget.querySelectorAll<HTMLElement>("a,button")); const index = focusable.indexOf(document.activeElement as HTMLElement); if ((e.shiftKey && index === 0) || (!e.shiftKey && index === focusable.length - 1)) { e.preventDefault(); (e.shiftKey ? focusable[focusable.length - 1] : focusable[0])?.focus(); } } }}>
         <span className="eyebrow">SECRET PROJECT ROOM · {String(portal! + 1).padStart(2,"0")}</span>
@@ -425,6 +455,7 @@ export function PortfolioGame() {
     </div>
     {notice && mode === "running" && <div className="game-save-notice" role="status">{notice}</div>}
     <div className="game-controls"><div className="game-control-left">{(["left", "right"] as const).map((key) => <button key={key} type="button" className="control-button" aria-label={key === "left" ? "Move left" : "Move right"} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press(key, true); }} onPointerUp={() => press(key, false)} onPointerCancel={() => press(key, false)} onLostPointerCapture={() => press(key, false)}>{key === "left" ? "◀" : "▶"}</button>)}</div><span className="control-tip">MOVE: ← → / A D <span>·</span> JUMP: SPACE / W <span>·</span> PIPE: ↓ / S</span><div className="game-control-right"><button type="button" className="control-button" aria-label="Enter pipe" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("down", true); }} onPointerUp={() => press("down", false)} onPointerCancel={() => press("down", false)} onLostPointerCapture={() => press("down", false)}>↓</button><button type="button" className="control-button jump-button" aria-label="Jump" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("jump", true); }} onPointerUp={() => press("jump", false)} onPointerCancel={() => press("jump", false)} onLostPointerCapture={() => press("jump", false)}>A</button></div></div>
+    <div className="game-mission-layout"><section className="game-missions" aria-label="World side quests"><h3>WORLD QUESTS</h3><div className="game-mission-grid"><span className={missions.collector?"complete":""}>◉ Collect 75% of coins {missions.collector?"✓":""}</span><span className={missions.explorer?"complete":""}>✦ Find a hidden star {missions.explorer?"✓":""}</span><span className={missions.survivor?"complete":""}>♥ Keep 2 lives {missions.survivor?"✓":""}</span><span className={missions.perfect?"complete":""}>★ Master the world (95% coins + 2 stars + 2 lives) {missions.perfect?"✓":""}</span></div></section><section className="game-records" aria-label="World record"><h3>YOUR BEST RUN</h3>{records[level.id]?<div><strong>{records[level.id].score.toLocaleString()} pts</strong><p>{records[level.id].coins} coins · {records[level.id].stars} stars · {Math.floor(records[level.id].seconds/60)}m {records[level.id].seconds%60}s · {records[level.id].difficulty}</p></div>:<p>No completed run yet. Every first clear is a new record.</p>}</section></div>
     <section className="game-accessible-projects" aria-label="All project entrances in this world"><h3>Skip the platformer. Explore these projects directly.</h3><div>{level.pipes.map(pipe => { const p = projects[pipe.projectIndex]; return <Link href={"/projects/" + p.slug} key={pipe.x}>{p.emoji} {p.title} ↗</Link>; })}</div></section>
     <div className="game-footnote"><span>BUILT FROM SCRATCH WITH CANVAS + REACT</span><Link href="/world">Prefer to explore the map? ↗</Link></div>
   </div>;

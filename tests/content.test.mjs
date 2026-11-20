@@ -16,10 +16,7 @@ test("Every project has a unique route and real GitHub URL", () => {
 test("Project assets are sourced from identified repositories", () => {
   for (const project of projects) {
     if (!project.image) continue;
-    const url = new URL(project.image.src);
-    assert.equal(url.protocol, "https:");
-    assert.equal(url.hostname, "raw.githubusercontent.com");
-    assert.ok(url.pathname.includes("/main/"));
+    assert.match(project.image.src, /^\/projects\/[a-z0-9-]+\.(?:png|webp)$/);
     assert.ok(project.image.alt.length > 20);
     assert.ok(project.image.caption.length > 8);
   }

@@ -7,7 +7,7 @@ A full Next.js portfolio inspired by the original **Mario-like HTML prototype**,
 - **Home:** character-led pixel-art hero, selected projects, explorable map, experience, skill inventory and contact CTA.
 - **World:** six clickable locations, keyboard-friendly native controls and progress saved locally.
 - **Play:** custom Canvas platformer with coins, enemies, pipes that open project previews, lives, scores, touch controls and an optional sound toggle.
-- **Projects:** searchable/category-filterable repository-backed projects and individual case-study routes; original repository visuals appear where a verified asset exists.
+- **Projects:** searchable/category-filterable repository-backed projects and individual case-study routes; original repository visuals are copied into local public assets with provenance captions, avoiding runtime GitHub image dependencies.
 - **About:** authentic work history, technical stack and timeline.
 - **Now:** curated in-progress work with direct repository links.
 - **Developer console:** an accessible, local-only mini command explorer with help, skills, projects and `open <slug>` shortcuts (never executes real shell commands).
@@ -101,3 +101,10 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for future upgrades such as real screensh
 ---
 
 Built by Arpit Yadav · [GitHub](https://github.com/Arpitruh)
+
+### Verified asset provenance
+
+- `public/projects/gemini-clone.png`: `Arpitruh/Gemini_Clone` → `screenshot.png` on its `main` branch.
+- `public/projects/sisters-magical-spoon.webp`: `Arpitruh/Sisters_Magical_Spoon` → `public/images/brand/thali.webp` on its `main` branch.
+
+Both files are assets from the portfolio owner's repositories. Add other images only after confirming ownership and permission.

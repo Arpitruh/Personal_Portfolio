@@ -82,3 +82,5 @@
 - [x] Self-host the original DM Sans and Press Start 2P fonts from open-license Fontsource packages; remove third-party font requests and constrain font CSP to self
 
 - [x] Add diagnostic axe output for exact failed foreground/background combinations to speed up theme contrast remediation
+
+- [x] Eliminate the reveal animation that lowered rendered text opacity to 45% and violated WCAG contrast before scroll

@@ -35,7 +35,7 @@ test("game worlds and all direct portals work without canvas gameplay", async ({
 
 test("project case studies and SEO assets are generated", async ({ page, request }) => {
   await page.goto("/projects");
-  await expect(page.getByRole("heading", { name: /projects/i }).first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Built with purpose/i })).toBeVisible();
   await page.goto("/projects/cacheloom");
   await expect(page.getByRole("heading", { name: /CacheLoom/i })).toBeVisible();
   const [robots, sitemap, image] = await Promise.all([

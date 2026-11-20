@@ -67,8 +67,8 @@ test("capture lab layout shifts for the homepage",async ({page,isMobile})=>{
   });
   await page.goto("/");
   await page.waitForTimeout(2200);
-  const shifts=await page.evaluate(()=>(window as typeof window & {__layoutShifts?:unknown[]}).__layoutShifts??[]);
+  const shifts=await page.evaluate(()=>(window as typeof window & {__layoutShifts?:{score:number}[]}).__layoutShifts??[]);
   console.log("HOME_LAYOUT_SHIFTS "+JSON.stringify(shifts));
-  const total=shifts.reduce((sum,entry)=>sum+((entry as {score:number}).score||0),0);
+  const total=shifts.reduce((sum,entry)=>sum+(entry.score||0),0);
   expect(total,"Unexpected above-the-fold layout shifts").toBeLessThan(0.1);
 });

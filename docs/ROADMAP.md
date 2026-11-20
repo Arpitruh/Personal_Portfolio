@@ -34,9 +34,10 @@
 - [ ] Verify live desktop/mobile flows and Canvas touch gameplay against the preview
 - [ ] Audit contrast in both themes and with reduced-motion enabled
 - [x] Add a bounded content security policy and baseline browser security headers
-- [ ] Commit a generated dependency lockfile and enable dependency scanning
+- [x] Commit the v3 npm lockfile and add Dependabot plus a high-severity production dependency audit
 - [x] Add automated checks for navigation, sitemap and canonical metadata
-- [ ] Independently verify external links and deployment domains
+- [x] Verify the 10 published public GitHub repository URLs (2026-11-20)
+- [ ] Independently verify any external live demo domains
 - [ ] Add free email delivery only if a robust, abuse-resistant backend is needed
 
 ## Principles
@@ -74,6 +75,6 @@
 - [x] Add axe-core WCAG 2.1 A/AA automated browser audits
 - [x] Add repeatable Lighthouse mobile/desktop lab measurements with archived JSON
 - [x] Add scoped npm vulnerability scanning and lockfile bootstrap workflow
-- [ ] Validate the generated lockfile and convert CI installs to npm ci
+- [x] Validate the generated lockfile and convert CI installs to npm ci
 - [ ] Review axe/Lighthouse findings and fix significant deficiencies
 - [ ] Stage exact passing commit for manual responsive, keyboard, and screen-reader review

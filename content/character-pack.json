@@ -1,22 +1,14 @@
 {
   "standing": {
-    "src": "",
-    "alt": "",
-    "caption": ""
+    "src": "/uploads/images/cozy-gamer-with-coffee-and-pixels-4.png"
   },
   "sitting": {
-    "src": "",
-    "alt": "",
-    "caption": ""
+    "src": "/uploads/images/cozy-developer-workspace-illustration-2.png"
   },
   "coding": {
-    "src": "",
-    "alt": "",
-    "caption": ""
+    "src": "/uploads/images/cozy-developer-desk-setup-3.png"
   },
   "casual": {
-    "src": "",
-    "alt": "",
-    "caption": ""
+    "src": "/uploads/images/friendly-gamer-character-with-pixel-accents-1.png"
   }
 }

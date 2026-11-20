@@ -26,3 +26,15 @@ for(let i=0;i<data.moments.length;i++){
  await check(moment,"Public moment "+(i+1));
 }
 console.log("Phase 15: published visual media validated");
+
+const resumeSource=JSON.parse(await readFile("content/resume.json","utf8"));
+if(resumeSource.file){
+ if(typeof resumeSource.file!=="string"||!/^\/uploads\/resumes\/[a-zA-Z0-9_.-]+\.pdf$/i.test(resumeSource.file)||resumeSource.file.includes(".."))throw Error("Resume must be an approved local PDF file");
+ const filename=join("public",resumeSource.file.slice(1));
+ const file=await stat(filename).catch(()=>null);
+ if(!file?.isFile()||file.size>8*1024*1024||file.size<100)throw Error("Published resume PDF missing or outside size limit: "+filename);
+ const {open}=await import("node:fs/promises");
+ const fd=await open(filename,"r");
+ try {const magic=Buffer.alloc(5);await fd.read(magic,0,5,0);if(magic.toString()!=="%PDF-")throw Error("Published resume is not a PDF");}
+ finally {await fd.close();}
+}

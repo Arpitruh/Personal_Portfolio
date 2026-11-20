@@ -23,7 +23,8 @@ const pdf=resumeSource.file.trim();
 // Only a local Pages CMS media path may enable public PDF download.
 export const resume={
   label:resumeSource.label,
-  updated:resumeSource.updated,
+  // Pages CMS can omit optional metadata; it must never prevent a PDF from publishing.
+  updated:typeof (resumeSource as {updated?:unknown}).updated==="string"?(resumeSource as {updated:string}).updated:"",
   note:resumeSource.note,
   file:/^\/uploads\/resumes\/[a-zA-Z0-9_.-]+\.pdf$/i.test(pdf)&&!pdf.includes("..")?pdf:""
 };

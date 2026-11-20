@@ -900,3 +900,16 @@ img,canvas,svg { max-width: 100%; }
 .contact-links a{min-width:0;gap:12px;overflow-wrap:anywhere}
 .contact-links a span:last-child{text-align:right}
 @media(max-width:600px){.contact-links a{align-items:flex-start;flex-wrap:wrap}}
+
+/* The uploaded PDF is the primary recruiter resume. The generated summary is secondary. */
+.recruiter-pdf-section{margin:24px 0 38px;padding:22px;background:var(--paper);border:2px solid var(--border);border-radius:9px}
+.recruiter-pdf-header{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+.recruiter-pdf-header h2{font-size:clamp(23px,3vw,36px);margin:7px 0}
+.recruiter-pdf-header p,.recruiter-pdf-fallback{font-size:13px;color:var(--ink-soft)}
+.recruiter-pdf-frame{display:block;width:100%;min-height:min(100vh,900px);height:900px;max-height:85vh;border:1px solid var(--border);border-radius:5px;background:#f1f1f1}
+.recruiter-pdf-fallback a{text-decoration:underline;color:var(--ink)}
+.recruiter-summary-label{margin:36px 0 18px}
+.recruiter-summary-label h2{font-size:clamp(22px,3vw,34px);margin:8px 0}
+.recruiter-summary-label p{color:var(--ink-soft)}
+@media(max-width:680px){.recruiter-pdf-section{padding:10px}.recruiter-pdf-frame{min-height:480px;height:65vh}}
+@media print{.recruiter-pdf-section,.recruiter-summary-label{display:none!important}}

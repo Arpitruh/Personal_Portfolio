@@ -1,7 +1,7 @@
 import {test,expect} from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-const pages=["/","/projects","/about","/contact","/recruiter","/room","/skills","/achievements","/assistant"];
+const pages=["/","/projects","/about","/contact","/recruiter","/room","/skills","/achievements","/assistant","/play"];
 for(const route of pages){
   test("accessible landmarks and automated WCAG checks: "+route,async ({page})=>{
     await page.goto(route);

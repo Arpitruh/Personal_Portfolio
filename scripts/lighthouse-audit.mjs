@@ -25,7 +25,8 @@ try{
  for(const config of [
   {name:"home-mobile",path:"/",formFactor:"mobile"},
   {name:"projects-mobile",path:"/projects",formFactor:"mobile"},
-  {name:"home-desktop",path:"/",formFactor:"desktop"}
+  {name:"home-desktop",path:"/",formFactor:"desktop"},
+  {name:"arcade-mobile",path:"/play",formFactor:"mobile"}
  ]){
   let lhr;
   for(let attempt=1;attempt<=2;attempt++){

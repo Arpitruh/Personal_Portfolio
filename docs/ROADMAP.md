@@ -113,3 +113,13 @@
 - [ ] Upload owner-selected real portrait and illustration files
 - [ ] Review original images and EXIF/privacy before publishing
 - [ ] Verify visual consistency of generated illustrated character against final references
+
+## Phase 16 — Five-world arcade upgrade
+- [x] Expand from three to five hand-built thematic worlds
+- [x] Add spike hazards, powerups, secret stars and escalating enemy speed
+- [x] Add three difficulties, mission bonuses, time records and campaign progression
+- [x] Add Shift/X/touch dash, jump buffering and coyote time
+- [x] Add three-hit guardians in advanced worlds and chain-combo scoring
+- [x] Preserve existing saved checkpoints and direct project links
+- [x] Add browser and data-model tests with a staging release gate
+- [ ] Manual long-form game balance and real-device gameplay before a production merge

@@ -176,3 +176,44 @@ test("character poses render when approved CMS files exist, with fallback when a
    await expect(page.locator("#main")).toHaveCount(1);
  }
 });
+
+test("expanded arcade campaign supports difficulty, five worlds, quests and records",async({page})=>{
+ await page.goto("/play");
+ const chooser=page.getByRole("group",{name:"Choose a game world"});
+ await expect(chooser.getByRole("button")).toHaveCount(5);
+ await chooser.getByRole("button",{name:/Neon Nexus/}).click();
+ await expect(page.getByText(/No completed run yet/)).toBeVisible();
+ await expect(page.getByRole("region",{name:"All project entrances in this world"}).locator("a")).toHaveCount(4);
+ const select=page.getByLabel("DIFFICULTY");
+ await select.selectOption("expert");
+ await expect(select).toHaveValue("expert");
+ await page.getByRole("button",{name:/Start game/}).click();
+ await expect(select).toBeDisabled();
+ await expect(page.getByRole("button",{name:"Pause game II"})).toBeEnabled();
+ await page.getByRole("button",{name:"Pause game II"}).click();
+ await expect(page.getByRole("heading",{name:"Adventure on hold"})).toBeVisible();
+});
+
+test("dash touch control and guardian finish gate are explained to players",async({page})=>{
+ await page.goto("/play");
+ await page.getByRole("group",{name:"Choose a game world"}).getByRole("button",{name:/Frostbyte Summit/}).click();
+ await expect(page.getByText(/No completed run yet/)).toBeVisible();
+ await page.locator("summary").filter({hasText:/HOW TO PLAY/}).click();
+ await expect(page.getByText(/guardians in Neon Nexus and Frostbyte Summit/)).toBeVisible();
+ await page.getByRole("button",{name:/Start game/}).click();
+ await expect(page.getByRole("button",{name:"Dash"})).toBeVisible();
+ await page.getByRole("button",{name:"Dash"}).click();
+ await expect(page.getByRole("button",{name:"Pause game II"})).toBeEnabled();
+});
+
+test("arcade keyboard movement advances level progress and dash enters cooldown",async({page,isMobile})=>{
+ test.skip(isMobile,"Keyboard movement physics is validated with desktop Chromium; mobile uses the touch smoke test.");
+ await page.goto("/play");
+ await page.getByRole("button",{name:/Start game/}).click();
+ await page.locator(".game-screen canvas").click();
+ await page.keyboard.down("ArrowRight");
+ await expect.poll(async()=>Number(await page.getByRole("progressbar",{name:"Distance to level finish"}).getAttribute("aria-valuenow")),{timeout:7000}).toBeGreaterThan(5);
+ await page.keyboard.up("ArrowRight");
+ await page.keyboard.press("Shift");
+ await expect(page.locator(".game-hud")).toContainText("COOLDOWN");
+});

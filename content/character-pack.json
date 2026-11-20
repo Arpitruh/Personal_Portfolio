@@ -1,14 +1,22 @@
 {
   "standing": {
-    "src": "/uploads/images/cozy-gamer-with-coffee-and-pixels-4.png"
+    "src": "/uploads/images/cozy-gamer-with-coffee-and-pixels-4.png",
+    "alt": "Illustrated developer character in a cozy gamer scene with coffee and pixel-art details.",
+    "caption": ""
   },
   "sitting": {
-    "src": "/uploads/images/cozy-developer-workspace-illustration-2.png"
+    "src": "/uploads/images/cozy-developer-workspace-illustration-2.png",
+    "alt": "Illustration of a developer in a cozy workspace with a laptop.",
+    "caption": ""
   },
   "coding": {
-    "src": "/uploads/images/cozy-developer-desk-setup-3.png"
+    "src": "/uploads/images/cozy-developer-desk-setup-3.png",
+    "alt": "Illustration of a developer working at a coding desk.",
+    "caption": ""
   },
   "casual": {
-    "src": "/uploads/images/friendly-gamer-character-with-pixel-accents-1.png"
+    "src": "/uploads/images/friendly-gamer-character-with-pixel-accents-1.png",
+    "alt": "Friendly cartoon developer character with playful pixel-art accents.",
+    "caption": ""
   }
 }

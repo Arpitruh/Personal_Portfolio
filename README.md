@@ -129,3 +129,5 @@ Recruiter mode is **print-to-PDF via the browser** rather than a fabricated down
 Run `npm run check`, `npm run test:e2e`, `npm run audit:security`, and `npm run audit:lighthouse` (the latter starts the built Next.js server on port 3100 and requires installed Playwright Chromium). CI saves Lighthouse JSON results and browser-test artifacts for review. Lighthouse scores are simulated lab measurements, not real-user CrUX/Web Vitals data. Axe-core catches a subset of WCAG issues; manual screen-reader, contrast, and keyboard review is still necessary. The staging deployment uses preview protection and is not promoted until reviewed.
 
 The npm lockfile is generated on the existing development branch by a tightly scoped GitHub workflow whenever the dependency manifest changes; CI subsequently uses the committed lockfile for reproducibility.
+
+The original fonts are self-hosted from the free SIL OFL Fontsource npm packages. Browser requests no longer depend on Google Fonts/CDN access; changes to their npm versions require regenerating and committing the lockfile on the existing development branch.

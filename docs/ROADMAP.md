@@ -78,3 +78,5 @@
 - [x] Validate the generated lockfile and convert CI installs to npm ci
 - [ ] Review axe/Lighthouse findings and fix remaining significant deficiencies (contrast and home CLS under active remediation)
 - [ ] Stage exact passing commit for manual responsive, keyboard, and screen-reader review
+
+- [x] Self-host the original DM Sans and Press Start 2P fonts from open-license Fontsource packages; remove third-party font requests and constrain font CSP to self

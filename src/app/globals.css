@@ -889,3 +889,9 @@ img,canvas,svg { max-width: 100%; }
 
 /* Readable status colors over the dark arcade HUD. */
 .game-hud .game-buff{color:#9df8d8}
+
+/* WCAG: light-on-dark arcade shell contains light cards; give each card
+   an explicit theme-aware text color instead of inheriting shell white. */
+.game-adventure-options,.game-missions,.game-records,.game-progress{color:var(--ink)}
+.game-mission-grid span{color:var(--ink)}
+.game-mission-grid .complete{color:#24553e}

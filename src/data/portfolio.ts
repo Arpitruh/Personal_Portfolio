@@ -17,7 +17,9 @@ export interface PortfolioProject {
 // environment details stay in code, and content stays statically bundled.
 export const profile = {
   ...site,
-  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "",
+  // Public contact methods are owner-managed in Pages CMS, not secrets.
+  email: site.email?.trim() || process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "",
+  phone: /^\+?[0-9 ]{9,18}$/.test(site.phone?.trim() || "") ? site.phone.trim() : "",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
     (process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : "http://localhost:3000")
 };

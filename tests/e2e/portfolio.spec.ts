@@ -217,3 +217,12 @@ test("arcade keyboard movement advances level progress and dash enters cooldown"
  await page.keyboard.press("Shift");
  await expect(page.locator(".game-hud")).toContainText("COOLDOWN");
 });
+
+test("public contact details open mail and dial actions without a paid backend",async ({page})=>{
+ await page.goto("/contact");
+ await expect(page.getByRole("link",{name:/Email arpitruh112@gmail.com/})).toHaveAttribute("href","mailto:arpitruh112@gmail.com");
+ await expect(page.getByRole("link",{name:/Phone \+91 8707884517/})).toHaveAttribute("href","tel:+918707884517");
+ await expect(page.getByRole("button",{name:/Copy email address/})).toBeVisible();
+ await expect(page.getByRole("button",{name:/Open email draft/})).toBeVisible();
+ await expect(page.getByText(/does not submit or store your message/)).toBeVisible();
+});

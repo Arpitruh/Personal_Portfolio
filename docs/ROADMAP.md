@@ -91,3 +91,15 @@
 
 - [x] Reserve viewport height for the streamed root loading shell so the footer does not jump out of view during hydration
 - [x] Add a desktop/mobile layout-shift regression guard (<0.1 during initial browser rendering)
+
+## Phase 14 — Content management and personal-life page
+- [x] Add GitHub-backed Pages CMS schema on the existing development branch
+- [x] Migrate existing projects, career history, skills and milestones to editable JSON
+- [x] Generate the project catalog before Next.js builds without a runtime CMS dependency
+- [x] Add editable social links, including optional Instagram/Unsplash when verified
+- [x] Add a Beyond the Code page and homepage/About links without inventing hobbies
+- [x] Prepare approved PDF upload and conditional resume download
+- [ ] Owner connects Pages CMS GitHub App and selects development branch
+- [ ] Owner supplies approved interests/social URLs and current resume PDF
+- [ ] Phase 15: design personal photo/illustration collection with owner-provided references
+- [ ] Manual CMS edit-and-preview acceptance after GitHub App connection

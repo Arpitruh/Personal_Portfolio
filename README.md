@@ -131,3 +131,22 @@ Run `npm run check`, `npm run test:e2e`, `npm run audit:security`, and `npm run 
 The npm lockfile is generated on the existing development branch by a tightly scoped GitHub workflow whenever the dependency manifest changes; CI subsequently uses the committed lockfile for reproducibility. A weekly dependency-security audit runs without creating update branches.
 
 The original fonts are self-hosted from the free SIL OFL Fontsource npm packages. Browser requests no longer depend on Google Fonts/CDN access; changes to their npm versions require regenerating and committing the lockfile on the existing development branch.
+
+## Phase 14 · Content editing without touching code
+
+**Editor:** [Pages CMS](https://app.pagescms.org) → sign in using GitHub → authorize `Arpitruh/Personal_Portfolio` → select **`feat/portfolio-world-nextjs`**. This GitHub App connection must be approved by the repository owner; no credentials are stored in the portfolio. The schema is in `.pages.yml`.
+
+The editor offers:
+- **Public profile:** headline, location, role and bio in `content/site.json`.
+- **Experience:** add roles or edit dates, employers and job descriptions in `content/experience.json`.
+- **Projects:** create or edit `content/projects/<slug>.json`. The filename and slug must agree. Change `featured` to add/remove a homepage card. The compiler will generate project listings, detail pages and navigation from this folder.
+- **Skills/milestones:** edit structured lists; they feed the skills universe and timeline.
+- **Beyond the Code:** `content/life.json` contains a small public personal introduction and optional hobby cards. No hobbies or photos are invented. **Real and illustrated portrait photography are intentionally postponed to Phase 15.**
+- **Social profiles:** edit `content/socials.json` (add confirmed Unsplash, Instagram, LinkedIn or other HTTPS links, toggle `visible`). Unverified accounts aren't published.
+- **Resume:** upload an *approved* PDF to the CMS resumes media folder and select it in `content/resume.json`. The recruiter page automatically displays its download button; otherwise browser Print / Save as PDF remains available.
+
+**Publication workflow:** all CMS edits go to the **existing development branch**, triggering its usual Vercel preview and GitHub CI. Review the draft PR, then explicitly merge to `main` and deploy production when approved. No new branches, database, special API tokens or paid service are necessary. CMS edits are not silently published to production.
+
+**Privacy:** resumes uploaded to `public/uploads/resumes` become publicly downloadable when merged. Do not upload private addresses, phone numbers, ID documents or confidential employer details. Replacing a file does not erase previous Git history; avoid uploading any sensitive PDF, and delete old published file entries when you rotate the active document. The repository's public history may retain previous copies.
+
+**When using the repo locally:** `npm ci`, `npm run dev`, `npm run check`; project catalog is generated with `npm run content:validate` and automatically on builds/typechecks/tests. The generated JSON is not the CMS source of truth. Only edit `content/` files.

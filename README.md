@@ -181,3 +181,6 @@ The optional portfolio platformer now has five themed worlds, level-specific spi
 - **Combo scoring:** consecutive enemy stomps reward escalating points; damage resets the chain.
 - **World guide:** accessible controls, pickups and scoring information on the game page.
 - **Level progress:** an actual distance-based HUD bar, updated as the character travels.
+
+## Owner-managed contact information
+The public email address and optional phone number live in `content/site.json`, editable through **Pages CMS → Public profile**. Contact uses `mailto:` to compose an email and `tel:` to open the dialer; no message is silently submitted to a backend or sent by this site. Update these fields in Pages CMS when contact details change. Avoid publishing private numbers or addresses.

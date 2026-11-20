@@ -34,6 +34,8 @@ content:
       - {name: location, label: Public location, type: string, required: true}
       - {name: summary, label: Professional summary, type: text, required: true}
       - {name: github, label: GitHub profile URL, type: string, required: true}
+      - {name: email, label: Public contact email, type: string, required: true}
+      - {name: phone, label: Public phone number, type: string}
   - name: experience
     label: Experience
     type: file

@@ -33,5 +33,7 @@ test("Portfolio includes a broad mix of actual project work", () => {
 test("Portfolio's basic public identity is configured", () => {
   assert.equal(profile.name, "Arpit Yadav");
   assert.equal(new URL(profile.github).hostname, "github.com");
+  assert.equal(profile.email, "arpitruh112@gmail.com");
+  assert.equal(profile.phone, "+91 8707884517");
   assert.ok(projects.some((project) => project.featured));
 });

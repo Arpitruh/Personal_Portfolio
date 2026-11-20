@@ -5,16 +5,18 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   async headers() {
     return [{
-      source: "/:path*",
+      // Uploaded PDFs are intentionally excluded: browser PDF viewers use
+      // their own internal frame, which restrictive HTML framing/CSP headers
+      // can block even when the PDF itself opens successfully in a new tab.
+      source: "/:path((?!uploads/resumes/).*)",
       headers: [
         { key: "X-Content-Type-Options", value: "nosniff" },
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-        // Same-origin framing allows the uploaded resume PDF preview without enabling third-party embeds.
         { key: "X-Frame-Options", value: "SAMEORIGIN" },
         { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
         { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-        // Allow only pages on our own origin to embed content, including the resume PDF.
+        // Regular site pages remain protected against third-party framing.
         { key: "Content-Security-Policy", value: [
           "default-src 'self'",
           "base-uri 'self'",
@@ -28,7 +30,7 @@ const nextConfig: NextConfig = {
           "connect-src 'self'",
           "media-src 'none'",
           "upgrade-insecure-requests"
-        ].join('; ') }
+        ].join("; ") }
       ]
     }];
   }

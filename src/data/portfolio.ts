@@ -1,8 +1,8 @@
-import site from "../../content/site.json";
-import career from "../../content/experience.json";
-import tools from "../../content/skills.json";
-import timeline from "../../content/milestones.json";
-import projectCatalog from "../content/generated/projects.json";
+import site from "../../content/site.json" with { type: "json" };
+import career from "../../content/experience.json" with { type: "json" };
+import tools from "../../content/skills.json" with { type: "json" };
+import timeline from "../../content/milestones.json" with { type: "json" };
+import projectCatalog from "../content/generated/projects.json" with { type: "json" };
 
 export type ProjectCategory = "Products" | "Platform" | "AI" | "Frontend";
 export type ProjectStatus = "Building" | "Shipped" | "Iterating";

@@ -13,6 +13,11 @@ async function check(asset,label){
 }
 await check(data.portrait,"Real portrait");
 await check(data.illustration,"Illustration");
+const characterPack=JSON.parse(await readFile("content/character-pack.json","utf8"));
+for(const pose of ["standing","sitting","coding","casual"]){
+  if(!characterPack[pose]||typeof characterPack[pose]!=="object")throw Error("Character pack missing "+pose+" object");
+  await check(characterPack[pose],"Character pack: "+pose);
+}
 if(!Array.isArray(data.moments))throw Error("Moments must be an array");
 for(let i=0;i<data.moments.length;i++){
  const moment=data.moments[i];

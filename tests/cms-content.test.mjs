@@ -28,3 +28,9 @@ test("Phase 15 media must be an approved, local and accessible asset",async()=>{
  assert.equal(visualIdentity.illustration,null);
  assert.deepEqual(visualIdentity.moments,[]);
 });
+
+test("character pack routes are empty until real files are uploaded",async()=>{
+ const {characterPack}=await import("../src/data/personal.ts");
+ assert.deepEqual(Object.keys(characterPack),["standing","sitting","coding","casual"]);
+ assert.ok(Object.values(characterPack).every(item=>item===null));
+});

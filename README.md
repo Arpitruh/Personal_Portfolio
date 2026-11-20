@@ -165,3 +165,8 @@ In Pages CMS (development branch), use **Portraits and personal photo gallery** 
 - **Privacy:** do not upload home addresses, ID documents, geotagged private images, bystanders without consent, or sensitive photos. Uploaded assets and commit history are public once merged. Compress originals for web and remove EXIF metadata before upload.
 
 New pictures require owner review and publishing through the regular staging → PR → production flow. The visual components and CMS entries are not dependent on an external API.
+
+## Four-pose character pack
+Pages CMS → **Illustrated Character Pack (Four Poses)** (edit the existing `feat/portfolio-world-nextjs` branch). Upload the approved individual **WebP** assets to the `personal-images` media folder and choose them in the four CMS image fields. Provide distinct alt text for each. The components automatically place standing on the homepage, sitting with laptop on Projects, coding at desk on Skills, and casual on Beyond the Code. The existing pixel character remains in place until the standing pose is set.
+
+The image pack is distributed separately for manual CMS upload; the GitHub repository must not reference local sandbox paths. The build refuses broken media paths or files over 4 MB. Never upload private original photos without reviewing metadata and consent.

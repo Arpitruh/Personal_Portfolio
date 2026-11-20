@@ -802,3 +802,29 @@ img,canvas,svg { max-width: 100%; }
 @media(max-width:850px){.personal-gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.personal-gallery-grid{grid-template-columns:1fr}.personal-gallery-empty{align-items:start;flex-direction:column}.personal-portrait-inset{right:0}}
 @media(prefers-reduced-motion:reduce){.personal-gallery-photo img{transition:none}}
+
+
+/* Character pack: standalone transparent art over the original site surfaces.
+   No pose is displayed until its CMS asset is uploaded and validated. */
+.character-pose{margin:0;min-width:0;max-width:470px}
+.character-pose-art{position:relative;width:100%;aspect-ratio:4/5;overflow:visible}
+.character-pose-image{object-fit:contain;object-position:center bottom;filter:drop-shadow(5px 8px 0 rgba(31,28,47,.17))}
+.character-pose-caption{font-size:12px;line-height:1.6;color:var(--ink-soft);margin-top:7px}
+.page-heading:has(>.character-pose){position:relative;min-height:310px;padding-right:min(38%,390px)}
+.page-heading>.character-pose{position:absolute;right:0;bottom:0;width:min(36%,340px)}
+.page-heading>.character-pose .character-pose-art{aspect-ratio:1/1}
+.life-character-feature{display:grid;grid-template-columns:1fr minmax(240px,.85fr);align-items:center;gap:36px;margin-top:65px;background:var(--soft);border:2px solid var(--border);border-radius:10px;padding:24px 40px}
+.life-character-feature h2{font-size:clamp(29px,4vw,53px);margin:10px 0}
+.life-character-feature p{line-height:1.7;color:var(--ink-soft);max-width:500px}
+.life-character-feature .character-pose{width:100%;justify-self:center}
+.hero-avatar:has(.character-pose){width:170px;height:190px;overflow:visible}
+.hero-avatar .character-pose{width:100%;height:100%}
+.hero-avatar .character-pose-art{height:100%;aspect-ratio:auto}
+.hero-avatar .character-pose-caption{display:none}
+@media(max-width:750px){
+  .page-heading:has(>.character-pose){min-height:0;padding-right:0}
+  .page-heading>.character-pose{position:relative;width:min(85%,340px);margin:10px auto -20px}
+  .life-character-feature{grid-template-columns:1fr;padding:24px}
+  .life-character-feature .character-pose{max-width:320px}
+}
+@media(prefers-reduced-motion:reduce){.character-pose-image{transition:none}}

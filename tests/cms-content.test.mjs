@@ -11,13 +11,15 @@ test("CMS project collection is compiled exactly without losing records",async()
  assert.deepEqual(new Set(authored.map(x=>x.slug)),new Set(projects.map(x=>x.slug)));
  for(const authoredProject of authored)assert.deepEqual(projects.find(p=>p.slug===authoredProject.slug),authoredProject);
 });
-test("CMS records power experience, skills and personal life without invented hobbies",()=>{
+test("CMS records power experience, skills and personal life without invented hobbies",async()=>{
  assert.ok(experience.length>=2);
  assert.ok(skills.some(x=>x.group==="Frontend"));
  assert.ok(life.introduction.trim().length>35);
  assert.deepEqual(life.hobbies,[]);
  assert.ok(socialProfiles.every(x=>x.visible&&new URL(x.url).protocol==="https:"));
- assert.equal(resume.file,"");
+ const source=JSON.parse(await readFile("content/resume.json","utf8"));
+ assert.equal(resume.file,source.file);
+ assert.equal(typeof resume.updated,"string");
 });
 
 test("Phase 15 media must be an approved, local and accessible asset",async()=>{

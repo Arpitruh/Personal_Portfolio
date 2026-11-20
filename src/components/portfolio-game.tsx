@@ -178,6 +178,7 @@ export function PortfolioGame() {
     if (!ctx) return;
     let frame = 0;
     let last = 0, accumulator = 0;
+    let lastDrawState = "";
     const step = () => {
       if (modeRef.current !== "running") return;
       const player = playerRef.current, keys = keysRef.current, coins = coinsRef.current;
@@ -312,7 +313,10 @@ export function PortfolioGame() {
       if (!last) last = timestamp;
       accumulator += Math.min(60, timestamp - last); last = timestamp;
       while (accumulator >= 1000 / 60) { step(); accumulator -= 1000 / 60; }
-      draw(); frame = requestAnimationFrame(animate);
+      // Canvas is expensive on mobile; don't repaint an unchanged, paused scene.
+      const drawState = levelRef.current.id + ":" + tickRef.current + ":" + modeRef.current;
+      if (drawState !== lastDrawState) { draw(); lastDrawState = drawState; }
+      frame = requestAnimationFrame(animate);
     }
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
@@ -352,7 +356,7 @@ export function PortfolioGame() {
       </div>}
     </div>
     {notice && mode === "running" && <div className="game-save-notice" role="status">{notice}</div>}
-    <div className="game-controls"><div className="game-control-left">{(["left", "right"] as const).map((key) => <button key={key} type="button" className="control-button" aria-label={key === "left" ? "Move left" : "Move right"} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press(key, true); }} onPointerUp={() => press(key, false)} onPointerCancel={() => press(key, false)}>{key === "left" ? "◀" : "▶"}</button>)}</div><span className="control-tip">MOVE: ← → / A D <span>·</span> JUMP: SPACE / W <span>·</span> PIPE: ↓ / S</span><div className="game-control-right"><button type="button" className="control-button" aria-label="Enter pipe" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("down", true); }} onPointerUp={() => press("down", false)} onPointerCancel={() => press("down", false)}>↓</button><button type="button" className="control-button jump-button" aria-label="Jump" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("jump", true); }} onPointerUp={() => press("jump", false)} onPointerCancel={() => press("jump", false)}>A</button></div></div>
+    <div className="game-controls"><div className="game-control-left">{(["left", "right"] as const).map((key) => <button key={key} type="button" className="control-button" aria-label={key === "left" ? "Move left" : "Move right"} onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press(key, true); }} onPointerUp={() => press(key, false)} onPointerCancel={() => press(key, false)} onLostPointerCapture={() => press(key, false)}>{key === "left" ? "◀" : "▶"}</button>)}</div><span className="control-tip">MOVE: ← → / A D <span>·</span> JUMP: SPACE / W <span>·</span> PIPE: ↓ / S</span><div className="game-control-right"><button type="button" className="control-button" aria-label="Enter pipe" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("down", true); }} onPointerUp={() => press("down", false)} onPointerCancel={() => press("down", false)} onLostPointerCapture={() => press("down", false)}>↓</button><button type="button" className="control-button jump-button" aria-label="Jump" onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); press("jump", true); }} onPointerUp={() => press("jump", false)} onPointerCancel={() => press("jump", false)} onLostPointerCapture={() => press("jump", false)}>A</button></div></div>
     <section className="game-accessible-projects" aria-label="All project entrances in this world"><h3>Skip the platformer. Explore these projects directly.</h3><div>{level.pipes.map(pipe => { const p = projects[pipe.projectIndex]; return <Link href={"/projects/" + p.slug} key={pipe.x}>{p.emoji} {p.title} ↗</Link>; })}</div></section>
     <div className="game-footnote"><span>BUILT FROM SCRATCH WITH CANVAS + REACT</span><Link href="/world">Prefer to explore the map? ↗</Link></div>
   </div>;

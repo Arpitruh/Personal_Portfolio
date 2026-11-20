@@ -46,3 +46,42 @@ test("project case studies and SEO assets are generated", async ({ page, request
   expect(await sitemap.text()).toContain("/projects/cacheloom");
   expect(image.ok()).toBeTruthy();
 });
+
+test("theme preference persists and core pages have no horizontal overflow", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Switch to night theme" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "night");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "night");
+
+  for (const route of ["/", "/world", "/about", "/projects", "/contact"]) {
+    await page.goto(route);
+    // Compare the document to the viewport; a single overflowing panel should not break navigation.
+    const width = await page.evaluate(() => ({
+      scroll: document.documentElement.scrollWidth,
+      view: document.documentElement.clientWidth
+    }));
+    expect(width.scroll, "Horizontal overflow at " + route).toBeLessThanOrEqual(width.view + 2);
+  }
+});
+
+test("touch controls work and do not leave movement stuck", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "Touch smoke test runs in the mobile browser project");
+  await page.goto("/play");
+  await page.getByRole("button", { name: /Start game/ }).click();
+  const right = page.getByRole("button", { name: "Move right" });
+  const jump = page.getByRole("button", { name: "Jump" });
+  await right.tap();
+  await jump.tap();
+  await expect(page.getByRole("button", { name: "Pause game II" })).toBeEnabled();
+  await page.getByRole("button", { name: "Pause game II" }).click();
+  await expect(page.getByRole("heading", { name: /Adventure on hold/ })).toBeVisible();
+});
+
+test("canonical metadata and content discovery are valid", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /^https?:\/\//);
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /frontend engineer/i);
+  await page.goto("/projects/cacheloom");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", /\/projects\/cacheloom$/);
+});

@@ -119,3 +119,8 @@ Run `npm run build && npm run test:e2e` after `npm install` (Playwright installs
 
 ## Phase 5: save and compare projects
 The Projects page includes a device-local **Saved quests** list and a three-project comparison workbench. Save state uses browser local storage; no login or service receives it. Compare selections are encoded in the page URL (e.g. `/projects?compare=cacheloom,leadloop-crm`) so visitors can share a specific set of case studies. Unknown slugs are ignored; no arbitrary content is fetched from the query string. If clipboard access is blocked, the current browser URL remains available for manual copying.
+
+## Phases 6–12 · Discover, evaluate and explore
+The development branch adds an interactive room (`/room`), a clean recruiter profile (`/recruiter`), skill-to-project explorer (`/skills`), local achievement board (`/achievements`), and a rule-based portfolio guide (`/assistant`). Case studies now group the *documented* technology stack into a conceptual architecture view without claiming private implementation knowledge.
+
+Recruiter mode is **print-to-PDF via the browser** rather than a fabricated downloadable PDF: replace it with a supplied, verified original when available. The assistant is a deterministic local content search, **not an external LLM or a live agent**. Badges and saved projects are device-local. See [the implementation plan](docs/PHASES_6_TO_12.md). No additional hosted service is required.

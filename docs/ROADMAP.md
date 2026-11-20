@@ -54,3 +54,14 @@
 - [x] Add browser acceptance tests for the save, compare, reload and share flows
 - [ ] Confirm any additional public case-study artwork and measurable outcomes with the portfolio owner
 
+
+## Phases 6–12 — Interactive portfolio upgrade (development branch)
+- [x] Phase 6: CSS-based, keyboard-friendly interactive developer room with discoverable destinations
+- [x] Phase 7: recruiter-focused career route and printable, source-backed profile
+- [x] Phase 8: conceptual stack overview, section navigation and case-study depth
+- [x] Phase 9: reduced-motion and print support, static content and tests (real Lighthouse/accessibility audit pending)
+- [x] Phase 10: skill-to-project universe without arbitrary proficiency scores
+- [x] Phase 11: private device-local visitor achievements
+- [x] Phase 12: transparent deterministic assistant backed by published portfolio data
+- [ ] Supply an owner-approved original resume to offer an actual downloadable resume file
+- [ ] Run real assistive-technology and Lighthouse/Web Vitals acceptance against staging

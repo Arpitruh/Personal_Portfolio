@@ -14,7 +14,7 @@ export default function HomePage() {
           <p className="eyebrow hero-level">WELCOME TO MY LITTLE CORNER OF THE INTERNET / WORLD 1-1</p>
           <h1>Hi, I&apos;m <span>Arpit.</span><br />I make the web <em>feel alive.</em></h1>
           <p className="hero-description">Software engineer by day. Builder by habit. I turn complex ideas into clean, playful digital experiences that people actually enjoy using.</p>
-          <div className="button-group hero-buttons"><Link className="btn btn-primary" href="/projects">Explore my work <span aria-hidden="true">↗</span></Link><Link className="btn btn-outline" href="/play">▶ Play my portfolio</Link></div>
+          <div className="button-group hero-buttons"><Link className="btn btn-primary" href="/projects">Explore my work <span aria-hidden="true">↗</span></Link><Link className="btn btn-outline" href="/room">⌘ Explore my room</Link><Link className="btn btn-outline" href="/recruiter">Recruiter mode ↗</Link></div>
           <div className="hero-social"><span>BASED IN {profile.location.toUpperCase()}</span><span className="hero-social-line" /><a href={profile.github} target="_blank" rel="noopener noreferrer">GITHUB ↗</a></div>
         </div>
         <div className="hero-scene"><div className="hero-scene-card"><span className="scene-corner scene-corner-left">LEVEL 01</span><span className="scene-corner scene-corner-right">1 PLAYER</span><PixelLandscape /><div className="hero-avatar"><PixelAvatar large /></div><div className="speech-bubble">HELLO WORLD! <span>♥</span></div><div className="scene-caption">✦ PRESS START TO EXPLORE MY WORLD</div></div><div className="scene-stamp">100% HUMAN<br />MADE IDEAS</div></div>
@@ -22,6 +22,17 @@ export default function HomePage() {
       <div className="ticker" aria-hidden="true"><div>DESIGN • DEVELOP • DEBUG • REPEAT ✦ REACT • NEXT.JS • TYPESCRIPT ✦ BUILDING THINGS THAT MATTER ✦ DESIGN • DEVELOP • DEBUG • REPEAT ✦</div></div>
     </section>
 
+    <section className="section new-experiences" id="explore-more"><div className="container">
+      <div className="section-intro"><div><span className="eyebrow">NEW PATHS / BEYOND THE PIXELS</span><h2>Find your <em>own way in.</em></h2><p>Prefer a recruiter-friendly profile, an interactive room, connected skills, or questions and answers? Pick your path.</p></div></div>
+      <div className="experience-shortcuts">
+        <Link href="/room"><span aria-hidden="true">⌘</span><strong>Developer Room</strong><small>Explore the workstation</small></Link>
+        <Link href="/recruiter"><span aria-hidden="true">▤</span><strong>Recruiter Mode</strong><small>Focused career profile + print-to-PDF</small></Link>
+        <Link href="/skills"><span aria-hidden="true">✳</span><strong>Skills Universe</strong><small>See which projects use each tool</small></Link>
+        <Link href="/assistant"><span aria-hidden="true">?</span><strong>Portfolio Guide</strong><small>Ask about the published work</small></Link>
+        <Link href="/achievements"><span aria-hidden="true">★</span><strong>Achievement Board</strong><small>Discover local visitor badges</small></Link>
+        <Link href="/play"><span aria-hidden="true">▶</span><strong>Playable Worlds</strong><small>Three optional pixel adventures</small></Link>
+      </div>
+    </div></section>
     <section className="section section-world" id="world"><div className="container">
       <div className="section-intro"><div><span className="eyebrow">01 / INTERACTIVE ADVENTURE</span><h2>Pick a path.<br /><em>Explore my world.</em></h2><p>Not your usual portfolio navigation. Every stop tells a different part of the story.</p></div><Link className="section-more" href="/world">OPEN FULL MAP ↗</Link></div>
       <WorldMap />

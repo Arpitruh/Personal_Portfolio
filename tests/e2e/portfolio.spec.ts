@@ -161,3 +161,11 @@ test("Phase 15 uses accessible pixel fallback until approved media is uploaded",
  await page.goto("/");
  await expect(page.locator(".hero-avatar")).toBeVisible();
 });
+
+test("character pose destinations retain normal UI before owner uploads the assets",async ({page})=>{
+ for(const route of ["/","/projects","/skills","/life"]){
+   await page.goto(route);
+   await expect(page.locator(".character-pose")).toHaveCount(0);
+   await expect(page.locator("#main")).toHaveCount(1);
+ }
+});

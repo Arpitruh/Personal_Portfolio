@@ -2,6 +2,7 @@ import lifeSource from "../../content/life.json" with { type: "json" };
 import socialsSource from "../../content/socials.json" with { type: "json" };
 import resumeSource from "../../content/resume.json" with { type: "json" };
 import visualSource from "../../content/visuals.json" with { type: "json" };
+import characterSource from "../../content/character-pack.json" with { type: "json" };
 
 export interface Hobby { title:string; description:string; emoji?:string }
 export const life = {
@@ -53,4 +54,12 @@ export const visualIdentity:{
     if(!asset||typeof entry.title!=="string"||!entry.title.trim())return [];
     return [{...asset,title:entry.title.trim(),category:entry.category||"Personal",featured:!!entry.featured}];
   })
+};
+
+/** Four optional matching illustrations. Blank entries don't render anywhere. */
+export const characterPack:Record<"standing"|"sitting"|"coding"|"casual",VisualAsset|null>={
+  standing:validAsset(characterSource.standing.src,characterSource.standing.alt,characterSource.standing.caption),
+  sitting:validAsset(characterSource.sitting.src,characterSource.sitting.alt,characterSource.sitting.caption),
+  coding:validAsset(characterSource.coding.src,characterSource.coding.alt,characterSource.coding.caption),
+  casual:validAsset(characterSource.casual.src,characterSource.casual.alt,characterSource.casual.caption)
 };

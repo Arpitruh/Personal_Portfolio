@@ -208,3 +208,49 @@ content:
             options: {values: [Everyday, Places, Photography, Creative, Other]}
           - {name: featured, label: Highlight on personal page, type: boolean}
           - {name: visible, label: Approved for public display, type: boolean}
+
+  - name: character-pack
+    label: Illustrated Character Pack (Four Poses)
+    type: file
+    path: content/character-pack.json
+    fields:
+      - name: standing
+        label: Standing character / Homepage
+        type: object
+        fields:
+          - name: src
+            type: image
+            label: Standing WebP / PNG
+            options: {media: personal-images}
+          - {name: alt, type: string, label: Accessible image description}
+          - {name: caption, type: string, label: Optional caption}
+      - name: sitting
+        label: Sitting with laptop / Projects
+        type: object
+        fields:
+          - name: src
+            type: image
+            label: Laptop WebP / PNG
+            options: {media: personal-images}
+          - {name: alt, type: string, label: Accessible image description}
+          - {name: caption, type: string, label: Optional caption}
+      - name: coding
+        label: Coding at desk / Skills
+        type: object
+        fields:
+          - name: src
+            type: image
+            label: Coding WebP / PNG
+            options: {media: personal-images}
+          - {name: alt, type: string, label: Accessible image description}
+          - {name: caption, type: string, label: Optional caption}
+      - name: casual
+        label: Casual personal life / Beyond the Code
+        type: object
+        fields:
+          - name: src
+            type: image
+            label: Casual WebP / PNG
+            options: {media: personal-images}
+          - {name: alt, type: string, label: Accessible image description}
+          - {name: caption, type: string, label: Optional caption}

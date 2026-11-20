@@ -140,8 +140,6 @@ export function PortfolioGame() {
     starsRef.current=levelRef.current.secretStars?.map(p=>({...p,collected:false}))??[];
     shieldRef.current=0;speedRef.current=0;elapsedRef.current=0;lastDamageRef.current=-1000;
     dashCooldownRef.current=0;dashTicksRef.current=0;setDashReady(true);
-    bossRef.current=makeBoss(level);setBossHP(bossRef.current?.hp??0);comboRef.current=0;setCombo(0);
-    dashCooldownRef.current=0;dashTicksRef.current=0;setDashReady(true);
     bossRef.current=makeBoss(levelRef.current);setBossHP(bossRef.current?.hp??0);comboRef.current=0;setCombo(0);
     scoreRef.current = 0; livesRef.current = difficultySettings(difficultyRef.current).lives; camRef.current = 0; tickRef.current = 0;
     setScore(0); setCoins(0); setLives(livesRef.current);setShield(0);setSpeedBoost(0);setElapsed(0);setStars(0);setPortal(null); setNotice("");
@@ -159,6 +157,8 @@ export function PortfolioGame() {
     powersRef.current=level.powerups?.map(p=>({...p,collected:false}))??[];
     starsRef.current=level.secretStars?.map(p=>({...p,collected:false}))??[];
     shieldRef.current=0;speedRef.current=0;elapsedRef.current=0;lastDamageRef.current=-1000;
+    dashCooldownRef.current=0;dashTicksRef.current=0;setDashReady(true);
+    bossRef.current=makeBoss(level);setBossHP(bossRef.current?.hp??0);comboRef.current=0;setCombo(0);
     for (const i of save?.collected || []) coinsRef.current[i].collected = true;
     for (const i of save?.defeated || []) enemiesRef.current[i].alive = false;
     scoreRef.current = save?.score ?? 0;

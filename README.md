@@ -112,3 +112,7 @@ Both files are assets from the portfolio owner's repositories. Add other images 
 ### Staging and SEO behavior
 
 If `NEXT_PUBLIC_SITE_URL` is unset, the deployment automatically uses Vercel's injected `VERCEL_URL` (localhost only when running locally). Preview and staging builds emit `noindex` metadata and a robots disallow rule; the intended production deployment should set `NEXT_PUBLIC_SITE_URL` to its confirmed canonical domain.
+
+## Phase 4 browser acceptance
+
+Run `npm run build && npm run test:e2e` after `npm install` (Playwright installs Chromium using `npx playwright install chromium`). The browser tests start the built Next.js server, exercise desktop/mobile navigation, inspect production metadata and keyboard controls, and confirm that the gameplay exposes direct project links without requiring Canvas interaction. CI installs Linux browser dependencies and uploads failure traces/screenshots. This does **not** replace manual performance profiling or testing with real assistive technology.

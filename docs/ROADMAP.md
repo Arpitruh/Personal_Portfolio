@@ -29,11 +29,14 @@
 - [ ] Complete hands-on mobile and screen-reader acceptance tests as part of Phase 4
 
 ## Phase 4 — Production optimization
-- [ ] Run Lighthouse and Web Vitals on a deployed preview
-- [ ] Run Playwright on desktop and mobile flows, including game touch controls
+- [ ] Run Lighthouse and Web Vitals on a deployed preview (independent browser audit pending)
+- [x] Add Playwright desktop/mobile navigational and keyboard/touch smoke tests to CI
+- [ ] Verify live desktop/mobile flows and Canvas touch gameplay against the preview
 - [ ] Audit contrast in both themes and with reduced-motion enabled
-- [ ] Add dependency lockfile, dependency scanning and a well-scoped CSP
-- [ ] Verify all links, deployment domains and canonical metadata
+- [x] Add a bounded content security policy and baseline browser security headers
+- [ ] Commit a generated dependency lockfile and enable dependency scanning
+- [x] Add automated checks for navigation, sitemap and canonical metadata
+- [ ] Independently verify external links and deployment domains
 - [ ] Add free email delivery only if a robust, abuse-resistant backend is needed
 
 ## Principles

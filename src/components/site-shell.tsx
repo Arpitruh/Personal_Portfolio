@@ -24,16 +24,21 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [query, setQuery] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
+  const paletteTriggerRef = useRef<HTMLButtonElement>(null);
+  const lastFocusRef = useRef<HTMLElement | null>(null);
+  const [themeLoaded, setThemeLoaded] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("portfolio-theme");
     if (stored === "night" || stored === "day") setTheme(stored);
+    setThemeLoaded(true);
   }, []);
 
   useEffect(() => {
+    if (!themeLoaded) return;
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem("portfolio-theme", theme);
-  }, [theme]);
+    try { localStorage.setItem("portfolio-theme", theme); } catch { /* Private windows can block persistence. */ }
+  }, [theme, themeLoaded]);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -54,7 +59,27 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (paletteOpen) searchRef.current?.focus();
+    if (!paletteOpen) return;
+    lastFocusRef.current = document.activeElement as HTMLElement | null;
+    searchRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const popup = searchRef.current?.closest("[role=dialog]");
+      if (!popup) return;
+      const focusable = Array.from(popup.querySelectorAll<HTMLElement>("input,button,a[href]")).filter(el => !el.hasAttribute("disabled"));
+      if (!focusable.length) return;
+      const current = focusable.indexOf(document.activeElement as HTMLElement);
+      if ((event.shiftKey && current <= 0) || (!event.shiftKey && current === focusable.length - 1)) {
+        event.preventDefault();
+        (event.shiftKey ? focusable[focusable.length - 1] : focusable[0]).focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      const previous = lastFocusRef.current;
+      if (previous?.isConnected) previous.focus();
+    };
   }, [paletteOpen]);
 
   const filtered = navigation.filter((item) =>
@@ -80,7 +105,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             ))}
           </nav>
           <div className="nav-actions">
-            <button className="icon-button palette-shortcut" type="button" onClick={() => setPaletteOpen(true)} aria-label="Open quick navigation" title="Search navigation (Ctrl/⌘ K)">⌕ <span>⌘K</span></button>
+            <button ref={paletteTriggerRef} className="icon-button palette-shortcut" type="button" onClick={() => setPaletteOpen(true)} aria-expanded={paletteOpen} aria-controls="site-command-palette" aria-label="Open quick navigation" title="Search navigation (Ctrl/⌘ K)">⌕ <span>⌘K</span></button>
             <button className="icon-button" type="button" onClick={() => setTheme((value) => value === "day" ? "night" : "day")} aria-label={"Switch to " + (theme === "day" ? "night" : "day") + " theme"} title="Toggle theme">{theme === "day" ? "☾" : "☀"}</button>
             <button className="icon-button menu-button" type="button" onClick={() => setMenuOpen((value) => !value)} aria-expanded={menuOpen} aria-label={menuOpen ? "Close menu" : "Open menu"}>{menuOpen ? "✕" : "☰"}</button>
           </div>
@@ -96,7 +121,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       </footer>
 
       {paletteOpen && <div className="palette-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setPaletteOpen(false); }}>
-        <div className="palette" role="dialog" aria-modal="true" aria-label="Quick navigation">
+        <div className="palette" role="dialog" aria-modal="true" aria-label="Quick navigation" id="site-command-palette">
           <div className="palette-search"><span aria-hidden="true">⌕</span><input ref={searchRef} placeholder="Where to, player one?" value={query} onChange={(event) => setQuery(event.target.value)} aria-label="Search pages" /><button type="button" className="palette-esc" onClick={() => setPaletteOpen(false)}>ESC</button></div>
           <div className="palette-results">
             {filtered.map((item) => <Link href={item.href} key={item.href} className="palette-result" onClick={() => setPaletteOpen(false)}><span className="palette-symbol">{item.icon}</span><span>{item.label}</span><span aria-hidden="true">↗</span></Link>)}

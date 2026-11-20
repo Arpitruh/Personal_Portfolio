@@ -1,0 +1,31 @@
+{
+  "slug": "gemini-clone",
+  "title": "Gemini Clone",
+  "kicker": "Conversational AI",
+  "summary": "A browser-based Gemini-inspired AI interface built with HTML, CSS and JavaScript.",
+  "category": "AI",
+  "status": "Shipped",
+  "year": "2025",
+  "emoji": "✨",
+  "accent": "yellow",
+  "stack": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "UI"
+  ],
+  "github": "https://github.com/Arpitruh/Gemini_Clone",
+  "image": {
+    "src": "/projects/gemini-clone.png",
+    "alt": "Screenshot of the Gemini Clone interface from the project repository",
+    "caption": "Actual interface screenshot · Gemini_Clone repository"
+  },
+  "challenge": "Explore how a polished AI chat interface can be assembled with browser-native frontend tools.",
+  "approach": "Build a responsive web interface using vanilla HTML, CSS and JavaScript. The repository currently shows a demo-style implementation and requires the developer to configure an API key; it is not described as a production-safe hosted API proxy.",
+  "highlights": [
+    "Vanilla JavaScript UI",
+    "Custom styling and layout",
+    "Repository includes an actual screenshot"
+  ],
+  "next": "Move any secret-bearing AI API requests behind a server endpoint before publishing a public demo."
+}

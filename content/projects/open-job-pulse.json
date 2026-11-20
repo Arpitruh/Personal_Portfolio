@@ -1,0 +1,27 @@
+{
+  "slug": "open-job-pulse",
+  "title": "Open Job Pulse",
+  "kicker": "Career workflow SaaS",
+  "summary": "A workspace for discovering, prioritizing and tracking job opportunities.",
+  "category": "Products",
+  "status": "Building",
+  "year": "2026",
+  "emoji": "🛰️",
+  "accent": "blue",
+  "stack": [
+    "Next.js",
+    "TypeScript",
+    "Prisma",
+    "PostgreSQL"
+  ],
+  "github": "https://github.com/Arpitruh/open-job-pulse",
+  "featured": true,
+  "challenge": "Job hunting wastes time across discovery, repetitive screening and manual application tracking.",
+  "approach": "Bring matches, qualification signals, application stages and skills insights into one product flow.",
+  "highlights": [
+    "Job match and priority concepts",
+    "Kanban-style tracking",
+    "Skills-gap and analytics views"
+  ],
+  "next": "Validate product flows and improve reliability before a wider launch."
+}

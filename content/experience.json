@@ -1,0 +1,27 @@
+{
+  "roles": [
+    {
+      "company": "mFilterIt",
+      "role": "Software Engineer · Frontend",
+      "period": "2025 — Present",
+      "description": "Building production-facing product experiences with Next.js, React and TypeScript. Work spans dashboards, reporting, user management, configurations and BRAND workflows.",
+      "tags": [
+        "Next.js",
+        "TypeScript",
+        "React Query",
+        "Design systems"
+      ]
+    },
+    {
+      "company": "Fortum Charge & Drive India (GLIDA)",
+      "role": "Development internship",
+      "period": "Earlier experience",
+      "description": "Worked on dashboards, role-based user experiences, testing and debugging in an EV-charging product environment.",
+      "tags": [
+        "Dashboards",
+        "Testing",
+        "Role-based UI"
+      ]
+    }
+  ]
+}

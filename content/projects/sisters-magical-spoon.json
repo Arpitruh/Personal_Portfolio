@@ -1,0 +1,32 @@
+{
+  "slug": "sisters-magical-spoon",
+  "title": "Sisters Magical Spoon",
+  "kicker": "Small business website",
+  "summary": "A playful food-business website with an admin experience and a custom visual identity.",
+  "category": "Frontend",
+  "status": "Iterating",
+  "year": "2026",
+  "emoji": "🥘",
+  "accent": "peach",
+  "stack": [
+    "Web UI",
+    "Responsive design",
+    "Admin workflows",
+    "Vercel"
+  ],
+  "github": "https://github.com/Arpitruh/Sisters_Magical_Spoon",
+  "image": {
+    "src": "/projects/sisters-magical-spoon.webp",
+    "alt": "Illustrated thali artwork used by the Sisters Magical Spoon website",
+    "caption": "Original brand artwork · Sisters_Magical_Spoon repository"
+  },
+  "challenge": "A small food brand needs a memorable storefront without a difficult administration workflow.",
+  "approach": "Balance an expressive food-focused design with straightforward content and admin interactions.",
+  "highlights": [
+    "Original food-themed branding and artwork",
+    "Public-facing responsive pages",
+    "Admin workflows for menu, plans and gallery content",
+    "Vercel Blob integration documented as optional"
+  ],
+  "next": "Continue visual polish and usability improvements."
+}

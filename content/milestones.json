@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "label": "2024",
+      "title": "Graduated",
+      "description": "B.Tech in Computer Science."
+    },
+    {
+      "label": "BUILD",
+      "title": "From experiments to products",
+      "description": "Built with React, Next.js, Node.js and real-time web tooling."
+    },
+    {
+      "label": "NOW",
+      "title": "Shipping better experiences",
+      "description": "Working across frontend architecture, product UI and independent SaaS ideas."
+    }
+  ]
+}

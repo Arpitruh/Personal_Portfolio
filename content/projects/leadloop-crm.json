@@ -1,0 +1,28 @@
+{
+  "slug": "leadloop-crm",
+  "title": "LeadLoop CRM",
+  "kicker": "Customer relationships",
+  "summary": "A CRM product for managing leads, pipelines and follow-up workflows in one place.",
+  "category": "Products",
+  "status": "Building",
+  "year": "2026",
+  "emoji": "📇",
+  "accent": "peach",
+  "stack": [
+    "Next.js",
+    "TypeScript",
+    "Prisma",
+    "Better Auth"
+  ],
+  "github": "https://github.com/Arpitruh/LeadLoop-CRM",
+  "featured": true,
+  "challenge": "Lead tracking fragments across tools when status, ownership and follow-ups aren't connected.",
+  "approach": "Shape a focused workspace around the core CRM loop, from lead capture to pipeline management.",
+  "highlights": [
+    "Multi-tenant owner/staff workspaces and invitations",
+    "Contacts, leads, notes, tasks and Kanban pipeline",
+    "Public forms, reporting and signed partner ingestion",
+    "Prisma migrations and multi-layer automated test suite"
+  ],
+  "next": "Expand and harden the core CRM experiences."
+}

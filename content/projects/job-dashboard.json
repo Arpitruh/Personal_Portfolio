@@ -1,0 +1,25 @@
+{
+  "slug": "job-dashboard",
+  "title": "Job Dashboard",
+  "kicker": "Personal operations",
+  "summary": "An experiment in bringing job-search tracking and external sheet data into a clearer dashboard.",
+  "category": "Frontend",
+  "status": "Iterating",
+  "year": "2026",
+  "emoji": "📊",
+  "accent": "violet",
+  "stack": [
+    "JavaScript",
+    "Dashboard UI",
+    "Google Sheets"
+  ],
+  "github": "https://github.com/Arpitruh/job-dashboard",
+  "challenge": "Job search data becomes hard to act on when it is scattered across spreadsheets.",
+  "approach": "Present the useful information in a compact dashboard, including sheet-sourced data.",
+  "highlights": [
+    "Dashboard presentation",
+    "External data exploration",
+    "Iterative sync improvements"
+  ],
+  "next": "Improve robustness of data synchronization."
+}

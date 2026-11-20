@@ -1,0 +1,27 @@
+{
+  "slug": "finance-tracker",
+  "title": "Finance Tracker",
+  "kicker": "Full-stack budgeting",
+  "summary": "A personal finance dashboard for transactions, spending views and monthly budgets.",
+  "category": "Products",
+  "status": "Iterating",
+  "year": "2026",
+  "emoji": "💸",
+  "accent": "yellow",
+  "stack": [
+    "React",
+    "Express",
+    "MySQL",
+    "JWT"
+  ],
+  "github": "https://github.com/Arpitruh/Finance-Tracker",
+  "challenge": "Personal finance data is easier to understand when transactions, budgets and spending patterns sit together.",
+  "approach": "Build separate React and Express layers with MySQL data storage and protected account routes.",
+  "highlights": [
+    "Income and expense tracking",
+    "Monthly budget targets and progress views",
+    "Search and filter by date or category",
+    "JWT-protected API routes documented in the repository"
+  ],
+  "next": "Polish validation, data quality and the experience on smaller screens."
+}

@@ -7,7 +7,9 @@ for(const route of pages){
     await page.goto(route);
     await expect(page.locator("#main")).toHaveCount(1);
     const scan=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze();
-    expect(scan.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.slice(0,3).map(n=>n.target)}))).toEqual([]);
+    const failures=scan.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.slice(0,6).map(n=>({target:n.target,summary:n.failureSummary,checks:n.any.map(c=>c.data)}))}));
+    if(failures.length) console.log("AXE_FAILURES "+route+" "+JSON.stringify(failures));
+    expect(failures).toEqual([]);
   });
 }
 test("primary navigation is keyboard reachable at laptop viewport",async ({page})=>{
@@ -25,7 +27,9 @@ test("night theme maintains automated contrast and accessible names",async ({pag
   await page.getByRole("button",{name:"Switch to night theme"}).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme","night");
   const scan=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze();
-  expect(scan.violations.map(v=>({id:v.id,nodes:v.nodes.slice(0,4).map(n=>n.target)}))).toEqual([]);
+  const failures=scan.violations.map(v=>({id:v.id,nodes:v.nodes.slice(0,6).map(n=>({target:n.target,summary:n.failureSummary,checks:n.any.map(c=>c.data)}))}));
+  if(failures.length) console.log("AXE_NIGHT_FAILURES "+JSON.stringify(failures));
+  expect(failures).toEqual([]);
 });
 test("all internal navigation links resolve to real pages",async ({page,request})=>{
   const targets=new Set<string>();

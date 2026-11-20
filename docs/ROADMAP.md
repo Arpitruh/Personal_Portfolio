@@ -80,3 +80,5 @@
 - [ ] Stage exact passing commit for manual responsive, keyboard, and screen-reader review
 
 - [x] Self-host the original DM Sans and Press Start 2P fonts from open-license Fontsource packages; remove third-party font requests and constrain font CSP to self
+
+- [x] Add diagnostic axe output for exact failed foreground/background combinations to speed up theme contrast remediation

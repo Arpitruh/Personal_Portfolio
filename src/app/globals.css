@@ -720,3 +720,12 @@ img,canvas,svg { max-width: 100%; }
 .world-info-number,.skill-panel-heading span { color:var(--readable-accent); }
 .project-index { color:#25233e; }
 .project-card-body p,.card-meta,.card-status,.skill-panel-heading h3,.skill-panel .chip { color:var(--ink); }
+
+/* Keep text on solid surfaces when the project artwork has decorative overlays.
+   Explicit backgrounds also make foreground contrast robust to theme switching. */
+.project-card .project-card-body { background:var(--paper); }
+.project-card .card-meta { background:var(--paper); color:var(--ink); }
+.project-card .card-status { background:var(--soft); color:var(--ink); }
+.project-card .project-index { display:inline-block; padding:7px 9px; border-radius:4px; background:#fffdf5; color:#25233e; z-index:3; }
+.skill-panel .skill-panel-heading { background:var(--paper); color:var(--ink); }
+.skill-panel .chip { background:var(--soft); color:var(--ink); }

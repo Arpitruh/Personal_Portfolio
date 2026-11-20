@@ -14,6 +14,8 @@ export interface PortfolioProject {
   stack: string[];
   github: string;
   live?: string;
+  /** Verified image or illustration located in the project's public repository. */
+  image?: { src: string; alt: string; caption: string };
   featured?: boolean;
   challenge: string;
   approach: string;
@@ -31,7 +33,7 @@ export const profile = {
   github: "https://github.com/Arpitruh",
   // Public contact email is intentionally opt-in; never publish a personal inbox by accident.
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000"
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || (process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : "http://localhost:3000")
 };
 
 export const skills = [
@@ -69,14 +71,14 @@ export const projects: PortfolioProject[] = [
     slug: "cacheloom",
     title: "CacheLoom",
     kicker: "Developer infrastructure",
-    summary: "An exploration of self-hosted caching and Redis-like primitives, designed to be reusable across projects.",
+    summary: "A reusable caching and job-queue service with TTL keys, PostgreSQL persistence, API keys and a JavaScript SDK.",
     category: "Platform", status: "Building", year: "2026", emoji: "🧵", accent: "mint",
-    stack: ["TypeScript", "Node.js", "Caching", "Infrastructure"],
+    stack: ["Node.js", "PostgreSQL", "REST API", "Docker"],
     github: "https://github.com/Arpitruh/CacheLoom", featured: true,
     challenge: "Independent projects often need a dependable caching layer without committing to a paid managed service.",
     approach: "Build and evolve a reusable cache service with clear operational boundaries and straightforward integration points.",
-    highlights: ["Reusable-service mindset", "Focus on recovery and observability", "Infrastructure designed for multiple apps"],
-    next: "Continue verifying recovery behavior and production readiness."
+    highlights: ["Key-value operations with TTL, NX/XX and counters", "Persistent PostgreSQL-backed mode alongside in-memory mode", "Project API keys, job queues and a JavaScript worker SDK", "Readiness endpoints, recovery simulations and CI smoke tests"],
+    next: "Currently at the experimental v1.0.0-rc.1 milestone; continue operational hardening before production use."
   },
   {
     slug: "leadloop-crm",
@@ -84,11 +86,11 @@ export const projects: PortfolioProject[] = [
     kicker: "Customer relationships",
     summary: "A CRM product for managing leads, pipelines and follow-up workflows in one place.",
     category: "Products", status: "Building", year: "2026", emoji: "📇", accent: "peach",
-    stack: ["Next.js", "TypeScript", "PostgreSQL", "CRM"],
+    stack: ["Next.js", "TypeScript", "Prisma", "Better Auth"],
     github: "https://github.com/Arpitruh/LeadLoop-CRM", featured: true,
     challenge: "Lead tracking fragments across tools when status, ownership and follow-ups aren't connected.",
     approach: "Shape a focused workspace around the core CRM loop, from lead capture to pipeline management.",
-    highlights: ["Pipeline-first product thinking", "Full-stack application structure", "Iterative production audits"],
+    highlights: ["Multi-tenant owner/staff workspaces and invitations", "Contacts, leads, notes, tasks and Kanban pipeline", "Public forms, reporting and signed partner ingestion", "Prisma migrations and multi-layer automated test suite"],
     next: "Expand and harden the core CRM experiences."
   },
   {
@@ -97,11 +99,11 @@ export const projects: PortfolioProject[] = [
     kicker: "Identity as a service",
     summary: "A reusable authentication service with session management and application-oriented workflows.",
     category: "Platform", status: "Iterating", year: "2026", emoji: "🔐", accent: "violet",
-    stack: ["Node.js", "Authentication", "Sessions", "React"],
+    stack: ["Express", "TypeScript", "Prisma", "PostgreSQL"],
     github: "https://github.com/Arpitruh/Auth-Service", featured: true,
     challenge: "Rebuilding sign-in, sessions and account flows in every application creates needless complexity.",
     approach: "Centralize identity workflows and improve their reliability, observability and application management.",
-    highlights: ["Session and Redis-readiness hardening", "Login and account UX", "Reusable service architecture"],
+    highlights: ["Refresh-token rotation and reuse detection", "Password reset and session management", "Application isolation and optional operator dashboard", "OIDC/PKCE foundation with documented configuration gates"],
     next: "Keep improving resilience and developer experience."
   },
   {
@@ -121,14 +123,15 @@ export const projects: PortfolioProject[] = [
     slug: "gemini-clone",
     title: "Gemini Clone",
     kicker: "Conversational AI",
-    summary: "A Gemini-powered chat experience with conversation history, suggestions and a clean interface.",
+    summary: "A browser-based Gemini-inspired AI interface built with HTML, CSS and JavaScript.",
     category: "AI", status: "Shipped", year: "2025", emoji: "✨", accent: "yellow",
-    stack: ["React", "Next.js", "Node.js", "Gemini API"],
+    stack: ["HTML", "CSS", "JavaScript", "UI"],
     github: "https://github.com/Arpitruh/Gemini_Clone",
-    challenge: "A useful AI interface needs much more than a single prompt field.",
-    approach: "Create familiar chat patterns while integrating model responses behind a safer API boundary.",
-    highlights: ["Conversation history", "Suggested prompts and theme options", "Server-side API integration"],
-    next: "Explore improved context handling and response states."
+    image: { src: "/projects/gemini-clone.png", alt: "Screenshot of the Gemini Clone interface from the project repository", caption: "Actual interface screenshot · Gemini_Clone repository" },
+    challenge: "Explore how a polished AI chat interface can be assembled with browser-native frontend tools.",
+    approach: "Build a responsive web interface using vanilla HTML, CSS and JavaScript. The repository currently shows a demo-style implementation and requires the developer to configure an API key; it is not described as a production-safe hosted API proxy.",
+    highlights: ["Vanilla JavaScript UI", "Custom styling and layout", "Repository includes an actual screenshot"],
+    next: "Move any secret-bearing AI API requests behind a server endpoint before publishing a public demo."
   },
   {
     slug: "resume-generator",
@@ -151,10 +154,37 @@ export const projects: PortfolioProject[] = [
     category: "Frontend", status: "Iterating", year: "2026", emoji: "🥘", accent: "peach",
     stack: ["Web UI", "Responsive design", "Admin workflows", "Vercel"],
     github: "https://github.com/Arpitruh/Sisters_Magical_Spoon",
+    image: { src: "/projects/sisters-magical-spoon.webp", alt: "Illustrated thali artwork used by the Sisters Magical Spoon website", caption: "Original brand artwork · Sisters_Magical_Spoon repository" },
     challenge: "A small food brand needs a memorable storefront without a difficult administration workflow.",
     approach: "Balance an expressive food-focused design with straightforward content and admin interactions.",
-    highlights: ["Custom food-themed identity", "Responsive layout", "Admin experience"],
+    highlights: ["Original food-themed branding and artwork", "Public-facing responsive pages", "Admin workflows for menu, plans and gallery content", "Vercel Blob integration documented as optional"],
     next: "Continue visual polish and usability improvements."
+  },
+  {
+    slug: "notification-service",
+    title: "Notification Service",
+    kicker: "Cross-app communication",
+    summary: "A reusable notification API and worker with templates, background processing and audit records.",
+    category: "Platform", status: "Building", year: "2026", emoji: "📨", accent: "blue",
+    stack: ["Express", "TypeScript", "BullMQ", "PostgreSQL"],
+    github: "https://github.com/Arpitruh/Notification-Service",
+    challenge: "Separate applications need predictable delivery flows without reimplementing templates, retries and audit history.",
+    approach: "Use an API and background worker with templated payloads, a queue and persistent records. The repository documents real email, mock SMS and several features still in development.",
+    highlights: ["Express API and BullMQ worker", "Handlebars templates with variable validation", "PostgreSQL audit and idempotency", "Dashboard and app-scoped management work in progress"],
+    next: "Complete delivery verification, opt-out controls and production hardening before treating it as a general-purpose messaging service."
+  },
+  {
+    slug: "finance-tracker",
+    title: "Finance Tracker",
+    kicker: "Full-stack budgeting",
+    summary: "A personal finance dashboard for transactions, spending views and monthly budgets.",
+    category: "Products", status: "Iterating", year: "2026", emoji: "💸", accent: "yellow",
+    stack: ["React", "Express", "MySQL", "JWT"],
+    github: "https://github.com/Arpitruh/Finance-Tracker",
+    challenge: "Personal finance data is easier to understand when transactions, budgets and spending patterns sit together.",
+    approach: "Build separate React and Express layers with MySQL data storage and protected account routes.",
+    highlights: ["Income and expense tracking", "Monthly budget targets and progress views", "Search and filter by date or category", "JWT-protected API routes documented in the repository"],
+    next: "Polish validation, data quality and the experience on smaller screens."
   },
   {
     slug: "job-dashboard",

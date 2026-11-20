@@ -7,11 +7,12 @@ A full Next.js portfolio inspired by the original **Mario-like HTML prototype**,
 - **Home:** character-led pixel-art hero, selected projects, explorable map, experience, skill inventory and contact CTA.
 - **World:** six clickable locations, keyboard-friendly native controls and progress saved locally.
 - **Play:** custom Canvas platformer with coins, enemies, pipes that open project previews, lives, scores, touch controls and an optional sound toggle.
-- **Projects:** searchable/category-filterable repository-backed projects and individual case-study routes.
+- **Projects:** searchable/category-filterable repository-backed projects and individual case-study routes; original repository visuals are copied into local public assets with provenance captions, avoiding runtime GitHub image dependencies.
 - **About:** authentic work history, technical stack and timeline.
 - **Now:** curated in-progress work with direct repository links.
+- **Developer console:** an accessible, local-only mini command explorer with help, skills, projects and `open <slug>` shortcuts (never executes real shell commands).
 - **Contact:** honest, no-backend mailto workflow when an address is provided; GitHub fallback otherwise.
-- **Global:** day/night theme, Ctrl/⌘+K navigation, route loading skeleton, responsive navigation, custom 404 and error states, Open Graph image, sitemap and robots.txt.
+- **Global:** day/night theme, Ctrl/⌘+K navigation, subtle progressive-enhancement motion, route loading skeleton, responsive navigation, custom 404 and error states, Open Graph image, sitemap and robots.txt.
 
 The original `Your Name _ Portfolio World.html` remains in the repository **as a design reference only**. It is not loaded by the application.
 
@@ -75,6 +76,7 @@ src/
     world-map.tsx
     project-card.tsx
     project-explorer.tsx
+    interactive-terminal.tsx
     contact-form.tsx
   data/portfolio.ts   Single content source of truth
 tests/
@@ -99,3 +101,14 @@ See [docs/ROADMAP.md](docs/ROADMAP.md) for future upgrades such as real screensh
 ---
 
 Built by Arpit Yadav · [GitHub](https://github.com/Arpitruh)
+
+### Verified asset provenance
+
+- `public/projects/gemini-clone.png`: `Arpitruh/Gemini_Clone` → `screenshot.png` on its `main` branch.
+- `public/projects/sisters-magical-spoon.webp`: `Arpitruh/Sisters_Magical_Spoon` → `public/images/brand/thali.webp` on its `main` branch.
+
+Both files are assets from the portfolio owner's repositories. Add other images only after confirming ownership and permission.
+
+### Staging and SEO behavior
+
+If `NEXT_PUBLIC_SITE_URL` is unset, the deployment automatically uses Vercel's injected `VERCEL_URL` (localhost only when running locally). Preview and staging builds emit `noindex` metadata and a robots disallow rule; the intended production deployment should set `NEXT_PUBLIC_SITE_URL` to its confirmed canonical domain.

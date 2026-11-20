@@ -10,7 +10,11 @@
 - [x] Implement an honest contact fallback with no paid backend
 
 ## Phase 2 — Content and credibility
-- [ ] Supply approved personal photo/illustration and original project screenshots
+- [x] Audit featured case-study claims against source-repository READMEs
+- [x] Include repository-hosted artwork/screenshots where actually present
+- [x] Add a local interactive developer console and more visual polish
+- [x] Add two additional GitHub-backed case studies
+- [ ] Supply approved personal photo/illustration and more original project screenshots
 - [ ] Confirm precise professional role descriptions, dates and relevant public work
 - [ ] Add verified production URLs (only when live)
 - [ ] Provide a current resume PDF for a download button

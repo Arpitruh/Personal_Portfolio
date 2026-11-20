@@ -27,15 +27,24 @@ try{
   {name:"projects-mobile",path:"/projects",formFactor:"mobile"},
   {name:"home-desktop",path:"/",formFactor:"desktop"}
  ]){
-  const result=await lighthouse(origin+config.path,{
-    port:chrome.port,logLevel:"error",output:"json",onlyCategories:["performance","accessibility","best-practices","seo"],
-    formFactor:config.formFactor,
-    screenEmulation:config.formFactor==="desktop"?
-      {mobile:false,width:1350,height:940,deviceScaleFactor:1,disabled:false}:
-      {mobile:true,width:390,height:844,deviceScaleFactor:1,disabled:false}
-  });
-  if(!result?.lhr)throw new Error("Lighthouse returned no report for "+config.name);
-  const lhr=result.lhr;
+  let lhr;
+  for(let attempt=1;attempt<=2;attempt++){
+    const result=await lighthouse(origin+config.path,{
+      port:chrome.port,logLevel:"error",output:"json",onlyCategories:["performance","accessibility","best-practices","seo"],
+      formFactor:config.formFactor,
+      screenEmulation:config.formFactor==="desktop"?
+        {mobile:false,width:1350,height:940,deviceScaleFactor:1,disabled:false}:
+        {mobile:true,width:390,height:844,deviceScaleFactor:1,disabled:false}
+    });
+    const candidate=result?.lhr;
+    const valid=Boolean(candidate && !candidate.runtimeError &&
+      Object.values(candidate.categories).every(category=>typeof category.score==="number") &&
+      typeof candidate.audits["largest-contentful-paint"]?.numericValue==="number" &&
+      typeof candidate.audits["cumulative-layout-shift"]?.numericValue==="number");
+    if(valid){ lhr=candidate; break; }
+    console.warn("LIGHTHOUSE_INCOMPLETE "+config.name+" attempt="+attempt+" error="+JSON.stringify(candidate?.runtimeError??"missing metrics"));
+  }
+  if(!lhr)throw new Error("Lighthouse did not provide a valid complete audit for "+config.name+" after two attempts");
   const scores=Object.fromEntries(Object.entries(lhr.categories).map(([name,cat])=>[name,Math.round((cat.score??0)*100)]));
   const shifts=(lhr.audits["layout-shift-elements"]?.details?.items??lhr.audits["cls-culprits-insight"]?.details?.items??[]).slice(0,4).map(item=>({node:item.node?.selector??item.node?.snippet??null,score:item.score??item.totalShift??null}));
   console.log("LAYOUT_SHIFT_CULPRITS "+config.name+": "+JSON.stringify(shifts));

@@ -9,16 +9,17 @@ const nextConfig: NextConfig = {
       headers: [
         { key: "X-Content-Type-Options", value: "nosniff" },
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-        { key: "X-Frame-Options", value: "DENY" },
+        // Same-origin framing allows the uploaded resume PDF preview without enabling third-party embeds.
+        { key: "X-Frame-Options", value: "SAMEORIGIN" },
         { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
         { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-        // Inline hydration/style payloads are expected by Next.js; limit network access and framing.
+        // Allow only pages on our own origin to embed content, including the resume PDF.
         { key: "Content-Security-Policy", value: [
           "default-src 'self'",
           "base-uri 'self'",
           "object-src 'none'",
-          "frame-ancestors 'none'",
+          "frame-ancestors 'self'",
           "form-action 'self' mailto:",
           "img-src 'self' data: https:",
           "font-src 'self' data:",

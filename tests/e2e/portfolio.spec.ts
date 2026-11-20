@@ -141,7 +141,7 @@ test("Phase 14 personal-life page and social links are accessible",async ({page}
 test("recruiter page previews the approved current PDF while retaining printable summary",async ({page,request})=>{
  await page.goto("/recruiter");
  await expect(page.getByRole("button",{name:/Print \/ Save as PDF/})).toBeVisible();
- await expect(page.getByRole("link",{name:/Download latest resume/})).toHaveAttribute("href","/uploads/resumes/resume-1.pdf");
+ await expect(page.getByRole("link",{name:/Download latest resume/i})).toHaveAttribute("href","/uploads/resumes/resume-1.pdf");
  await expect(page.getByTitle("Latest resume PDF preview")).toHaveAttribute("src",/resume-1\.pdf/);
  await expect(page.getByRole("heading",{name:"Additional profile overview"})).toBeVisible();
  const pdf=await request.get("/uploads/resumes/resume-1.pdf");

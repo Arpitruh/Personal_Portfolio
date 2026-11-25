@@ -4,7 +4,8 @@ import { ProjectShowcase } from "@/components/project-showcase";
 import { InteractiveTerminal } from "@/components/interactive-terminal";
 import { ScrollMotion } from "@/components/scroll-motion";
 import {publicProfile} from "@/lib/profile-content";
-import { experience, featuredProjects, skills } from "@/data/portfolio";
+import {publicProjects} from "@/lib/project-content";
+import { experience, skills } from "@/data/portfolio";
 import {publicLife,publicSocials} from "@/lib/personal-content";
 import { visualIdentity, characterPack } from "@/data/personal";
 import { CharacterPose } from "@/components/character-pose";
@@ -20,7 +21,8 @@ const playground = [
 ];
 
 export default async function HomePage() {
-  const [profile,life,socialProfiles]=await Promise.all([publicProfile(),publicLife(),publicSocials()]);
+  const [profile,life,socialProfiles,projects]=await Promise.all([publicProfile(),publicLife(),publicSocials(),publicProjects()]);
+  const featuredProjects=projects.filter(p=>p.featured);
   return <main id="main" className="scroll-portfolio">
     <ScrollMotion />
     <section className="hero" id="top">

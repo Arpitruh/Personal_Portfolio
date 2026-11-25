@@ -2,7 +2,7 @@ import {NextRequest,NextResponse} from "next/server";
 import {isAdmin} from "@/lib/admin-session";
 import {query} from "@/lib/portfolio-db";
 export const dynamic="force-dynamic";
-const sections=["profile","projects","career","life","socials","library","resume","appearance","activity"];
+const sections=["profile","projects","career","life","socials","library","resume","appearance","activity","seo"];
 const fail=(error:string,status:number)=>NextResponse.json({error},{status});
 const headers={"Cache-Control":"private, no-store"};
 export async function GET(req:NextRequest){

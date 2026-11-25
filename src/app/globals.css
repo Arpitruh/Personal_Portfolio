@@ -1148,3 +1148,15 @@ img,canvas,svg { max-width: 100%; }
  .scroll-portfolio .hero-inner {min-height:auto;padding-block:30px;}
  .scroll-portfolio .journey-sticky {position:static;}
 }
+
+/* A predictable route back to the main scrolling portfolio. */
+.journey-return {background:var(--bg);border-bottom:1px solid var(--border);}
+.journey-return-inner {display:flex;align-items:center;min-height:54px;padding-block:6px;}
+.journey-back-link {display:inline-flex;align-items:center;flex-wrap:wrap;gap:8px;min-height:44px;padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:var(--paper);color:var(--ink);font-size:13px;font-weight:800;transition:background .2s ease,box-shadow .2s ease;}
+.journey-back-link > span:first-child {font-size:19px;line-height:1;transition:translate .2s ease;}
+.journey-back-section {font-size:12px;color:var(--ink-soft);font-weight:500;}
+.journey-back-link:hover {box-shadow:3px 3px 0 var(--ink);}
+@media(hover:hover) and (pointer:fine){.journey-back-link:hover > span:first-child {translate:-3px 0;}}
+@media(max-width:480px){.journey-return-inner {min-height:52px;}.journey-back-link {font-size:12px;gap:6px;}.journey-back-section {font-size:11px;}}
+@media(prefers-reduced-motion:reduce){.journey-back-link,.journey-back-link > span:first-child {transition:none;translate:none!important;}}
+@media print{.journey-return{display:none!important;}}

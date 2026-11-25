@@ -1175,3 +1175,42 @@ img,canvas,svg { max-width: 100%; }
  .footer-bottom {flex-direction:row;gap:8px 14px;}
 }
 @media(max-width:380px){.footer-brand{font-size:15px;}.footer-bottom{font-size:11px;}}
+
+/* Resume: official document first, optional portfolio summary second. */
+.recruiter-page {padding-block:44px 64px;}
+.recruiter-container {max-width:1080px;}
+.recruiter-toolbar {align-items:center;margin-bottom:24px;}
+.recruiter-toolbar h1 {font-size:clamp(34px,5vw,56px);letter-spacing:-.045em;}
+.recruiter-toolbar p {margin:8px 0;}
+.recruiter-pdf-section {margin:0 0 28px;padding:clamp(14px,2.5vw,26px);}
+.recruiter-pdf-header {align-items:center;gap:14px;}
+.resume-actions {display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.recruiter-pdf-frame {min-height:520px;height:clamp(520px,75vh,900px);max-height:none;}
+.resume-mobile-note {display:none;}
+.recruiter-summary-label {display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:28px 0 12px;}
+.recruiter-summary-label p {margin:6px 0;}
+.resume-overview {border:1px solid var(--border);border-radius:8px;background:var(--paper);}
+.resume-overview-toggle {cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;min-height:48px;font-weight:800;font-size:14px;list-style:none;}
+.resume-overview-toggle::-webkit-details-marker {display:none;}
+.resume-overview-toggle span {font-size:22px;line-height:1;transition:transform .2s;}
+.resume-overview[open] .resume-overview-toggle span {transform:rotate(45deg);}
+.resume-overview .resume-sheet {border:0;border-top:1px solid var(--border);box-shadow:none;}
+.resume-help {font-size:12px;margin:14px 0 0;line-height:1.7;}
+@media(max-width:760px){
+ .recruiter-page {padding-block:28px 40px;}
+ .recruiter-toolbar {align-items:flex-start;}
+ .recruiter-pdf-header {align-items:flex-start;}
+ .resume-actions {width:100%;}
+ .resume-actions .btn {flex:1 1 140px;}
+ .resume-mobile-note {display:block;border-top:1px solid var(--border);padding-top:12px;color:var(--ink-soft);font-size:14px;line-height:1.6;}
+ .recruiter-pdf-frame,.resume-desktop-note {display:none;}
+ .recruiter-summary-label {align-items:flex-start;}
+ .resume-head a {overflow-wrap:anywhere;}
+}
+@media(max-width:380px){.resume-actions .btn {flex-basis:100%;}.resume-overview-toggle{padding:12px;}.resume-overview .resume-sheet{padding:14px;}}
+@media(prefers-reduced-motion:reduce){.resume-overview-toggle span{transition:none;}}
+@media print{
+ .resume-overview {border:0;background:#fff;}
+ .resume-overview::details-content {display:block!important;content-visibility:visible!important;height:auto!important;}
+ .resume-overview .resume-sheet {display:block!important;border:0;}
+}

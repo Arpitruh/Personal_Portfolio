@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { profile, experience, skills, featuredProjects, milestones } from "@/data/portfolio";
+import {publicProfile} from "@/lib/profile-content";
+import { experience, skills, featuredProjects, milestones } from "@/data/portfolio";
 import { PrintResume } from "@/components/print-resume";
 import { resume } from "@/data/personal";
 export const metadata:Metadata={title:"Recruiter Profile",description:"Concise, print-ready frontend engineering experience, education and projects for Arpit Yadav.",alternates:{canonical:"/recruiter"}};
-export default function RecruiterPage(){
+export default async function RecruiterPage(){
+ const profile=await publicProfile();
  return <main className="page recruiter-page" id="main"><div className="container recruiter-container">
   <header className="recruiter-toolbar no-print"><div><span className="eyebrow">CAREER / RESUME</span><h1>My <em>resume.</em></h1><p>{profile.role} · {profile.location}</p></div><Link className="btn btn-outline" href="/#projects">Explore projects ↗</Link></header>
   {resume.file && <section className="recruiter-pdf-section no-print" aria-labelledby="resume-pdf-title">
@@ -16,7 +18,7 @@ export default function RecruiterPage(){
   </section>}
   <div className="recruiter-summary-label no-print"><div><span className="eyebrow">PORTFOLIO SUMMARY</span><h2>Additional profile overview</h2><p>{resume.file?"An optional web-based summary, separate from the official resume above.":"A printable summary of my experience and projects."}</p></div><PrintResume/></div>
   <details className="resume-overview" open={!resume.file}><summary className="resume-overview-toggle no-print">View detailed portfolio summary <span aria-hidden="true">+</span></summary><article className="resume-sheet">
-   <header className="resume-head"><div><p className="eyebrow">FRONTEND / SOFTWARE ENGINEERING</p><h2>{profile.name}</h2><p>{profile.role} · {profile.location}</p></div><a href={profile.github} target="_blank" rel="noopener noreferrer">github.com/Arpitruh ↗</a></header>
+   <header className="resume-head"><div><p className="eyebrow">FRONTEND / SOFTWARE ENGINEERING</p><h2>{profile.name}</h2><p>{profile.role} · {profile.location}</p></div><a href={profile.github} target="_blank" rel="noopener noreferrer">{profile.github.replace("https://","")} ↗</a></header>
    <section className="resume-section"><h3>Professional summary</h3><p>{profile.summary} Professional experience includes production-facing dashboards, reporting tools, configuration experiences and user management.</p></section>
    <section className="resume-section"><h3>Experience</h3>{experience.map(job=><article key={job.company} className="resume-experience"><div><strong>{job.role} · {job.company}</strong><span>{job.period}</span></div><p>{job.description}</p></article>)}</section>
    <section className="resume-section"><h3>Skills</h3>{skills.map(g=><p key={g.group}><strong>{g.group}:</strong> {g.items.join(" · ")}</p>)}</section>

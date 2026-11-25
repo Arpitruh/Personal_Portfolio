@@ -39,7 +39,7 @@ export default function HomePage() {
     <section id="about" className="section journey-chapter journey-about">
       <div className="container journey-split">
         <div data-reveal><span className="eyebrow">01 / ABOUT ME</span><h2>Curious by nature.<br/><em>Engineer by choice.</em></h2><p>{profile.summary}</p><p>I enjoy making complex workflows feel simple, from thoughtful interfaces to reusable backend services.</p><Link href="/about" className="text-link">More about me ↗</Link></div>
-        <div className="journey-portrait" data-reveal><PersonalPortrait variant="home"/></div>
+        <div className="journey-portrait" data-reveal><PersonalPortrait variant="about"/></div>
       </div>
     </section>
     <section id="experience" className="section journey-chapter section-experience">

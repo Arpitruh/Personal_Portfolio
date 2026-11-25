@@ -23,10 +23,20 @@ const navigation = [
   { href: "/assistant", label: "Guide", icon: "?", keywords: "assistant ask search" }
 ];
 
+const primaryNav = [
+  { href: "/#top", label: "Home", section: "top" },
+  { href: "/#about", label: "About", section: "about" },
+  { href: "/#projects", label: "Projects", section: "projects" },
+  { href: "/#explore", label: "Explore", section: "explore" },
+  { href: "/#contact", label: "Contact", section: "contact" },
+  { href: "/recruiter", label: "Resume", section: "" },
+];
+
 type Theme = "day" | "night";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [activeSection, setActiveSection] = useState("top");
   const [theme, setTheme] = useState<Theme>("day");
   const [menuOpen, setMenuOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -99,24 +109,38 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     };
   }, [paletteOpen]);
 
+  useEffect(() => {
+    if (pathname !== "/") return;
+    let frame = 0;
+    const sections = ["top", "about", "experience", "projects", "skills", "life", "explore", "contact"];
+    const update = () => {
+      frame = 0;
+      let active = "top";
+      for (const id of sections) if ((document.getElementById(id)?.getBoundingClientRect().top ?? Infinity) <= 160) active = id;
+      setActiveSection(active === "experience" || active === "skills" || active === "life" ? "about" : active);
+    };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => { cancelAnimationFrame(frame); window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll); };
+  }, [pathname]);
+
   const filtered = navigation.filter((item) =>
     (item.label + " " + item.keywords).toLowerCase().includes(query.toLowerCase())
   );
 
   return (
     <>
-      <div className="announcement" aria-label="Current availability">
-        <span className="status-dot" /> Welcome to world 1-1 <span className="announcement-divider">✦</span> Built for curious people
-      </div>
-      <header className="site-header">
+      <header className="site-header journey-header">
         <div className="nav-container">
           <Link className="brand" href="/" aria-label="A✦ ARPIT .DEV / WORLD 01 — Arpit Yadav homepage">
             <span className="brand-mark">A<span className="brand-pixel">✦</span></span>
             <span><strong>ARPIT</strong><small>.DEV / WORLD 01</small></span>
           </Link>
           <nav className={"nav-links" + (menuOpen ? " nav-links-open" : "")} aria-label="Main navigation">
-            {navigation.map((item) => (
-              <Link key={item.href} href={item.href} className={"nav-link" + ((pathname === item.href || (item.href === "/projects" && pathname.startsWith("/projects/"))) ? " active" : "")}>
+            {primaryNav.map((item) => (
+              <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} aria-current={(pathname === "/" && activeSection === item.section) || pathname === item.href ? "location" : undefined} className={"nav-link" + (((pathname === "/" && activeSection === item.section) || pathname === item.href || (item.section === "projects" && pathname.startsWith("/projects")) || (item.section === "about" && pathname === "/about")) ? " active" : "")}>
                 {item.label}
               </Link>
             ))}
@@ -133,7 +157,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         <div className="footer-inner">
           <div><Link href="/" className="footer-brand">ARPIT<span>✦</span>YADAV</Link><p>Making the web a little more fun, one interface at a time.</p></div>
           <div className="footer-nav"><Link href="/projects">Projects</Link><Link href="/recruiter">Resume</Link><Link href="/room">Dev Room</Link><Link href="/skills">Skills</Link><Link href="/achievements">Badges</Link><Link href="/assistant">Guide</Link><Link href="/about">About</Link><Link href="/life">Beyond Code</Link><Link href="/contact">Contact</Link>{socialProfiles.map(link=><a href={link.url} key={link.url} target="_blank" rel="noopener noreferrer">{link.name} ↗</a>)}</div>
-          <div className="footer-bottom"><span>© {new Date().getFullYear()} Arpit Yadav</span><span>Designed with curiosity. No coins required. ✦</span><Link href="#top">Back to top ↑</Link></div>
+          <div className="footer-bottom"><span>© {new Date().getFullYear()} Arpit Yadav</span><span>Designed with curiosity. No coins required. ✦</span><Link href="/#top">Back to top ↑</Link></div>
         </div>
       </footer>
 

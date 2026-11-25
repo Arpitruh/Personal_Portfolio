@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { profile } from "@/data/portfolio";
-import { socialProfiles } from "@/data/personal";
+import type { SocialProfile } from "@/data/personal";
 import { QUEST_KEY, questForPath, safeQuests } from "@/data/quests";
 
 const navigation = [
@@ -56,7 +56,7 @@ function SocialIcon({name}: {name:string}) {
   </svg>;
 }
 
-export function SiteShell({ children }: { children: React.ReactNode }) {
+export function SiteShell({ children,socialProfiles }: { children: React.ReactNode; socialProfiles:SocialProfile[] }) {
   const pathname = usePathname();
   const route = pathname.split("/")[1];
   const destination = returnSections[route] ?? (playgroundPages.has(route) ? { section: "explore", label: "Playground" } : { section: "top", label: "Home" });

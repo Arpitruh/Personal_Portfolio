@@ -154,6 +154,8 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     (item.label + " " + item.keywords).toLowerCase().includes(query.toLowerCase())
   );
 
+  if (route === "manage") return <>{children}</>;
+
   return (
     <>
       <header className="site-header journey-header">

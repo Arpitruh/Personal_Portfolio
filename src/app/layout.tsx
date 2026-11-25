@@ -5,6 +5,7 @@ import "./globals.css";
 import { profile } from "@/data/portfolio";
 import {publicSeo,allowIndexing} from "@/lib/seo-content";
 import {publicSocials} from "@/lib/personal-content";
+import {AnalyticsTracker} from "@/components/analytics-tracker";
 import { SiteShell } from "@/components/site-shell";
 
 export async function generateMetadata():Promise<Metadata>{
@@ -19,8 +20,8 @@ export async function generateMetadata():Promise<Metadata>{
   authors: [{ name: profile.name, url: profile.github }],
   alternates: { canonical: "/" },
   openGraph: {
-    type: "website", locale: "en_IN", title: "Arpit Yadav | Portfolio World",
-    description: profile.summary, siteName: "Portfolio World",
+    type: "website", locale: "en_IN", title: seo.socialTitle,
+    description: seo.socialDescription, siteName: seo.siteName,
     images: [{ url: "/opengraph-image", width: 1200, height: 630 }]
   },
   twitter: { card: "summary_large_image", title: seo.socialTitle, description:seo.socialDescription, images: ["/opengraph-image"] },
@@ -37,6 +38,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body>
         <a className="skip-link" href="#main">Skip to content</a>
         <SiteShell socialProfiles={socialProfiles}>{children}</SiteShell>
+        <AnalyticsTracker/>
       </body>
     </html>
   );

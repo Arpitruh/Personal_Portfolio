@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PixelAvatar, PixelLandscape } from "@/components/pixel-landscape";
-import { ProjectCard } from "@/components/project-card";
+import { ProjectShowcase } from "@/components/project-showcase";
 import { InteractiveTerminal } from "@/components/interactive-terminal";
 import { ScrollMotion } from "@/components/scroll-motion";
 import { experience, featuredProjects, profile, skills } from "@/data/portfolio";
@@ -21,6 +21,7 @@ export default function HomePage() {
   return <main id="main" className="scroll-portfolio">
     <ScrollMotion />
     <section className="hero" id="top">
+      <div className="journey-ambient" aria-hidden="true"><i/><i/><i/><i/><i/></div>
       <div className="hero-inner container">
         <div className="hero-copy">
           <div className="hero-available"><span className="status-dot" /> OPEN TO INTERESTING CONVERSATIONS <span>✦</span></div>
@@ -50,7 +51,7 @@ export default function HomePage() {
     </section>
     <section id="projects" className="section journey-chapter section-projects">
       <div className="container"><div className="section-intro" data-reveal><div><span className="eyebrow">03 / SELECTED WORK</span><h2>Things I&apos;ve <em>built.</em></h2><p>Products, developer tools and experiments, with the details behind each build.</p></div><Link className="section-more" href="/projects">ALL PROJECTS ↗</Link></div>
-      <div className="journey-projects">{featuredProjects.map((project,index)=><div className="journey-project" data-reveal key={project.slug}><ProjectCard project={project} index={index}/>{project.live && <a className="journey-live text-link" href={project.live} target="_blank" rel="noopener noreferrer">Open live demo ↗</a>}</div>)}</div></div>
+      <ProjectShowcase projects={featuredProjects}/></div>
     </section>
     <section id="skills" className="section journey-chapter section-about"><div className="container journey-split"><div data-reveal><span className="eyebrow">04 / TOOLKIT</span><h2>Tools I <em>work with.</em></h2><p>From interfaces to APIs and infrastructure. See the connections between tools and real projects.</p><Link href="/skills" className="btn btn-dark">Explore skills ↗</Link></div><div className="about-stack" data-reveal><div className="inventory-header"><span>TOOLKIT</span><span>✦</span></div>{skills.map((group,index)=><div className="inventory-row" key={group.group}><span className="inventory-number">0{index+1}</span><div><strong>{group.group}</strong><p>{group.items.join(" · ")}</p></div></div>)}</div></div></section>
     <section id="life" className="section journey-chapter home-life-preview"><div className="container home-life-grid"><div data-reveal><span className="eyebrow">05 / BEYOND CODE</span><h2>Life outside <em>the editor.</em></h2><p>{life.introduction}</p><Link href="/life" className="btn btn-outline">Explore my life ↗</Link></div><div className="journey-portrait" data-reveal>{characterPack.casual ? <CharacterPose pose="casual"/> : <div className="home-life-decoration" aria-hidden="true"><span>✦</span><strong>ALT + LIFE</strong><small>PLAYER 01</small></div>}</div></div></section>

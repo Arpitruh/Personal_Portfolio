@@ -1,5 +1,6 @@
 "use client";
 import {useEffect,useState} from "react";
+import {compressImage} from "./compress-image";
 import type {LibraryEntry} from "@/lib/library-content";
 const categories=["Travel Diaries","Through My Lens","Creative Corner","Memory Vault"];
 export function LibraryEditor(){
@@ -9,8 +10,8 @@ export function LibraryEditor(){
  async function run(action:()=>Promise<void>){setBusy(true);setMessage("");try{await action();await load();setMessage("Saved.");}catch(e){setMessage(e instanceof Error?e.message:"Request failed");}finally{setBusy(false);}}
  async function patch(body:object){const r=await fetch("/api/manage/library",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});if(!r.ok)throw new Error((await r.json()).error);}
  return <section className="manage-module manage-library"><h2>Personal library</h2><p>Upload a photo, edit its details and publish when ready. Drafts are private.</p>
- <form className="manage-fields" onSubmit={e=>{e.preventDefault();const form=e.currentTarget;const data=new FormData(form);void run(async()=>{const r=await fetch("/api/manage/library",{method:"POST",body:data});if(!r.ok)throw new Error((await r.json()).error);form.reset();});}}>
- <label>Photo (JPEG, PNG or WebP, up to 2 MB)<input name="photo" type="file" accept="image/jpeg,image/png,image/webp" required/></label>
+ <form className="manage-fields" onSubmit={e=>{e.preventDefault();const form=e.currentTarget;const data=new FormData(form);void run(async()=>{const photo=data.get("photo");if(photo instanceof File){setMessage("Compressing photo…");data.set("photo",await compressImage(photo));}setMessage("Uploading photo…");const r=await fetch("/api/manage/library",{method:"POST",body:data});if(!r.ok)throw new Error((await r.json()).error);form.reset();});}}>
+ <label>Photo (JPEG, PNG or WebP, automatically compressed)<input name="photo" type="file" accept="image/jpeg,image/png,image/webp" required/></label>
  <label>Title<input name="title" maxLength={120} required/></label><label>Image description<input name="alt" maxLength={240} required/></label>
  <label>Collection<select name="category">{categories.map(c=><option key={c}>{c}</option>)}</select></label><label>Caption<textarea name="caption" maxLength={1000}/></label>
  <button className="btn btn-primary" disabled={busy}>Upload draft</button></form>

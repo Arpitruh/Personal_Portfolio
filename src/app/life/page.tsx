@@ -6,7 +6,7 @@ import { PersonalPortrait } from "@/components/personal-portrait";
 import { publicLibrary } from "@/lib/library-content";
 import { PersonalGallery } from "@/components/personal-gallery";
 import { CharacterPose } from "@/components/character-pose";
-import { characterPack } from "@/data/personal";
+import {publicAppearance} from "@/lib/asset-content";
 
 export const metadata: Metadata = {
   title:"Beyond the Code",
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   alternates:{canonical:"/life"}
 };
 export default async function LifePage(){
+ const appearance=await publicAppearance();
  const [moments,life,socialProfiles]=await Promise.all([publicLibrary(visualIdentity.moments),publicLife(),publicSocials()]);
  return <main id="main" className="page life-page"><div className="container">
   <div className="page-heading"><span className="eyebrow">{life.eyebrow} / PLAYER 01</span><h1>More than <em>just code.</em></h1><p>A personal corner of this otherwise very technical world.</p></div>
@@ -21,7 +22,7 @@ export default async function LifePage(){
     <PersonalPortrait variant="life"/>
     <div className="life-story"><span className="eyebrow">THE HUMAN SIDE</span><h2>{life.title}</h2><p>{life.introduction}</p><p>{life.note}</p><Link href="/about" className="btn btn-outline">My developer story ↗</Link></div>
   </div>
-  {characterPack.casual && <section className="life-character-feature" aria-label="Illustrated personal-life character"><div><span className="eyebrow">PERSONAL MODE / UNLOCKED</span><h2>Off the <em>clock.</em></h2><p>Not every adventure has a keyboard in it. A little room for the everyday moments between builds.</p></div><CharacterPose pose="casual"/></section>}
+  {appearance.casual && <section className="life-character-feature" aria-label="Illustrated personal-life character"><div><span className="eyebrow">PERSONAL MODE / UNLOCKED</span><h2>Off the <em>clock.</em></h2><p>Not every adventure has a keyboard in it. A little room for the everyday moments between builds.</p></div><CharacterPose pose="casual"/></section>}
   <section className="inner-section" aria-labelledby="life-hobbies-title">
    <div className="section-intro"><div><span className="eyebrow">A PERSONAL INVENTORY</span><h2 id="life-hobbies-title">Things I <em>enjoy.</em></h2><p>Interests and hobbies, added when I have a story worth sharing.</p></div></div>
    {life.hobbies.length ? <div className="life-hobby-grid">{life.hobbies.map((hobby,index)=><article className="life-hobby" key={hobby.title}><div className="life-hobby-number">{String(index+1).padStart(2,"0")}</div><span aria-hidden="true">{hobby.emoji || "✦"}</span><h3>{hobby.title}</h3><p>{hobby.description}</p></article>)}</div> :

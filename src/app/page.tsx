@@ -5,7 +5,8 @@ import { InteractiveTerminal } from "@/components/interactive-terminal";
 import { ScrollMotion } from "@/components/scroll-motion";
 import {publicProfile} from "@/lib/profile-content";
 import { experience, featuredProjects, skills } from "@/data/portfolio";
-import { life, visualIdentity, characterPack, socialProfiles } from "@/data/personal";
+import {publicLife,publicSocials} from "@/lib/personal-content";
+import { visualIdentity, characterPack } from "@/data/personal";
 import { CharacterPose } from "@/components/character-pose";
 import { PersonalPortrait } from "@/components/personal-portrait";
 
@@ -19,7 +20,7 @@ const playground = [
 ];
 
 export default async function HomePage() {
-  const profile=await publicProfile();
+  const [profile,life,socialProfiles]=await Promise.all([publicProfile(),publicLife(),publicSocials()]);
   return <main id="main" className="scroll-portfolio">
     <ScrollMotion />
     <section className="hero" id="top">

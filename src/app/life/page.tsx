@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { life, socialProfiles, visualIdentity } from "@/data/personal";
 import { PersonalPortrait } from "@/components/personal-portrait";
+import { publicLibrary } from "@/lib/library-content";
 import { PersonalGallery } from "@/components/personal-gallery";
 import { CharacterPose } from "@/components/character-pose";
 import { characterPack } from "@/data/personal";
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
   description:"A little about the person behind Arpit Yadav's projects, interests and creative side.",
   alternates:{canonical:"/life"}
 };
-export default function LifePage(){
+export default async function LifePage(){
+ const moments=await publicLibrary(visualIdentity.moments);
  return <main id="main" className="page life-page"><div className="container">
   <div className="page-heading"><span className="eyebrow">{life.eyebrow} / PLAYER 01</span><h1>More than <em>just code.</em></h1><p>A personal corner of this otherwise very technical world.</p></div>
   <div className="life-intro-grid">
@@ -24,7 +26,7 @@ export default function LifePage(){
    {life.hobbies.length ? <div className="life-hobby-grid">{life.hobbies.map((hobby,index)=><article className="life-hobby" key={hobby.title}><div className="life-hobby-number">{String(index+1).padStart(2,"0")}</div><span aria-hidden="true">{hobby.emoji || "✦"}</span><h3>{hobby.title}</h3><p>{hobby.description}</p></article>)}</div> :
     <div className="life-empty"><span aria-hidden="true">✳</span><h3>Stories are still being collected.</h3><p>Personal interests will appear here once they’re ready to share. No filler hobbies or placeholder photographs.</p></div>}
   </section>
-  <PersonalGallery moments={visualIdentity.moments}/>
+  <PersonalGallery moments={moments}/>
   <section className="inner-section" aria-labelledby="life-links-title"><div className="section-intro"><div><span className="eyebrow">ELSEWHERE ON THE INTERNET</span><h2 id="life-links-title">Find me <em>elsewhere.</em></h2><p>Only profiles I’ve chosen to make public.</p></div></div>
    <div className="life-social-grid">{socialProfiles.map(link=><a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer"><small>{link.kind}</small><strong>{link.name}</strong><span aria-hidden="true">↗</span></a>)}</div>
   </section>

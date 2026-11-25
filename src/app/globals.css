@@ -983,3 +983,63 @@ img,canvas,svg { max-width: 100%; }
  .scroll-portfolio [data-reveal] {transition:none!important;}
 }
 @media print {.journey-progress{display:none;}.scroll-portfolio [data-reveal]{opacity:1!important;transform:none!important;}}
+
+
+/* Motion pass 2: make the journey feel alive without hijacking native scroll. */
+.scroll-portfolio .hero-copy {animation:none;}
+.scroll-portfolio .hero-copy > * {animation:journey-rise .82s cubic-bezier(.16,1,.3,1) both;}
+.scroll-portfolio .hero-copy > :nth-child(2){animation-delay:90ms;}
+.scroll-portfolio .hero-copy > :nth-child(3){animation-delay:180ms;}
+.scroll-portfolio .hero-copy > :nth-child(4){animation-delay:270ms;}
+.scroll-portfolio .hero-copy > :nth-child(5){animation-delay:360ms;}
+.scroll-portfolio .hero-copy > :nth-child(6){animation-delay:450ms;}
+.scroll-portfolio .hero-scene {perspective:1000px;}
+.scroll-portfolio .hero-scene-card {transform:rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg));transition:transform .32s cubic-bezier(.2,.7,.2,1);transform-origin:center;}
+.scroll-portfolio .hero-scene-card::after {content:"";position:absolute;z-index:8;inset:0;pointer-events:none;border:1px solid #ffffff55;box-shadow:inset 0 0 45px #fff2;}
+.scroll-portfolio .hero-available .status-dot {animation:journey-pulse 2.4s ease-out infinite;}
+.scroll-portfolio .speech-bubble {animation:journey-rise .65s .55s both;}
+.scroll-portfolio .journey-chapter {position:relative;}
+.scroll-portfolio .journey-chapter::before {content:"";position:absolute;left:0;top:0;width:100%;height:2px;background:var(--gold);transform-origin:left;transform:scaleX(var(--chapter-progress,0));pointer-events:none;}
+.scroll-portfolio [data-reveal] {transition-duration:.8s;transition-timing-function:cubic-bezier(.16,1,.3,1);transition-delay:var(--reveal-delay,0ms);}
+.scroll-portfolio .journey-pending:not(:focus-within) {opacity:.28;transform:translateY(32px);}
+.scroll-portfolio .journey-portrait.journey-pending:not(:focus-within) {transform:translateY(28px) scale(.97);}
+.scroll-portfolio .journey-timeline {position:relative;}
+.scroll-portfolio .journey-timeline::before {content:"";position:absolute;top:0;bottom:0;left:-2px;width:2px;background:var(--gold);transform-origin:top;transform:scaleY(var(--timeline-progress,0));pointer-events:none;}
+.scroll-portfolio .journey-timeline .journey-entered .journey-timeline-dot {animation:journey-pop .65s cubic-bezier(.16,1,.3,1) both;}
+.scroll-portfolio .journey-project .project-card {transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s ease;}
+.scroll-portfolio .project-card-art {overflow:hidden;}
+.scroll-portfolio .project-repo-image img,.scroll-portfolio .project-art-emoji {transition:transform .6s cubic-bezier(.16,1,.3,1);}
+.scroll-portfolio .project-card:focus-within .project-repo-image img {transform:scale(1.035);}
+.scroll-portfolio .inventory-row {transition:background .25s ease,translate .3s ease;}
+.scroll-portfolio .inventory-row .inventory-number {transition:transform .3s ease;}
+.scroll-portfolio .experience-shortcuts a > span {transition:transform .4s cubic-bezier(.16,1,.3,1);}
+.scroll-portfolio .cta-decoration span {animation:journey-float 4s ease-in-out infinite;}
+.scroll-portfolio .cta-decoration span:nth-child(2) {animation-delay:-1.4s;}
+.scroll-portfolio .cta-decoration span:nth-child(3) {animation-delay:-2.7s;}
+.journey-header .nav-link {position:relative;}
+.journey-header .nav-link::after {content:"";position:absolute;left:12px;right:12px;bottom:4px;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .25s ease;}
+.journey-header .nav-link.active::after,.journey-header .nav-link:focus-visible::after {transform:scaleX(1);}
+@keyframes journey-rise {from {opacity:0;translate:0 22px;}to {opacity:1;translate:0 0;}}
+@keyframes journey-pop {from {scale:.65;}to {scale:1;}}
+@keyframes journey-pulse {0%,100%{box-shadow:0 0 0 0 #70cea300;}35%{box-shadow:0 0 0 6px #70cea355;}80%{box-shadow:0 0 0 12px #70cea300;}}
+@keyframes journey-float {0%,100%{translate:0 0;}50%{translate:0 -8px;}}
+@media(hover:hover) and (pointer:fine) {
+ .scroll-portfolio .project-card:hover {transform:translateY(-7px);box-shadow:7px 11px 0 var(--ink);}
+ .scroll-portfolio .project-card:hover .project-repo-image img,.scroll-portfolio .project-card:hover .project-art-emoji {transform:scale(1.06);}
+ .scroll-portfolio .inventory-row:hover {background:var(--soft);translate:3px 0;}
+ .scroll-portfolio .inventory-row:hover .inventory-number {transform:scale(1.12);}
+ .scroll-portfolio .experience-shortcuts a:hover > span {transform:translateY(-4px) rotate(-8deg);}
+ .journey-header .nav-link:hover::after {transform:scaleX(1);}
+}
+@media(max-width:760px) {
+ .scroll-portfolio .hero-scene-card {transform:none;}
+ .scroll-portfolio .journey-pending:not(:focus-within) {transform:translateY(16px);}
+ .scroll-portfolio .journey-portrait.journey-pending:not(:focus-within) {transform:translateY(16px);}
+}
+@media(prefers-reduced-motion:reduce) {
+ .scroll-portfolio .hero-copy > *,.scroll-portfolio .hero-available .status-dot,.scroll-portfolio .speech-bubble,.scroll-portfolio .cta-decoration span,.scroll-portfolio .journey-timeline-dot {animation:none!important;opacity:1!important;translate:none!important;}
+ .scroll-portfolio .hero-scene-card,.scroll-portfolio .journey-portrait.journey-pending,.scroll-portfolio .project-card:hover,.scroll-portfolio .project-card:focus-within img,.scroll-portfolio .project-card:hover img,.scroll-portfolio .project-card:hover .project-art-emoji,.scroll-portfolio .inventory-row:hover .inventory-number,.scroll-portfolio .experience-shortcuts a:hover > span {transform:none!important;}
+ .scroll-portfolio .inventory-row:hover {translate:none!important;}
+ .scroll-portfolio .journey-chapter::before {transform:scaleX(1);}
+ .scroll-portfolio [data-reveal] {transition:none!important;opacity:1!important;}
+}

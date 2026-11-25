@@ -7,10 +7,28 @@
       "visible": true
     },
     {
-      "name": "Linkedin",
-      "url": "https://www.linkedin.com/in/arpityadav2002/",
+      "name": "LinkedIn",
+      "url": "https://linkedin.com/in/arpitruh",
       "kind": "Professional",
-      "visible": false
+      "visible": true
+    },
+    {
+      "name": "X (Twitter)",
+      "url": "https://x.com/arpitruh_",
+      "kind": "Social",
+      "visible": true
+    },
+    {
+      "name": "DEV",
+      "url": "https://dev.to/arpitruh",
+      "kind": "Technical writing",
+      "visible": true
+    },
+    {
+      "name": "Hashnode",
+      "url": "https://hashnode.com/@arpitruh",
+      "kind": "Technical writing",
+      "visible": true
     }
   ]
 }

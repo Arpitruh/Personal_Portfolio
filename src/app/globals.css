@@ -1357,3 +1357,13 @@ img,canvas,svg { max-width: 100%; }
  .admin-summary {grid-template-columns:1fr;}
 }
 @media(max-width:420px){.admin-module-grid {grid-template-columns:1fr;}.admin-session {font-size:10px;}.admin-topbar {gap:8px;}.admin-welcome {padding:18px;}}
+
+/* Motion must never reduce the contrast of readable content. */
+.scroll-portfolio .journey-pending:not(:focus-within){opacity:1;}
+@keyframes journey-in {from{opacity:1;translate:0 16px;}to{opacity:1;translate:0 0;}}
+@keyframes journey-rise {from{opacity:1;translate:0 22px;}to{opacity:1;translate:0 0;}}
+[data-theme="night"] .scroll-portfolio .section-about {background:#24233c;color:#fffdf2;}
+[data-theme="night"] .scroll-portfolio .section-about .about-stack {background:#25233e;color:#fffdf2;}
+[data-theme="night"] .scroll-portfolio .section-about .inventory-row {border-color:#56536d;}
+[data-theme="night"] .scroll-portfolio .section-about .inventory-number {color:#ffd35d;}
+[data-theme="night"] .scroll-portfolio .section-about .inventory-header span:last-child {color:#6ce1b8;}

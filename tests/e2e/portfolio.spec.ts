@@ -119,7 +119,8 @@ test("new experience routes respect mobile viewport, reduced motion, and print s
  }
  await page.emulateMedia({media:"print"});
  await page.goto("/recruiter");
- await expect(page.locator(".resume-sheet")).toBeVisible();
+ await page.locator(".resume-overview").evaluate((element: HTMLDetailsElement) => { element.open = true; });
+  await expect(page.locator(".resume-sheet")).toBeVisible();
  const headerDisplay=await page.locator(".site-header").evaluate(e=>getComputedStyle(e).display);
  expect(headerDisplay).toBe("none");
  await page.emulateMedia({media:"screen",reducedMotion:"reduce"});

@@ -1214,3 +1214,12 @@ img,canvas,svg { max-width: 100%; }
  .resume-overview::details-content {display:block!important;content-visibility:visible!important;height:auto!important;}
  .resume-overview .resume-sheet {display:block!important;border:0;}
 }
+
+/* Compact social icons with full-sized touch targets. */
+.footer-links-group {min-width:0;display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+.footer-socials {display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.footer-socials a {display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid #ffffff40;border-radius:7px;color:#fff;transition:color .2s,background .2s,transform .2s;}
+.footer-socials a:hover {background:#ffd35d;color:#25233e;transform:translateY(-2px);}
+.footer-socials a:focus-visible {outline:2px solid #ffd35d;outline-offset:3px;}
+@media(max-width:700px){.footer-links-group {align-items:flex-start;gap:8px;}.footer-socials {gap:6px;}}
+@media(prefers-reduced-motion:reduce){.footer-socials a{transition:none;transform:none!important;}}

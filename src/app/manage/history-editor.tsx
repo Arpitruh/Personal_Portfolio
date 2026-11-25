@@ -1,7 +1,7 @@
 "use client";
 import {useEffect,useState} from "react";
 type Revision={id:string;section:string;created_at:string};
-const sections=["profile","projects","career","life","socials","library","resume","appearance","activity"];
+const sections=["profile","projects","career","life","socials","library","resume","appearance","activity","seo"];
 export function HistoryEditor(){
  const [section,setSection]=useState(""),[items,setItems]=useState<Revision[]>([]),[next,setNext]=useState<string|null>(null),[preview,setPreview]=useState<(Revision&{content:unknown})|null>(null),[busy,setBusy]=useState(false),[status,setStatus]=useState("");
  async function load(filter:string,before?:string){setBusy(true);setStatus("");try{const params=new URLSearchParams();if(filter)params.set("section",filter);if(before)params.set("before",before);const r=await fetch("/api/manage/history?"+params,{cache:"no-store"});if(!r.ok)throw Error("History unavailable.");const data=await r.json();setItems(old=>before?[...old,...data.items]:data.items);setNext(data.next);}catch(e){setStatus(e instanceof Error?e.message:"History unavailable.");}finally{setBusy(false);}}

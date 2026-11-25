@@ -174,13 +174,14 @@ test("Phase 15 uses accessible pixel fallback until approved media is uploaded",
 test("character poses render when approved CMS files exist, with fallback when absent",async ({page})=>{
  const {readFileSync}=await import("node:fs");
  const config=JSON.parse(readFileSync("content/character-pack.json","utf8"));
- for(const [route,pose] of [["/","standing"],["/projects","sitting"],["/skills","coding"],["/life","casual"]] as const){
+ for(const [route,pose] of [["/","standing"],["/","casual"],["/projects","sitting"],["/skills","coding"],["/life","casual"]] as const){
    await page.goto(route);
    const published=Boolean(config[pose]?.src&&config[pose]?.alt?.trim());
-   await expect(page.locator(".character-pose")).toHaveCount(published?1:0);
+   const character=page.locator(".character-pose-"+pose);
+   await expect(character).toHaveCount(published?1:0);
    if(published){
-     await expect(page.locator(".character-pose img")).toBeVisible();
-     await expect(page.locator(".character-pose img")).toHaveAttribute("alt",config[pose].alt);
+     await expect(character.locator("img")).toBeVisible();
+     await expect(character.locator("img")).toHaveAttribute("alt",config[pose].alt);
    }
    await expect(page.locator("#main")).toHaveCount(1);
  }

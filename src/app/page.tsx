@@ -3,7 +3,8 @@ import { PixelAvatar, PixelLandscape } from "@/components/pixel-landscape";
 import { ProjectShowcase } from "@/components/project-showcase";
 import { InteractiveTerminal } from "@/components/interactive-terminal";
 import { ScrollMotion } from "@/components/scroll-motion";
-import { experience, featuredProjects, profile, skills } from "@/data/portfolio";
+import {publicProfile} from "@/lib/profile-content";
+import { experience, featuredProjects, skills } from "@/data/portfolio";
 import { life, visualIdentity, characterPack, socialProfiles } from "@/data/personal";
 import { CharacterPose } from "@/components/character-pose";
 import { PersonalPortrait } from "@/components/personal-portrait";
@@ -17,17 +18,18 @@ const playground = [
   { href: "/now", icon: "◷", title: "Now", detail: "See what I am building." },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const profile=await publicProfile();
   return <main id="main" className="scroll-portfolio">
     <ScrollMotion />
     <section className="hero" id="top">
       <div className="journey-ambient" aria-hidden="true"><i/><i/><i/><i/><i/></div>
       <div className="hero-inner container">
         <div className="hero-copy">
-          <div className="hero-available"><span className="status-dot" /> OPEN TO INTERESTING CONVERSATIONS <span>✦</span></div>
-          <p className="eyebrow hero-level">SOFTWARE ENGINEER / FULL STACK DEVELOPMENT</p>
-          <h1>Hi, I&apos;m <span>Arpit.</span><br />I make the web <em>feel alive.</em></h1>
-          <p className="hero-description">Software engineer by day. Builder by habit. I turn complex ideas into clean, playful digital experiences that people actually enjoy using.</p>
+          {profile.availability && <div className="hero-available"><span className="status-dot" /> {profile.availability} <span>✦</span></div>}
+          <p className="eyebrow hero-level">{profile.eyebrow}</p>
+          <h1>Hi, I&apos;m <span>{profile.name.split(" ")[0]}.</span><br />{profile.headlineStart} <em>{profile.headlineEnd}</em></h1>
+          <p className="hero-description">{profile.heroDescription}</p>
           <div className="button-group hero-buttons"><Link className="btn btn-primary" href="#projects">Explore my work <span aria-hidden="true">↗</span></Link><Link className="btn btn-outline" href="/recruiter">View resume ↗</Link></div>
           <div className="hero-social"><span>BASED IN {profile.location.toUpperCase()}</span><span className="hero-social-line" /><a href={profile.github} target="_blank" rel="noopener noreferrer">GITHUB ↗</a></div>
         </div>

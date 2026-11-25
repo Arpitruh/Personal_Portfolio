@@ -44,6 +44,18 @@ const playgroundPages = new Set(["world", "room", "play", "now", "achievements",
 
 type Theme = "day" | "night";
 
+function SocialIcon({name}: {name:string}) {
+  const key=name.toLowerCase();
+  return <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+    {key==="github" ? <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.86c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.58 9.58 0 0 1 12 6.82c.85 0 1.71.11 2.51.34 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/> :
+      key==="linkedin" ? <><rect x="2" y="2" width="20" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8"/><circle cx="7" cy="7" r="1.5"/><path d="M5.5 10h3v8h-3zm5 0h3v1.2c.7-1 1.6-1.5 2.9-1.5 2.2 0 3.1 1.4 3.1 3.7V18h-3v-4.1c0-1.2-.4-1.9-1.4-1.9s-1.6.8-1.6 1.9V18h-3z"/></> :
+      key.startsWith("x") ? <path d="M3 3h5.1l5 6.7L19 3h2l-7 8 7.6 10H16.5l-5.4-7.2L4.7 21H2.6l7.6-8.7L3 3zm3 1.7 11.4 14.6h1.7L7.2 4.7H6z"/> :
+      key==="dev" ? <><rect x="1" y="4" width="22" height="16" rx="3" fill="none" stroke="currentColor" strokeWidth="1.7"/><text x="12" y="15.5" fontSize="9" fontWeight="800" fontFamily="monospace" textAnchor="middle">DEV</text></> :
+      key==="hashnode" ? <path fillRule="evenodd" d="M9.5 2.5a3.5 3.5 0 0 1 5 0l7 7a3.5 3.5 0 0 1 0 5l-7 7a3.5 3.5 0 0 1-5 0l-7-7a3.5 3.5 0 0 1 0-5zm2.5 5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9Z"/> :
+      <path d="M5 17 17 5M7 5h10v10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>}
+  </svg>;
+}
+
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const route = pathname.split("/")[1];
@@ -169,7 +181,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
       <footer className="site-footer">
         <div className="footer-inner">
           <div><Link href="/" className="footer-brand">ARPIT<span>✦</span>YADAV</Link><p>Making the web a little more fun, one interface at a time.</p></div>
-          <div className="footer-nav"><Link href="/projects">Projects</Link><Link href="/recruiter">Resume</Link><Link href="/room">Dev Room</Link><Link href="/skills">Skills</Link><Link href="/achievements">Badges</Link><Link href="/assistant">Guide</Link><Link href="/about">About</Link><Link href="/life">Beyond Code</Link><Link href="/contact">Contact</Link>{socialProfiles.map(link=><a href={link.url} key={link.url} target="_blank" rel="noopener noreferrer">{link.name} ↗</a>)}</div>
+          <div className="footer-links-group"><div className="footer-nav"><Link href="/projects">Projects</Link><Link href="/recruiter">Resume</Link><Link href="/room">Dev Room</Link><Link href="/skills">Skills</Link><Link href="/achievements">Badges</Link><Link href="/assistant">Guide</Link><Link href="/about">About</Link><Link href="/life">Beyond Code</Link><Link href="/contact">Contact</Link></div><div className="footer-socials" aria-label="Social profiles">{socialProfiles.map(link=><a href={link.url} key={link.url} target="_blank" rel="noopener noreferrer" aria-label={link.name} title={link.name}><SocialIcon name={link.name}/></a>)}</div></div>
           <div className="footer-bottom"><span>© {new Date().getFullYear()} Arpit Yadav</span><span>Designed with curiosity. No coins required. ✦</span><Link href="/#top">Back to top ↑</Link></div>
         </div>
       </footer>

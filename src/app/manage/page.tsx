@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {isAdmin,configured} from "@/lib/admin-session";
 import {LoginForm} from "./login-form";
+import {ProfileEditor} from "./profile-editor";
 import {LibraryEditor} from "./library-editor";
 import {logout} from "./actions";
 const modules=[
@@ -8,5 +9,5 @@ const modules=[
 ];
 export default async function ManagePage(){
  if(!await isAdmin())return <main id="main" className="manage-login"><section className="manage-login-card"><span className="eyebrow">PRIVATE WORKSPACE</span><h1>Portfolio admin.</h1><p>Authorized access only.</p><LoginForm enabled={configured()}/><Link href="/">← Return to portfolio</Link></section></main>;
- return <main id="main" className="manage-dashboard"><header className="manage-header"><div><span className="eyebrow">OWNER WORKSPACE</span><h1>Portfolio admin.</h1></div><form action={logout}><button className="btn btn-outline">Log out</button></form></header><p>Manage your portfolio from one place.</p><LibraryEditor/><div className="manage-grid">{modules.slice(1).map(([title,description])=><article className="manage-module" key={title}><h2>{title}</h2><p>{description}</p><span>Not connected yet</span></article>)}</div><Link className="btn btn-outline" href="/">View portfolio ↗</Link></main>;
+ return <main id="main" className="manage-dashboard"><header className="manage-header"><div><span className="eyebrow">OWNER WORKSPACE</span><h1>Portfolio admin.</h1></div><form action={logout}><button className="btn btn-outline">Log out</button></form></header><p>Manage your portfolio from one place.</p><ProfileEditor/><LibraryEditor/><div className="manage-grid">{modules.slice(2).map(([title,description])=><article className="manage-module" key={title}><h2>{title}</h2><p>{description}</p><span>Not connected yet</span></article>)}</div><Link className="btn btn-outline" href="/">View portfolio ↗</Link></main>;
 }

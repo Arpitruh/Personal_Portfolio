@@ -3,6 +3,7 @@ import "@fontsource-variable/dm-sans/wght.css";
 import "@fontsource/press-start-2p/400.css";
 import "./globals.css";
 import { profile } from "@/data/portfolio";
+import {publicSocials} from "@/lib/personal-content";
 import { SiteShell } from "@/components/site-shell";
 
 export const metadata: Metadata = {
@@ -24,12 +25,13 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#15152d" };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const socialProfiles=await publicSocials();
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
         <a className="skip-link" href="#main">Skip to content</a>
-        <SiteShell>{children}</SiteShell>
+        <SiteShell socialProfiles={socialProfiles}>{children}</SiteShell>
       </body>
     </html>
   );

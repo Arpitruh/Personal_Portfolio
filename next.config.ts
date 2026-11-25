@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 // Browser PDF plugins use an embedded object. Allow it only on the
 // recruiter page while retaining object-src 'none' everywhere else.
 function securityHeaders(allowResumePreview: boolean) {
+  const isDevelopment = process.env.NODE_ENV === "development";
   return [
     { key: "X-Content-Type-Options", value: "nosniff" },
     { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -19,7 +20,7 @@ function securityHeaders(allowResumePreview: boolean) {
       "img-src 'self' data: https:",
       "font-src 'self' data:",
       "style-src 'self' 'unsafe-inline'",
-      "script-src 'self' 'unsafe-inline'",
+      isDevelopment ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'" : "script-src 'self' 'unsafe-inline'",
       "connect-src 'self'",
       "media-src 'none'",
       "upgrade-insecure-requests"

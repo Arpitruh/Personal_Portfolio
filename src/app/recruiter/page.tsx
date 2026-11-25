@@ -4,10 +4,10 @@ import {publicProfile} from "@/lib/profile-content";
 import {publicProjects} from "@/lib/project-content";
 import {publicCareer} from "@/lib/career-content";
 import { PrintResume } from "@/components/print-resume";
-import { resume } from "@/data/personal";
+import {publicResume} from "@/lib/asset-content";
 export const metadata:Metadata={title:"Recruiter Profile",description:"Concise, print-ready frontend engineering experience, education and projects for Arpit Yadav.",alternates:{canonical:"/recruiter"}};
 export default async function RecruiterPage(){
- const [profile,projects,career]=await Promise.all([publicProfile(),publicProjects(),publicCareer()]);
+ const [profile,projects,career,resume]=await Promise.all([publicProfile(),publicProjects(),publicCareer(),publicResume()]);
  const {experience,skills,education}=career;
  const featuredProjects=projects.filter(p=>p.featured);
  return <main className="page recruiter-page" id="main"><div className="container recruiter-container">
@@ -29,6 +29,6 @@ export default async function RecruiterPage(){
    <section className="resume-section"><h3>Education</h3>{education.map((e,i)=><p key={i}><strong>{e.qualification} · {e.period}</strong>{e.institution&&<> — {e.institution}</>}{e.description&&<> — {e.description}</>}</p>)}</section>
    <footer className="resume-disclaimer">This printable summary is generated separately from published portfolio content. Refer to the uploaded PDF above for the current approved resume.</footer>
   </article></details>
-  <div className="resume-help no-print"><strong>{resume.file?"Download the approved resume above.":"Need a PDF?"}</strong> {resume.file?"The Print / Save as PDF control prints the optional portfolio summary, not the original resume.":"Select Print / Save as PDF to save the generated summary; an approved resume upload can be added through Pages CMS."}</div>
+  <div className="resume-help no-print"><strong>{resume.file?"Download the approved resume above.":"Need a PDF?"}</strong> {resume.file?"The Print / Save as PDF control prints the optional portfolio summary, not the original resume.":"Select Print / Save as PDF to save the generated summary; an approved resume can be uploaded through the admin dashboard."}</div>
  </div></main>;
 }

@@ -1160,3 +1160,18 @@ img,canvas,svg { max-width: 100%; }
 @media(max-width:480px){.journey-return-inner {min-height:52px;}.journey-back-link {font-size:12px;gap:6px;}.journey-back-section {font-size:11px;}}
 @media(prefers-reduced-motion:reduce){.journey-back-link,.journey-back-link > span:first-child {transition:none;translate:none!important;}}
 @media print{.journey-return{display:none!important;}}
+
+/* Compact global footer: keep every destination, reduce vertical footprint. */
+.site-footer {margin-top:0;padding:28px 0 14px;}
+.footer-inner {grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:18px 28px;align-items:start;}
+.footer-brand {font-size:17px;}
+.site-footer p {margin:8px 0 0;line-height:1.5;font-size:12px;}
+.footer-nav {justify-self:end;justify-content:flex-end;flex-wrap:wrap;gap:9px 17px;line-height:1.6;font-size:12px;}
+.footer-bottom {padding-top:12px;gap:8px 16px;font-size:11px;}
+@media(max-width:700px){
+ .site-footer {padding:20px 0 12px;}
+ .footer-inner {gap:14px;}
+ .footer-nav {justify-self:start;justify-content:flex-start;gap:8px 14px;}
+ .footer-bottom {flex-direction:row;gap:8px 14px;}
+}
+@media(max-width:380px){.footer-brand{font-size:15px;}.footer-bottom{font-size:11px;}}

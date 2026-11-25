@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { life, socialProfiles, visualIdentity } from "@/data/personal";
+import {publicLife,publicSocials} from "@/lib/personal-content";
+import { visualIdentity } from "@/data/personal";
 import { PersonalPortrait } from "@/components/personal-portrait";
 import { publicLibrary } from "@/lib/library-content";
 import { PersonalGallery } from "@/components/personal-gallery";
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
   alternates:{canonical:"/life"}
 };
 export default async function LifePage(){
- const moments=await publicLibrary(visualIdentity.moments);
+ const [moments,life,socialProfiles]=await Promise.all([publicLibrary(visualIdentity.moments),publicLife(),publicSocials()]);
  return <main id="main" className="page life-page"><div className="container">
   <div className="page-heading"><span className="eyebrow">{life.eyebrow} / PLAYER 01</span><h1>More than <em>just code.</em></h1><p>A personal corner of this otherwise very technical world.</p></div>
   <div className="life-intro-grid">

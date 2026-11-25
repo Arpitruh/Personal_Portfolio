@@ -3,15 +3,19 @@ import "@fontsource-variable/dm-sans/wght.css";
 import "@fontsource/press-start-2p/400.css";
 import "./globals.css";
 import { profile } from "@/data/portfolio";
+import {publicSeo,allowIndexing} from "@/lib/seo-content";
 import {publicSocials} from "@/lib/personal-content";
 import { SiteShell } from "@/components/site-shell";
 
-export const metadata: Metadata = {
+export async function generateMetadata():Promise<Metadata>{
+ const seo=await publicSeo();
+ const index=allowIndexing(seo);
+ return {
   metadataBase: new URL(profile.siteUrl),
-  title: { default: "Arpit Yadav | Portfolio World", template: "%s | Arpit Yadav" },
-  description: profile.summary,
-  applicationName: "Arpit's Portfolio World",
-  keywords: ["Arpit Yadav", "Software Engineer", "Frontend Developer", "Next.js", "React", "TypeScript", "Portfolio"],
+  title: { default: seo.title, template: "%s | "+seo.titleSuffix.replaceAll("%","") },
+  description: seo.description,
+  applicationName: seo.siteName,
+  keywords: seo.keywords,
   authors: [{ name: profile.name, url: profile.github }],
   alternates: { canonical: "/" },
   openGraph: {
@@ -19,9 +23,10 @@ export const metadata: Metadata = {
     description: profile.summary, siteName: "Portfolio World",
     images: [{ url: "/opengraph-image", width: 1200, height: 630 }]
   },
-  twitter: { card: "summary_large_image", title: "Arpit Yadav | Portfolio World", images: ["/opengraph-image"] },
-  robots: { index: !(process.env.VERCEL && process.env.VERCEL_ENV !== "production"), follow: !(process.env.VERCEL && process.env.VERCEL_ENV !== "production") }
+  twitter: { card: "summary_large_image", title: seo.socialTitle, description:seo.socialDescription, images: ["/opengraph-image"] },
+  robots: { index, follow:index }
 };
+}
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#15152d" };
 

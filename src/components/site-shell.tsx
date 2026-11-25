@@ -32,10 +32,22 @@ const primaryNav = [
   { href: "/recruiter", label: "Resume", section: "" },
 ];
 
+const returnSections: Record<string, { section: string; label: string }> = {
+  skills: { section: "skills", label: "Skills" },
+  projects: { section: "projects", label: "Projects" },
+  about: { section: "about", label: "About" },
+  life: { section: "life", label: "Beyond code" },
+  recruiter: { section: "experience", label: "Experience" },
+  contact: { section: "contact", label: "Contact" },
+};
+const playgroundPages = new Set(["world", "room", "play", "now", "achievements", "assistant"]);
+
 type Theme = "day" | "night";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const route = pathname.split("/")[1];
+  const destination = returnSections[route] ?? (playgroundPages.has(route) ? { section: "explore", label: "Playground" } : { section: "top", label: "Home" });
   const [activeSection, setActiveSection] = useState("top");
   const [theme, setTheme] = useState<Theme>("day");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -152,6 +164,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </header>
+      {pathname !== "/" && <div className="journey-return no-print"><div className="container journey-return-inner"><Link className="journey-back-link" href={"/#" + destination.section}><span aria-hidden="true">←</span> Back to portfolio <span className="journey-back-section">/ {destination.label}</span></Link></div></div>}
       {children}
       <footer className="site-footer">
         <div className="footer-inner">

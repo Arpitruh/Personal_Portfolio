@@ -1,8 +1,6 @@
-# Arpit's Portfolio World ✦
+# Arpit's Portfolio World
 
-**Arpit Yadav — Software Engineer and Full Stack Developer portfolio.** An interactive Next.js portfolio showcasing React, TypeScript, Node.js, SaaS projects, backend infrastructure and software engineering case studies.
-
-A full Next.js portfolio inspired by the original **Mario-like HTML prototype**, reimagined as a modular, responsive, accessible experience. This is a real application, not a single-file template.
+I wanted my portfolio to be more than a list of projects, so I built an interactive site with a pixel-art world, a playable platformer and individual project case studies. It runs on Next.js and TypeScript.
 
 ## Experience
 
@@ -10,10 +8,10 @@ A full Next.js portfolio inspired by the original **Mario-like HTML prototype**,
 - **World:** six clickable locations, keyboard-friendly native controls and progress saved locally.
 - **Play:** custom Canvas platformer with coins, enemies, pipes that open project previews, lives, scores, touch controls and an optional sound toggle.
 - **Projects:** searchable/category-filterable repository-backed projects and individual case-study routes; original repository visuals are copied into local public assets with provenance captions, avoiding runtime GitHub image dependencies.
-- **About:** authentic work history, technical stack and timeline.
+- **About:** work history, technical stack and timeline.
 - **Now:** curated in-progress work with direct repository links.
 - **Developer console:** an accessible, local-only mini command explorer with help, skills, projects and `open <slug>` shortcuts (never executes real shell commands).
-- **Contact:** honest, no-backend mailto workflow when an address is provided; GitHub fallback otherwise.
+- **Contact:** mailto workflow when an address is provided; GitHub fallback otherwise.
 - **Global:** day/night theme, Ctrl/⌘+K navigation, subtle progressive-enhancement motion, route loading skeleton, responsive navigation, custom 404 and error states, Open Graph image, sitemap and robots.txt.
 
 The original `Your Name _ Portfolio World.html` remains in the repository **as a design reference only**. It is not loaded by the application.

@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {publicProfile} from "@/lib/profile-content";
 import {publicProjects} from "@/lib/project-content";
-import { experience, skills, milestones } from "@/data/portfolio";
+import {publicCareer} from "@/lib/career-content";
 import { PrintResume } from "@/components/print-resume";
 import { resume } from "@/data/personal";
 export const metadata:Metadata={title:"Recruiter Profile",description:"Concise, print-ready frontend engineering experience, education and projects for Arpit Yadav.",alternates:{canonical:"/recruiter"}};
 export default async function RecruiterPage(){
- const [profile,projects]=await Promise.all([publicProfile(),publicProjects()]);
+ const [profile,projects,career]=await Promise.all([publicProfile(),publicProjects(),publicCareer()]);
+ const {experience,skills,education}=career;
  const featuredProjects=projects.filter(p=>p.featured);
  return <main className="page recruiter-page" id="main"><div className="container recruiter-container">
   <header className="recruiter-toolbar no-print"><div><span className="eyebrow">CAREER / RESUME</span><h1>My <em>resume.</em></h1><p>{profile.role} · {profile.location}</p></div><Link className="btn btn-outline" href="/#projects">Explore projects ↗</Link></header>
@@ -25,7 +26,7 @@ export default async function RecruiterPage(){
    <section className="resume-section"><h3>Experience</h3>{experience.map(job=><article key={job.company} className="resume-experience"><div><strong>{job.role} · {job.company}</strong><span>{job.period}</span></div><p>{job.description}</p></article>)}</section>
    <section className="resume-section"><h3>Skills</h3>{skills.map(g=><p key={g.group}><strong>{g.group}:</strong> {g.items.join(" · ")}</p>)}</section>
    <section className="resume-section"><h3>Selected independent projects</h3>{featuredProjects.map(p=><article key={p.slug} className="resume-project"><div><strong>{p.title}</strong><span>{p.status}</span></div><p>{p.summary}</p><Link href={"/projects/"+p.slug}>Full case study</Link></article>)}</section>
-   <section className="resume-section"><h3>Education</h3><p><strong>{milestones[0].title} · {milestones[0].label}</strong> — {milestones[0].description}</p></section>
+   <section className="resume-section"><h3>Education</h3>{education.map((e,i)=><p key={i}><strong>{e.qualification} · {e.period}</strong>{e.institution&&<> — {e.institution}</>}{e.description&&<> — {e.description}</>}</p>)}</section>
    <footer className="resume-disclaimer">This printable summary is generated separately from published portfolio content. Refer to the uploaded PDF above for the current approved resume.</footer>
   </article></details>
   <div className="resume-help no-print"><strong>{resume.file?"Download the approved resume above.":"Need a PDF?"}</strong> {resume.file?"The Print / Save as PDF control prints the optional portfolio summary, not the original resume.":"Select Print / Save as PDF to save the generated summary; an approved resume upload can be added through Pages CMS."}</div>

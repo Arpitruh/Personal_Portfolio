@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {publicProfile} from "@/lib/profile-content";
-import { experience, skills, featuredProjects, milestones } from "@/data/portfolio";
+import {publicProjects} from "@/lib/project-content";
+import { experience, skills, milestones } from "@/data/portfolio";
 import { PrintResume } from "@/components/print-resume";
 import { resume } from "@/data/personal";
 export const metadata:Metadata={title:"Recruiter Profile",description:"Concise, print-ready frontend engineering experience, education and projects for Arpit Yadav.",alternates:{canonical:"/recruiter"}};
 export default async function RecruiterPage(){
- const profile=await publicProfile();
+ const [profile,projects]=await Promise.all([publicProfile(),publicProjects()]);
+ const featuredProjects=projects.filter(p=>p.featured);
  return <main className="page recruiter-page" id="main"><div className="container recruiter-container">
   <header className="recruiter-toolbar no-print"><div><span className="eyebrow">CAREER / RESUME</span><h1>My <em>resume.</em></h1><p>{profile.role} · {profile.location}</p></div><Link className="btn btn-outline" href="/#projects">Explore projects ↗</Link></header>
   {resume.file && <section className="recruiter-pdf-section no-print" aria-labelledby="resume-pdf-title">

@@ -1,5 +1,7 @@
 # Arpit's Portfolio World ✦
 
+**Arpit Yadav — Software Engineer and Full Stack Developer portfolio.** An interactive Next.js portfolio showcasing React, TypeScript, Node.js, SaaS projects, backend infrastructure and software engineering case studies.
+
 A full Next.js portfolio inspired by the original **Mario-like HTML prototype**, reimagined as a modular, responsive, accessible experience. This is a real application, not a single-file template.
 
 ## Experience

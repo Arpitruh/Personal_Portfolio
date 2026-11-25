@@ -135,7 +135,7 @@ test("Phase 14 personal-life page and social links are accessible",async ({page}
  await expect(page.getByRole("heading",{name:/Things I enjoy/i})).toBeVisible();
  await expect(page.locator(".life-social-grid a")).toHaveCount(5);
  for (const [name,url] of [["GitHub","https://github.com/Arpitruh"],["LinkedIn","https://linkedin.com/in/arpitruh"],["X (Twitter)","https://x.com/arpitruh_"],["DEV","https://dev.to/arpitruh"],["Hashnode","https://hashnode.com/@arpitruh"]]) {
-  await expect(page.locator(".life-social-grid").getByRole("link",{name:new RegExp(name.replace(/[()]/g,"\\await expect(page.locator(".life-social-grid a")).toHaveCount(1);"))})).toHaveAttribute("href",url);
+  await expect(page.locator(".life-social-grid").getByRole("link",{name,exact:false})).toHaveAttribute("href",url);
  }
  await expect(page.locator(".life-social-grid")).toContainText("GitHub");
  await expect(page.getByText(/No filler hobbies or placeholder photographs/i)).toBeVisible();

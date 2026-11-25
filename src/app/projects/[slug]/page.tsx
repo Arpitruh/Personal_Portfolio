@@ -1,21 +1,23 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProject, projects } from "@/data/portfolio";
+import {publicProjects} from "@/lib/project-content";
 import { architectureOverview } from "@/data/architecture";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() { return projects.map((project) => ({ slug: project.slug })); }
+export const dynamic="force-dynamic";
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProject(slug);
+  const projects=await publicProjects();
+  const project = projects.find(p=>p.slug===slug);
   return project ? { title: project.title, description: project.summary, alternates: { canonical: "/projects/" + project.slug } } : {};
 }
 
 export default async function ProjectDetail({ params }: Props) {
   const { slug } = await params;
-  const project = getProject(slug);
+  const projects=await publicProjects();
+  const project = projects.find(p=>p.slug===slug);
   if (!project) notFound();
   const index = projects.findIndex((item) => item.slug === project.slug);
   const next = projects[(index + 1) % projects.length];

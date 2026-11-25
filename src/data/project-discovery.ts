@@ -4,20 +4,20 @@ export const SAVED_PROJECTS_KEY = "portfolio-saved-projects-v1";
 export const MAX_COMPARE = 3;
 export type SortOrder = "featured" | "newest" | "alphabetical";
 
-export function safeSlugs(value: unknown): string[] {
+export function safeSlugs(value: unknown,catalog:PortfolioProject[]=projects): string[] {
   if (!Array.isArray(value)) return [];
-  const valid = new Set(projects.map(p => p.slug));
+  const valid = new Set(catalog.map(p => p.slug));
   return [...new Set(value.filter((slug): slug is string => typeof slug === "string" && valid.has(slug)))];
 }
 
-export function parseSharedComparison(search: string): string[] {
+export function parseSharedComparison(search: string,catalog:PortfolioProject[]=projects): string[] {
   const value = new URLSearchParams(search).get("compare");
-  return safeSlugs(value?.split(",") ?? []).slice(0, MAX_COMPARE);
+  return safeSlugs(value?.split(",") ?? [],catalog).slice(0, MAX_COMPARE);
 }
 
-export function compareUrl(origin: string, slugs: string[]): string {
+export function compareUrl(origin: string, slugs: string[],catalog:PortfolioProject[]=projects): string {
   const url = new URL("/projects", origin);
-  const selected = safeSlugs(slugs).slice(0, MAX_COMPARE);
+  const selected = safeSlugs(slugs,catalog).slice(0, MAX_COMPARE);
   if (selected.length) url.searchParams.set("compare", selected.join(","));
   return url.toString();
 }

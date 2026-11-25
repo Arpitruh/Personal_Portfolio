@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useMemo,useState } from "react";
-import { skillFamilies } from "@/data/skill-connections";
-export function SkillUniverse(){
- const [family,setFamily]=useState(skillFamilies[0].group);
- const [selected,setSelected]=useState(skillFamilies[0].skills[0].name);
+import { skillFamilies as defaultFamilies } from "@/data/skill-connections";
+export function SkillUniverse({skillFamilies=defaultFamilies}:{skillFamilies?:typeof defaultFamilies}){
+ const [family,setFamily]=useState(skillFamilies[0]?.group??"");
+ const [selected,setSelected]=useState(skillFamilies[0]?.skills[0]?.name??"");
  const group=skillFamilies.find(x=>x.group===family)??skillFamilies[0];
- const active=useMemo(()=>group.skills.find(x=>x.name===selected)??group.skills[0],[group,selected]);
+ const active=useMemo(()=>group?.skills.find(x=>x.name===selected)??group?.skills[0],[group,selected]);
+ if(!group||!active)return <p>No skills published yet.</p>;
  return <div className="universe-shell">
   <div className="universe-toolbar" role="group" aria-label="Skill families">{skillFamilies.map(f=><button key={f.group} type="button" aria-pressed={family===f.group} onClick={()=>{setFamily(f.group);setSelected(f.skills[0].name)}}>{f.group}</button>)}</div>
   <div className="universe-layout">

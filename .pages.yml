@@ -150,7 +150,7 @@ content:
           - {name: url, type: string, required: true}
           - name: kind
             type: select
-            options: {values: [Code, Professional, Photography, Social, Other]}
+            options: {values: [Code, Professional, Photography, Social, Technical writing, Other]}
           - {name: visible, type: boolean}
   - name: resume
     label: Current resume
@@ -169,7 +169,7 @@ content:
       - {name: note, type: text}
 
   - name: visuals
-    label: Portraits and personal photo gallery
+    label: Personal Library and portraits
     type: file
     path: content/visuals.json
     fields:
@@ -194,7 +194,7 @@ content:
           - {name: alt, label: Description for screen readers, type: string}
           - {name: caption, label: Optional caption, type: string}
       - name: moments
-        label: Approved personal moments (public gallery)
+        label: Personal library entries (approved public images only)
         type: object
         list: true
         fields:
@@ -207,7 +207,7 @@ content:
           - {name: caption, label: Short personal note, type: text}
           - name: category
             type: select
-            options: {values: [Everyday, Places, Photography, Creative, Other]}
+            options: {values: [Travel Diaries, Through My Lens, Creative Corner, Memory Vault, Everyday, Places, Photography, Creative, Other]}
           - {name: featured, label: Highlight on personal page, type: boolean}
           - {name: visible, label: Approved for public display, type: boolean}
 

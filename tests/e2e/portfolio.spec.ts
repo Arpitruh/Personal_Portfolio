@@ -119,7 +119,8 @@ test("new experience routes respect mobile viewport, reduced motion, and print s
  }
  await page.emulateMedia({media:"print"});
  await page.goto("/recruiter");
- await expect(page.locator(".resume-sheet")).toBeVisible();
+ await page.locator(".resume-overview").evaluate((element: HTMLDetailsElement) => { element.open = true; });
+  await expect(page.locator(".resume-sheet")).toBeVisible();
  const headerDisplay=await page.locator(".site-header").evaluate(e=>getComputedStyle(e).display);
  expect(headerDisplay).toBe("none");
  await page.emulateMedia({media:"screen",reducedMotion:"reduce"});
@@ -132,7 +133,10 @@ test("Phase 14 personal-life page and social links are accessible",async ({page}
  await page.goto("/life");
  await expect(page.getByRole("heading",{name:/More than just code/i})).toBeVisible();
  await expect(page.getByRole("heading",{name:/Things I enjoy/i})).toBeVisible();
- await expect(page.locator(".life-social-grid a")).toHaveCount(1);
+ await expect(page.locator(".life-social-grid a")).toHaveCount(5);
+ for (const [name,url] of [["GitHub","https://github.com/Arpitruh"],["LinkedIn","https://linkedin.com/in/arpitruh"],["X (Twitter)","https://x.com/arpitruh_"],["DEV","https://dev.to/arpitruh"],["Hashnode","https://hashnode.com/@arpitruh"]]) {
+  await expect(page.locator(".life-social-grid").getByRole("link",{name,exact:false})).toHaveAttribute("href",url);
+ }
  await expect(page.locator(".life-social-grid")).toContainText("GitHub");
  await expect(page.getByText(/No filler hobbies or placeholder photographs/i)).toBeVisible();
  await page.goto("/about");
@@ -170,13 +174,14 @@ test("Phase 15 uses accessible pixel fallback until approved media is uploaded",
 test("character poses render when approved CMS files exist, with fallback when absent",async ({page})=>{
  const {readFileSync}=await import("node:fs");
  const config=JSON.parse(readFileSync("content/character-pack.json","utf8"));
- for(const [route,pose] of [["/","standing"],["/projects","sitting"],["/skills","coding"],["/life","casual"]] as const){
+ for(const [route,pose] of [["/","standing"],["/","casual"],["/projects","sitting"],["/skills","coding"],["/life","casual"]] as const){
    await page.goto(route);
    const published=Boolean(config[pose]?.src&&config[pose]?.alt?.trim());
-   await expect(page.locator(".character-pose")).toHaveCount(published?1:0);
+   const character=page.locator(".character-pose-"+pose);
+   await expect(character).toHaveCount(published?1:0);
    if(published){
-     await expect(page.locator(".character-pose img")).toBeVisible();
-     await expect(page.locator(".character-pose img")).toHaveAttribute("alt",config[pose].alt);
+     await expect(character.locator("img")).toBeVisible();
+     await expect(character.locator("img")).toHaveAttribute("alt",config[pose].alt);
    }
    await expect(page.locator("#main")).toHaveCount(1);
  }

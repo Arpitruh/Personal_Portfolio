@@ -7,7 +7,7 @@ import {publicProfile} from "@/lib/profile-content";
 import {publicProjects} from "@/lib/project-content";
 import {publicCareer} from "@/lib/career-content";
 import {publicLife,publicSocials} from "@/lib/personal-content";
-import { visualIdentity, characterPack } from "@/data/personal";
+import {publicAppearance} from "@/lib/asset-content";
 import { CharacterPose } from "@/components/character-pose";
 import { PersonalPortrait } from "@/components/personal-portrait";
 
@@ -23,6 +23,7 @@ const playground = [
 export default async function HomePage() {
   const [profile,life,socialProfiles,projects,career]=await Promise.all([publicProfile(),publicLife(),publicSocials(),publicProjects(),publicCareer()]);
   const {experience,skills}=career;
+  const appearance=await publicAppearance();
   const featuredProjects=projects.filter(p=>p.featured);
   return <main id="main" className="scroll-portfolio">
     <ScrollMotion />
@@ -37,7 +38,7 @@ export default async function HomePage() {
           <div className="button-group hero-buttons"><Link className="btn btn-primary" href="#projects">Explore my work <span aria-hidden="true">↗</span></Link><Link className="btn btn-outline" href="/recruiter">View resume ↗</Link></div>
           <div className="hero-social"><span>BASED IN {profile.location.toUpperCase()}</span><span className="hero-social-line" /><a href={profile.github} target="_blank" rel="noopener noreferrer">GITHUB ↗</a></div>
         </div>
-        <div className="hero-scene"><div className="hero-scene-card"><span className="scene-corner scene-corner-left">LEVEL 01</span><span className="scene-corner scene-corner-right">1 PLAYER</span><PixelLandscape /><div className="hero-avatar">{characterPack.standing ? <CharacterPose pose="standing" priority/> : visualIdentity.illustration ? <PersonalPortrait variant="home"/> : <PixelAvatar large/>}</div><div className="speech-bubble">HELLO WORLD! <span>♥</span></div><div className="scene-caption">✦ SCROLL TO EXPLORE</div></div></div>
+        <div className="hero-scene"><div className="hero-scene-card"><span className="scene-corner scene-corner-left">LEVEL 01</span><span className="scene-corner scene-corner-right">1 PLAYER</span><PixelLandscape /><div className="hero-avatar">{appearance.standing ? <CharacterPose pose="standing" priority/> : appearance.illustration||appearance.portrait ? <PersonalPortrait variant="home"/> : <PixelAvatar large/>}</div><div className="speech-bubble">HELLO WORLD! <span>♥</span></div><div className="scene-caption">✦ SCROLL TO EXPLORE</div></div></div>
       </div>
       <a className="journey-scroll" href="#about">Scroll to explore <span aria-hidden="true">↓</span></a>
     </section>
@@ -60,7 +61,7 @@ export default async function HomePage() {
       <ProjectShowcase projects={featuredProjects}/></div>
     </section>
     <section id="skills" className="section journey-chapter section-about"><div className="container journey-split"><div data-reveal><span className="eyebrow">04 / TOOLKIT</span><h2>Tools I <em>work with.</em></h2><p>From interfaces to APIs and infrastructure. See the connections between tools and real projects.</p><Link href="/skills" className="btn btn-dark">Explore skills ↗</Link></div><div className="about-stack" data-reveal><div className="inventory-header"><span>TOOLKIT</span><span>✦</span></div>{skills.map((group,index)=><div className="inventory-row" key={group.group}><span className="inventory-number">0{index+1}</span><div><strong>{group.group}</strong><p>{group.items.join(" · ")}</p></div></div>)}</div></div></section>
-    <section id="life" className="section journey-chapter home-life-preview"><div className="container home-life-grid"><div data-reveal><span className="eyebrow">05 / BEYOND CODE</span><h2>Life outside <em>the editor.</em></h2><p>{life.introduction}</p><Link href="/life" className="btn btn-outline">Explore my life ↗</Link></div><div className="journey-portrait" data-reveal>{characterPack.casual ? <CharacterPose pose="casual"/> : <div className="home-life-decoration" aria-hidden="true"><span>✦</span><strong>ALT + LIFE</strong><small>PLAYER 01</small></div>}</div></div></section>
+    <section id="life" className="section journey-chapter home-life-preview"><div className="container home-life-grid"><div data-reveal><span className="eyebrow">05 / BEYOND CODE</span><h2>Life outside <em>the editor.</em></h2><p>{life.introduction}</p><Link href="/life" className="btn btn-outline">Explore my life ↗</Link></div><div className="journey-portrait" data-reveal>{appearance.casual ? <CharacterPose pose="casual"/> : <div className="home-life-decoration" aria-hidden="true"><span>✦</span><strong>ALT + LIFE</strong><small>PLAYER 01</small></div>}</div></div></section>
     <section id="explore" className="section journey-chapter new-experiences"><div className="container"><div className="section-intro" data-reveal><div><span className="eyebrow">06 / PLAYGROUND</span><h2>A little room <em>for play.</em></h2><p>Optional side quests for the curious. No game required to explore my work.</p></div></div><div className="experience-shortcuts">{playground.map(item=><Link href={item.href} key={item.href} data-reveal><span aria-hidden="true">{item.icon}</span><strong>{item.title}</strong><small>{item.detail}</small></Link>)}</div><details className="journey-terminal"><summary>Open interactive developer terminal</summary><InteractiveTerminal/></details></div></section>
     <section id="contact" className="section journey-chapter"><div className="container"><div className="cta-banner" data-reveal><div><span className="eyebrow">07 / CONTACT</span><h2>Got an idea?<br/><em>Let&apos;s build it.</em></h2><p>Available for interesting engineering conversations and collaborations.</p><div className="button-group"><Link className="btn btn-primary" href="/contact">Get in touch ↗</Link><Link className="btn btn-outline" href="/recruiter">Resume ↗</Link></div><div className="journey-socials">{socialProfiles.map(link=><a href={link.url} key={link.url} target="_blank" rel="noopener noreferrer">{link.name} ↗</a>)}{profile.email && <a href={"mailto:"+profile.email}>Email ↗</a>}</div></div><div className="cta-decoration" aria-hidden="true"><span>★</span><span>?</span><span>✦</span></div></div></div></section>
   </main>;

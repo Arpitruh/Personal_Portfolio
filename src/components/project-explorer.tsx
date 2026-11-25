@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { projectCategories, projects } from "@/data/portfolio";
+import { projectCategories, type PortfolioProject } from "@/data/portfolio";
 import { compareUrl, discoverProjects, MAX_COMPARE, parseSharedComparison, safeSlugs, SAVED_PROJECTS_KEY, type SortOrder } from "@/data/project-discovery";
 import { ProjectCard } from "@/components/project-card";
 
-export function ProjectExplorer() {
+export function ProjectExplorer({projects}: {projects:PortfolioProject[]}) {
   const [category, setCategory] = useState<(typeof projectCategories)[number]>("All");
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOrder>("featured");
@@ -15,9 +15,9 @@ export function ProjectExplorer() {
   const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
-    try { setSaved(safeSlugs(JSON.parse(localStorage.getItem(SAVED_PROJECTS_KEY) || "[]"))); }
+    try { setSaved(safeSlugs(JSON.parse(localStorage.getItem(SAVED_PROJECTS_KEY) || "[]"),projects)); }
     catch { /* A corrupted or unavailable local store should not block browsing. */ }
-    setCompare(parseSharedComparison(window.location.search));
+    setCompare(parseSharedComparison(window.location.search,projects));
     setReady(true);
   }, []);
 
@@ -36,7 +36,7 @@ export function ProjectExplorer() {
     window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
   }, [compare, ready]);
 
-  const results = useMemo(() => discoverProjects(projects, { category, search, savedOnly, saved, sort }), [category, search, savedOnly, saved, sort]);
+  const results = useMemo(() => discoverProjects(projects, { category, search, savedOnly, saved, sort }), [category, search, savedOnly, saved, sort,projects]);
   const selected = compare.map(slug => projects.find(project => project.slug === slug)).filter((p): p is (typeof projects)[number] => Boolean(p));
 
   function toggleSaved(slug: string) {
@@ -51,7 +51,7 @@ export function ProjectExplorer() {
     setFeedback("Project added to comparison.");
   }
   async function share() {
-    const url = compareUrl(window.location.origin, compare);
+    const url = compareUrl(window.location.origin, compare,projects);
     try { await navigator.clipboard.writeText(url); setFeedback("Comparison link copied."); }
     catch { setFeedback("Copy the comparison URL from your browser's address bar."); }
   }

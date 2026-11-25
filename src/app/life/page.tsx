@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { life, socialProfiles } from "@/data/personal";
+import { life, socialProfiles, visualIdentity } from "@/data/personal";
 import { PersonalPortrait } from "@/components/personal-portrait";
 import { PersonalGallery } from "@/components/personal-gallery";
 import { CharacterPose } from "@/components/character-pose";
@@ -24,7 +24,7 @@ export default function LifePage(){
    {life.hobbies.length ? <div className="life-hobby-grid">{life.hobbies.map((hobby,index)=><article className="life-hobby" key={hobby.title}><div className="life-hobby-number">{String(index+1).padStart(2,"0")}</div><span aria-hidden="true">{hobby.emoji || "✦"}</span><h3>{hobby.title}</h3><p>{hobby.description}</p></article>)}</div> :
     <div className="life-empty"><span aria-hidden="true">✳</span><h3>Stories are still being collected.</h3><p>Personal interests will appear here once they’re ready to share. No filler hobbies or placeholder photographs.</p></div>}
   </section>
-  <PersonalGallery/>
+  <PersonalGallery moments={visualIdentity.moments}/>
   <section className="inner-section" aria-labelledby="life-links-title"><div className="section-intro"><div><span className="eyebrow">ELSEWHERE ON THE INTERNET</span><h2 id="life-links-title">Find me <em>elsewhere.</em></h2><p>Only profiles I’ve chosen to make public.</p></div></div>
    <div className="life-social-grid">{socialProfiles.map(link=><a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer"><small>{link.kind}</small><strong>{link.name}</strong><span aria-hidden="true">↗</span></a>)}</div>
   </section>
